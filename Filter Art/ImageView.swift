@@ -27,13 +27,12 @@ struct ImageView: View {
 	@AppStorage("imageSaturation") private var saturation: Double = 1
 	@AppStorage("imageUseGrayscale") private var useGrayscale: Bool = false
 	@AppStorage("imageGrayscale") private var grayscale: Double = 0
+	@AppStorage("imageUseOpacity") private var useOpacity: Bool = false
+	@AppStorage("imageOpacity") private var opacity: Double = 1
 	@State private var image: Data = Data()
 	@AppStorage("imageUseOrinalImage") private var useOriginalImage: Bool = true
-	@State var showingUnmodifiedImage = false
-	@State var showingPreviewModal = false
-	@State var showingImagePicker = false
-	@State var showingShareSheet = false
-	@State var showingSharingPicker = false
+	@State var showingSheet = false
+	@State var sheetType = SheetType.modifiedImage
 	@State var loading = false
 #if os(macOS)
 	let maxWidth = 300.0
@@ -58,9 +57,10 @@ struct ImageView: View {
 					getDisplay().frame(height: 350)
 					InfoSeperator()
 					ScrollView {
-						getEditor().padding(.bottom)
+						getEditor().padding(.bottom).frame(maxWidth: 600)
 					}
-				}.sheet(isPresented: $showingUnmodifiedImage) {
+				}.sheet(isPresented: $showingSheet) {
+					if sheetType == .unmodifiedImage {
 					VStack(alignment: .leading, spacing: 0) {
 						HStack {
 							Text("Unmodified Image:").font(.title).bold()
@@ -74,32 +74,33 @@ struct ImageView: View {
 						HStack {
 							Spacer()
 							Button {
-								showingUnmodifiedImage = false
+								showingSheet = false
 							} label: {
 								Text("Done")
 							}.keyboardShortcut(.defaultAction)
 						}.padding(.top, 20)
 					}.frame(width: 650, height: 600, alignment: .topLeading).padding()
-				}.sheet(isPresented: $showingPreviewModal) {
-					VStack(alignment: .leading, spacing: 0) {
-						HStack {
-							Text("Larger Modified Image:").font(.title).bold()
-							Spacer()
-						}.padding(.bottom, 10)
-						HStack {
-							Spacer()
-							getModalDisplay()
-							Spacer()
-						}.overlay(Rectangle().stroke(Color("Border", bundle: nil), lineWidth: 2))
-						HStack {
-							Spacer()
-							Button {
-								showingPreviewModal = false
-							} label: {
-								Text("Done")
-							}.keyboardShortcut(.defaultAction)
-						}.padding(.top, 20)
-					}.frame(width: 650, height: 615, alignment: .topLeading).padding()
+					} else if sheetType == .modifiedImage {
+						VStack(alignment: .leading, spacing: 0) {
+							HStack {
+								Text("Larger Modified Image:").font(.title).bold()
+								Spacer()
+							}.padding(.bottom, 10)
+							HStack {
+								Spacer()
+								getModalDisplay()
+								Spacer()
+							}.overlay(Rectangle().stroke(Color("Border", bundle: nil), lineWidth: 2))
+							HStack {
+								Spacer()
+								Button {
+									showingSheet = false
+								} label: {
+									Text("Done")
+								}.keyboardShortcut(.defaultAction)
+							}.padding(.top, 20)
+						}.frame(width: 650, height: 615, alignment: .topLeading).padding()
+					}
 				}.onAppear() {
 					if !useOriginalImage {
 						ImageDataStore.load { result in
@@ -123,30 +124,50 @@ struct ImageView: View {
 						InfoSeperator()
 					}
 					ScrollView {
-						getEditor().padding(.bottom)
+						getEditor().padding(.bottom).frame(maxWidth: 600)
 					}
-				}.sheet(isPresented: $showingShareSheet) {
-					ShareSheet(image: getFilteredImage())
-				}.sheet(isPresented: $showingPreviewModal) {
-					NavigationView {
-						HStack {
-							Spacer()
-							getModalDisplay()
-							Spacer()
-						}.toolbar {
-							ToolbarItem {
-								// MARK: Done
-								Button {
-									//handle done
-									showingPreviewModal = false
-								} label: {
-									Text("Done")
-								}.keyboardShortcut(.defaultAction)
-							}
-						}.navigationTitle("Larger Modified Image").navigationBarTitleDisplayMode(.inline)
+				}.sheet(isPresented: $showingSheet) {
+					if sheetType == .shareSheet {
+						ShareSheet(image: getFilteredImage())
+					} else if sheetType == .modifiedImage {
+						NavigationView {
+							HStack {
+								Spacer()
+								getModalDisplay()
+								Spacer()
+							}.toolbar {
+								ToolbarItem {
+									// MARK: Done
+									Button {
+										//handle done
+										showingSheet = false
+									} label: {
+										Text("Done")
+									}.keyboardShortcut(.defaultAction)
+								}
+							}.navigationTitle("Larger Modified Image").navigationBarTitleDisplayMode(.inline)
+						}
+					} else if sheetType == .unmodifiedImage {
+						NavigationView {
+							HStack {
+								Spacer()
+								getImage().resizable().aspectRatio(contentMode: .fit)
+								Spacer()
+							}.toolbar {
+								ToolbarItem {
+									// MARK: Done
+									Button {
+										//handle done
+										showingSheet = false
+									} label: {
+										Text("Done")
+									}.keyboardShortcut(.defaultAction)
+								}
+							}.navigationTitle("Unmodified Image").navigationBarTitleDisplayMode(.inline)
+						}
+					} else {
+						ImagePicker(imageData: $imageDataStore.imageData, useOriginalImage: $useOriginalImage, loading: $loading)
 					}
-				}.sheet(isPresented: $showingImagePicker) {
-					ImagePicker(imageData: $imageDataStore.imageData, useOriginalImage: $useOriginalImage, loading: $loading)
 				}.onAppear() {
 					if !useOriginalImage {
 						ImageDataStore.load { result in
@@ -178,17 +199,19 @@ struct ImageView: View {
 			VStack(spacing: 10) {
 				HStack(spacing: 20) {
 					Button("Larger Image") {
-						showingPreviewModal = true
+						sheetType = .modifiedImage
+						showingSheet = true
 					}
 					Button("Unmodfied Image") {
-						showingUnmodifiedImage = true
+						sheetType = .unmodifiedImage
+						showingSheet = true
 					}
 				}
 				HStack(spacing: 20) {
 					Button("Choose Image") {
 						#if os(macOS)
 						let openPanel = NSOpenPanel()
-									openPanel.prompt = "Select File"
+									openPanel.prompt = "Choose Image"
 									openPanel.allowsMultipleSelection = false
 										openPanel.canChooseDirectories = false
 										openPanel.canCreateDirectories = false
@@ -208,7 +231,8 @@ struct ImageView: View {
 											}
 										}
 						#else
-						showingImagePicker = true
+						sheetType = .imagePicker
+						showingSheet = true
 						#endif
 					}
 					Button("Default Image") {
@@ -224,55 +248,17 @@ struct ImageView: View {
 						Text("Save Image")
 					}
 					Button {
-						showingShareSheet = true
+						sheetType = .shareSheet
+						showingSheet = true
 					} label: {
 						Text("Share Image")
 					}
 				}
 				#else
-				HStack(spacing: 20){
-					Button {
-						showingSharingPicker = true
-					} label: {
-						Text("Share Image")
-					} .background(SharingsPicker(isPresented: $showingSharingPicker, sharingItems: [getFilteredImage()]))
-				}
+				getSavePanelButton()
 				#endif
 			}
-
-			Group {
-				Group {
-					Toggle("Use Hue Rotation", isOn: $useHueRotation).toggleStyle(.switch).tint(Color.accentColor)
-					if useHueRotation {
-						HueRotationControl(hueRotation: $hueRotation)
-					}
-				}
-				Group {
-					Toggle("Use Contrast", isOn: $useContrast).toggleStyle(.switch).tint(Color.accentColor)
-					if useContrast {
-						ContrastControl(contrast: $contrast)
-					}
-				}
-				Toggle("Invert Colors", isOn: $invertColors).toggleStyle(.switch).tint(Color.accentColor)
-				Group {
-					Toggle("Use Color Multiply", isOn: $useColorMultiply).toggleStyle(.switch).tint(Color.accentColor)
-					if useColorMultiply {
-						ColorMultiplyControl(colorMultiplyColor: $colorMultiplyColor)
-					}
-				}
-				Group {
-					Toggle("Use Saturation", isOn: $useSaturation).toggleStyle(.switch).tint(Color.accentColor)
-					if useSaturation {
-						SaturationControl(saturation: $saturation)
-					}
-				}
-				Group {
-					Toggle("Use Grayscale", isOn: $useGrayscale).toggleStyle(.switch).tint(Color.accentColor)
-					if useGrayscale {
-						GrayscaleControl(grayscale: $grayscale)
-					}
-				}
-			}
+			getFilterControls()
 		}.padding()
 	}
 	
@@ -293,7 +279,9 @@ struct ImageView: View {
 							view.saturation(saturation)
 						   }).if(useGrayscale, transform: { view in
 							view.grayscale(grayscale)
-						   })
+						   }).if(useOpacity, transform: { view in
+							   view.opacity(opacity)
+						})
 			}
 		}
 	}
@@ -319,7 +307,9 @@ struct ImageView: View {
 								view.saturation(saturation)
 						 }).if(useGrayscale, transform: { view in
 								view.grayscale(grayscale)
-							})
+							}).if(useOpacity, transform: { view in
+								view.opacity(opacity)
+					  })
 							Spacer()
 				}
 				Spacer()
@@ -340,6 +330,8 @@ struct ImageView: View {
 						view.saturation(saturation)
 					   }).if(useGrayscale, transform: { view in
 						view.grayscale(grayscale)
+					   }).if(useOpacity, transform: { view in
+						view.opacity(opacity)
 					})
 			}
 		}
@@ -358,6 +350,82 @@ struct ImageView: View {
 		}
 	}
 	
+	func getFilterControls() -> some View {
+		Group {
+			Group {
+				Group {
+					Toggle("Use Hue Rotation", isOn: $useHueRotation.animation()).toggleStyle(.switch).tint(Color.accentColor)
+					if useHueRotation {
+						HueRotationControl(hueRotation: $hueRotation)
+					}
+				}
+				Group {
+					Toggle("Use Contrast", isOn: $useContrast.animation()).toggleStyle(.switch).tint(Color.accentColor)
+					if useContrast {
+						ContrastControl(contrast: $contrast)
+					}
+				}
+				Toggle("Invert Colors", isOn: $invertColors.animation()).toggleStyle(.switch).tint(Color.accentColor)
+			}
+			Group {
+				Group {
+					Toggle("Use Color Multiply", isOn: $useColorMultiply.animation()).toggleStyle(.switch).tint(Color.accentColor)
+					if useColorMultiply {
+						ColorMultiplyControl(colorMultiplyColor: $colorMultiplyColor)
+					}
+				}
+				Group {
+					Toggle("Use Saturation", isOn: $useSaturation.animation()).toggleStyle(.switch).tint(Color.accentColor)
+					if useSaturation {
+						SaturationControl(saturation: $saturation)
+					}
+				}
+				Group {
+					Toggle("Use Grayscale", isOn: $useGrayscale.animation()).toggleStyle(.switch).tint(Color.accentColor)
+					if useGrayscale {
+						GrayscaleControl(grayscale: $grayscale)
+					}
+				}
+				Group {
+					Toggle("Use Opacity", isOn: $useOpacity.animation()).toggleStyle(.switch).tint(Color.accentColor)
+					if useOpacity {
+						OpacityControl(opacity: $opacity)
+					}
+				}
+			}
+		}
+	}
+	
+	#if os(macOS)
+	func getSavePanelButton() -> some View {
+		Button("Save Image") {
+			let savePanel = NSSavePanel()
+			savePanel.title = "Save Image"
+			savePanel.prompt = "Save Image"
+			savePanel.canCreateDirectories = false
+			savePanel.allowedContentTypes = [.image]
+			let dateFormatter = DateFormatter()
+			dateFormatter.dateFormat = "d-M-y h.mm a"
+			let dateString = dateFormatter.string(from: Date())
+			savePanel.nameFieldStringValue = "Image \(dateString).png"
+			savePanel.begin { (result) -> Void in
+				if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
+					if let url = savePanel.url {
+						let imageRepresentation = NSBitmapImageRep(data: getFilteredImage().tiffRepresentation ?? Data())
+						let pngData = imageRepresentation?.representation(using: .png, properties: [:]) ?? Data()
+						do {
+							try pngData.write(to: url)
+						} catch {
+							print(error)
+						}
+					}
+					
+				}
+			}
+		}
+	}
+	#endif
+	
 	#if os(iOS)
 	@MainActor func getFilteredImage() -> UIImage {
 		let renderer = ImageRenderer(content: getImage().resizable().aspectRatio(contentMode: .fit).if(invertColors, transform: { view in
@@ -372,7 +440,9 @@ struct ImageView: View {
 				  view.saturation(saturation)
 				 }).if(useGrayscale, transform: { view in
 				  view.grayscale(grayscale)
-				 }))
+				 }).if(useOpacity, transform: { view in
+					 view.opacity(opacity)
+					}))
 
 			renderer.scale = displayScale
 			if let uiImage = renderer.uiImage {
@@ -394,13 +464,15 @@ struct ImageView: View {
 				  view.saturation(saturation)
 				 }).if(useGrayscale, transform: { view in
 				  view.grayscale(grayscale)
-				 }))
+				 }).if(useOpacity, transform: { view in
+					 view.opacity(opacity)
+					}))
 
 			renderer.scale = displayScale
 		if let nsImage = renderer.nsImage {
 			return  nsImage
 		}
-		return NSImage(imageLiteralResourceName: "FallColors")
+		return NSImage(named: "FallColors") ?? NSImage()
 		}
 	#endif
 }
@@ -414,4 +486,11 @@ struct ImageView_Previews: PreviewProvider {
 enum ImageModal {
 	case unmodified
 	case preview
+}
+
+enum SheetType {
+	case shareSheet
+	case imagePicker
+	case unmodifiedImage
+	case modifiedImage
 }
