@@ -31,8 +31,11 @@ struct ImageView: View {
 	@AppStorage("imageOpacity") private var opacity: Double = 1
 	@State private var image: Data = Data()
 	@AppStorage("imageUseOrinalImage") private var useOriginalImage: Bool = true
-	@State var showingSheet = false
-	@State var sheetType = SheetType.modifiedImage
+	@State var showingUnmodifiedImage = false
+	@State var showingPreviewModal = false
+	@State var showingImagePicker = false
+	@State var showingShareSheet = false
+	@State var showingSharingPicker = false
 	@State var loading = false
 #if os(macOS)
 	let maxWidth = 300.0
@@ -59,8 +62,7 @@ struct ImageView: View {
 					ScrollView {
 						getEditor().padding(.bottom).frame(maxWidth: 600)
 					}
-				}.sheet(isPresented: $showingSheet) {
-					if sheetType == .unmodifiedImage {
+				}.sheet(isPresented: $showingUnmodifiedImage) {
 					VStack(alignment: .leading, spacing: 0) {
 						HStack {
 							Text("Unmodified Image:").font(.title).bold()
@@ -80,7 +82,7 @@ struct ImageView: View {
 							}.keyboardShortcut(.defaultAction)
 						}.padding(.top, 20)
 					}.frame(width: 650, height: 600, alignment: .topLeading).padding()
-					} else if sheetType == .modifiedImage {
+				}.sheet(isPresented: $showingPreviewModal) {
 						VStack(alignment: .leading, spacing: 0) {
 							HStack {
 								Text("Larger Modified Image:").font(.title).bold()
@@ -100,8 +102,7 @@ struct ImageView: View {
 								}.keyboardShortcut(.defaultAction)
 							}.padding(.top, 20)
 						}.frame(width: 650, height: 615, alignment: .topLeading).padding()
-					}
-				}.onAppear() {
+					}.onAppear() {
 					if !useOriginalImage {
 						ImageDataStore.load { result in
 							switch result {
@@ -126,10 +127,9 @@ struct ImageView: View {
 					ScrollView {
 						getEditor().padding(.bottom).frame(maxWidth: 600)
 					}
-				}.sheet(isPresented: $showingSheet) {
-					if sheetType == .shareSheet {
+				}.sheet(isPresented: $showingShareSheet) {
 						ShareSheet(image: getFilteredImage())
-					} else if sheetType == .modifiedImage {
+				}.sheet(isPresented: $showingPreviewModal) {
 						NavigationView {
 							HStack {
 								Spacer()
@@ -140,14 +140,14 @@ struct ImageView: View {
 									// MARK: Done
 									Button {
 										//handle done
-										showingSheet = false
+										showingPreviewModal = false
 									} label: {
 										Text("Done")
 									}.keyboardShortcut(.defaultAction)
 								}
 							}.navigationTitle("Larger Modified Image").navigationBarTitleDisplayMode(.inline)
 						}
-					} else if sheetType == .unmodifiedImage {
+					}.sheet(isPresented: $showingUnmodifiedImage) {
 						NavigationView {
 							HStack {
 								Spacer()
@@ -158,17 +158,16 @@ struct ImageView: View {
 									// MARK: Done
 									Button {
 										//handle done
-										showingSheet = false
+										showingUnmodifiedImage = false
 									} label: {
 										Text("Done")
 									}.keyboardShortcut(.defaultAction)
 								}
 							}.navigationTitle("Unmodified Image").navigationBarTitleDisplayMode(.inline)
 						}
-					} else {
+					}.sheet(isPresented: $showingImagePicker) {
 						ImagePicker(imageData: $imageDataStore.imageData, useOriginalImage: $useOriginalImage, loading: $loading)
-					}
-				}.onAppear() {
+					}.onAppear() {
 					if !useOriginalImage {
 						ImageDataStore.load { result in
 							switch result {
@@ -199,12 +198,10 @@ struct ImageView: View {
 			VStack(spacing: 10) {
 				HStack(spacing: 20) {
 					Button("Larger Image") {
-						sheetType = .modifiedImage
-						showingSheet = true
+						showingPreviewModal = true
 					}
 					Button("Unmodfied Image") {
-						sheetType = .unmodifiedImage
-						showingSheet = true
+						showingUnmodifiedImage = true
 					}
 				}
 				HStack(spacing: 20) {
@@ -231,8 +228,7 @@ struct ImageView: View {
 											}
 										}
 						#else
-						sheetType = .imagePicker
-						showingSheet = true
+						showingImagePicker = true
 						#endif
 					}
 					Button("Default Image") {
@@ -248,8 +244,7 @@ struct ImageView: View {
 						Text("Save Image")
 					}
 					Button {
-						sheetType = .shareSheet
-						showingSheet = true
+						showingShareSheet = true
 					} label: {
 						Text("Share Image")
 					}
