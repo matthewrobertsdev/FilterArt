@@ -11,6 +11,7 @@ import UIKit
 import AppKit
 #endif
 import Photos
+import PhotosUI
 
 
 struct ImageView: View {
@@ -41,6 +42,7 @@ struct ImageView: View {
 	@State var showingImageSaveSuccesAlert = false
 	@State var showingImageSaveFailureAlert = false
 	@State var loading = false
+	@State private var selectedItem: PhotosPickerItem? = nil
 #if os(macOS)
 	let maxWidth = 300.0
 	let maxHeight = 140.0
@@ -217,6 +219,25 @@ struct ImageView: View {
 					}
 				}
 				HStack(spacing: 20) {
+					PhotosPicker(
+								selection: $selectedItem,
+								matching: .images,
+								photoLibrary: .shared()) {
+									Text("Choose Image")
+								}
+								.onChange(of: selectedItem) { newItem in
+									loading = true
+									Task {
+										if let data = try? await newItem?.loadTransferable(type: Data.self) {
+											imageDataStore.imageData = data
+											useOriginalImage = false
+											loading = false
+										} else {
+											loading = false
+										}
+									}
+								}
+					/*
 					Button("Choose Image") {
 						#if os(macOS)
 						let openPanel = NSOpenPanel()
@@ -242,7 +263,9 @@ struct ImageView: View {
 						#else
 						showingImagePicker = true
 						#endif
+					 
 					}
+					 */
 					Button("Default Image") {
 						useOriginalImage = true
 						imageDataStore.imageData = Data()
