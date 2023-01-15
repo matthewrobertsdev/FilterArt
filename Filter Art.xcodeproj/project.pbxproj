@@ -55,6 +55,7 @@
 		9FE517F229726983003F3CA7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE517F029726982003F3CA7 /* ContentView.swift */; };
 		9FE517F429726A0E003F3CA7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE517F329726A0D003F3CA7 /* ContentView.swift */; };
 		9FE517F529726A0E003F3CA7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE517F329726A0D003F3CA7 /* ContentView.swift */; };
+		9FF33FA829734A54005620AD /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FF33FA629734A4E005620AD /* ImageSaver.swift */; };
 		9FFCC6D92971137B007C1CC4 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCC6D82971137A007C1CC4 /* ShareSheet.swift */; };
 		9FFCC6DF297116AB007C1CC4 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCC6DE297116AB007C1CC4 /* ShareViewController.swift */; };
 		9FFCC6E1297116B6007C1CC4 /* ShareSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCC6E0297116B6007C1CC4 /* ShareSheetView.swift */; };
@@ -126,6 +127,7 @@
 		9FE517F029726982003F3CA7 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9FE517F329726A0D003F3CA7 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9FEAA58929726C04002E6F80 /* Filter-Art--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Filter-Art--iOS--Info.plist"; sourceTree = "<group>"; };
+		9FF33FA629734A4E005620AD /* ImageSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSaver.swift; sourceTree = "<group>"; };
 		9FFCC6D82971137A007C1CC4 /* ShareSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		9FFCC6DE297116AB007C1CC4 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		9FFCC6E0297116B6007C1CC4 /* ShareSheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSheetView.swift; sourceTree = "<group>"; };
@@ -222,6 +224,7 @@
 				9F89DA65296FB65200D46184 /* Filter_ArtApp.swift */,
 				9F89DA67296FB65200D46184 /* Persistence.swift */,
 				9F89DA95296FB6CB00D46184 /* ImageView.swift */,
+				9FF33FA629734A4E005620AD /* ImageSaver.swift */,
 				9F264296297051C5009309B4 /* ImagePicker.swift */,
 				9F89DA9F296FB8A600D46184 /* ContrastControl.swift */,
 				9F89DAA1296FB8B200D46184 /* ColorMultiplyControl.swift */,
@@ -560,6 +563,7 @@
 				9F89DA6B296FB65200D46184 /* Filter_Art.xcdatamodeld in Sources */,
 				9FFCC6D92971137B007C1CC4 /* ShareSheet.swift in Sources */,
 				9F89DA66296FB65200D46184 /* Filter_ArtApp.swift in Sources */,
+				9FF33FA829734A54005620AD /* ImageSaver.swift in Sources */,
 				9FFCC6DF297116AB007C1CC4 /* ShareViewController.swift in Sources */,
 				9F89DA98296FB6F900D46184 /* InfoSeparator.swift in Sources */,
 				9F0CFFEA2971340D003064DE /* SharingPicker.swift in Sources */,
@@ -818,7 +822,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.apps.celeritas.Filter-Art";
+				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -862,7 +866,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.apps.celeritas.Filter-Art";
+				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1048,6 +1052,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Filter Art/Filter_Art.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1065,7 +1070,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.apps.celeritas.Filter-Art";
+				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1079,6 +1084,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Filter Art/Filter_Art.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1096,7 +1102,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.apps.celeritas.Filter-Art";
+				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;

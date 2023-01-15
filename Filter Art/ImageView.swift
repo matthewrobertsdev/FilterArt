@@ -10,6 +10,8 @@ import UIKit
 #else
 import AppKit
 #endif
+import Photos
+
 
 struct ImageView: View {
 	@Environment(\.displayScale) var displayScale
@@ -36,6 +38,8 @@ struct ImageView: View {
 	@State var showingImagePicker = false
 	@State var showingShareSheet = false
 	@State var showingSharingPicker = false
+	@State var showingImageSaveSuccesAlert = false
+	@State var showingImageSaveFailureAlert = false
 	@State var loading = false
 #if os(macOS)
 	let maxWidth = 300.0
@@ -76,7 +80,7 @@ struct ImageView: View {
 						HStack {
 							Spacer()
 							Button {
-								showingSheet = false
+								showingUnmodifiedImage = false
 							} label: {
 								Text("Done")
 							}.keyboardShortcut(.defaultAction)
@@ -96,7 +100,7 @@ struct ImageView: View {
 							HStack {
 								Spacer()
 								Button {
-									showingSheet = false
+									showingPreviewModal = false
 								} label: {
 									Text("Done")
 								}.keyboardShortcut(.defaultAction)
@@ -167,7 +171,15 @@ struct ImageView: View {
 						}
 					}.sheet(isPresented: $showingImagePicker) {
 						ImagePicker(imageData: $imageDataStore.imageData, useOriginalImage: $useOriginalImage, loading: $loading)
-					}.onAppear() {
+					}.alert("Success!", isPresented: $showingImageSaveSuccesAlert, actions: {
+						// actions
+					}, message: {
+							Text("Image saved to photo library.")
+					}).alert("Whoops!", isPresented: $showingImageSaveFailureAlert, actions: {
+						// actions
+					}, message: {
+							Text("Could not save image.  Have you granted permisson in the Settings app under Privacy > Photos > Filter Art?")
+					}).onAppear() {
 					if !useOriginalImage {
 						ImageDataStore.load { result in
 							switch result {
@@ -239,7 +251,8 @@ struct ImageView: View {
 				#if os(iOS)
 				HStack(spacing: 20){
 					Button {
-						UIImageWriteToSavedPhotosAlbum(getFilteredImage(), nil, nil, nil)
+						let imageSaver = ImageSaver(showingSuccessAlert: $showingImageSaveSuccesAlert, showingErrorAlert: $showingImageSaveFailureAlert)
+						imageSaver.writeToPhotoAlbum(image: getFilteredImage())
 					} label: {
 						Text("Save Image")
 					}
@@ -250,7 +263,9 @@ struct ImageView: View {
 					}
 				}
 				#else
-				getSavePanelButton()
+				HStack(spacing: 20){
+					getSavePanelButton()
+				}
 				#endif
 			}
 			getFilterControls()
@@ -393,10 +408,10 @@ struct ImageView: View {
 	
 	#if os(macOS)
 	func getSavePanelButton() -> some View {
-		Button("Save Image") {
+		Button("Export Image") {
 			let savePanel = NSSavePanel()
-			savePanel.title = "Save Image"
-			savePanel.prompt = "Save Image"
+			savePanel.title = "Export Image"
+			savePanel.prompt = "Export Image"
 			savePanel.canCreateDirectories = false
 			savePanel.allowedContentTypes = [.image]
 			let dateFormatter = DateFormatter()
