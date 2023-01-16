@@ -32,8 +32,10 @@ struct ImageView: View {
 	@AppStorage("imageGrayscale") private var grayscale: Double = 0
 	@AppStorage("imageUseOpacity") private var useOpacity: Bool = false
 	@AppStorage("imageOpacity") private var opacity: Double = 1
+	@AppStorage("imageUseBlur") private var useBlur: Bool = false
+	@AppStorage("imageBlur") private var blur: Double = 0
 	@State private var image: Data = Data()
-	@AppStorage("imageUseOrinalImage") private var useOriginalImage: Bool = true
+	@AppStorage("imageUseOriginalImage") private var useOriginalImage: Bool = true
 	@State var showingUnmodifiedImage = false
 	@State var showingPreviewModal = false
 	@State var showingImagePicker = false
@@ -325,7 +327,9 @@ struct ImageView: View {
 							view.grayscale(grayscale)
 						   }).if(useOpacity, transform: { view in
 							   view.opacity(opacity)
-						})
+						   }).if(useBlur) { view in
+					view.blur(radius: blur)
+				}
 			}
 		}
 	}
@@ -353,7 +357,9 @@ struct ImageView: View {
 								view.grayscale(grayscale)
 							}).if(useOpacity, transform: { view in
 								view.opacity(opacity)
-					  })
+					  }).if(useBlur) { view in
+						view.blur(radius: blur)
+				 }
 							Spacer()
 				}
 				Spacer()
@@ -376,7 +382,9 @@ struct ImageView: View {
 						view.grayscale(grayscale)
 					   }).if(useOpacity, transform: { view in
 						view.opacity(opacity)
-					})
+					}).if(useBlur) { view in
+					view.blur(radius: blur)
+				}
 			}
 		}
 #endif
@@ -395,6 +403,13 @@ struct ImageView: View {
 	}
 	
 	func getFilterControls() -> some View {
+		Group {
+			getColorControls()
+			getStyleControls()
+		}
+	}
+	
+	func getColorControls() -> some View {
 		Group {
 			Group {
 				Group {
@@ -424,6 +439,12 @@ struct ImageView: View {
 						SaturationControl(saturation: $saturation)
 					}
 				}
+			}
+		}
+	}
+
+	func getStyleControls() -> some View {
+		Group {
 				Group {
 					Toggle("Use Grayscale", isOn: $useGrayscale.animation()).toggleStyle(.switch).tint(Color.accentColor)
 					if useGrayscale {
@@ -436,9 +457,15 @@ struct ImageView: View {
 						OpacityControl(opacity: $opacity)
 					}
 				}
-			}
+				Group {
+					Toggle("Use Blur", isOn: $useBlur.animation()).toggleStyle(.switch).tint(Color.accentColor)
+					if useBlur {
+						BlurControl(blur: $blur)
+					}
+				}
 		}
 	}
+	
 	
 	#if os(macOS)
 	func getSavePanelButton() -> some View {
@@ -488,7 +515,9 @@ struct ImageView: View {
 				  view.grayscale(grayscale)
 				 }).if(useOpacity, transform: { view in
 					 view.opacity(opacity)
-					}))
+					}).if(useBlur) { view in
+						view.blur(radius: blur)
+				 })
 
 			renderer.scale = displayScale
 			if let uiImage = renderer.uiImage {
@@ -512,7 +541,9 @@ struct ImageView: View {
 				  view.grayscale(grayscale)
 				 }).if(useOpacity, transform: { view in
 					 view.opacity(opacity)
-					}))
+					}).if(useBlur) { view in
+						view.blur(radius: blur)
+				 })
 
 			renderer.scale = displayScale
 		if let nsImage = renderer.nsImage {

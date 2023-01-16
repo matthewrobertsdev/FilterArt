@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct Filter_ArtApp: App {
+	let persistenceController = PersistenceController.shared
     var body: some Scene {
         WindowGroup {
             ContentView()
+				.environment(\.managedObjectContext, persistenceController.container.viewContext)
 #if os(macOS)
 				.frame(minWidth: 300, minHeight: 600)
 #endif

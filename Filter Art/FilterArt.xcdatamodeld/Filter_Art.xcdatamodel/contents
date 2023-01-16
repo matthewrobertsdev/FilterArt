@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="22C65" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+    <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
+        <attribute name="colorMultiplyA" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="colorMultiplyB" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="colorMultiplyG" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="colorMultiplyR" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="contrast" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="grayscale" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="hueRotation" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="invertColors" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="opacity" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="saturation" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="useColorMultiply" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="useContrast" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="useGrayscale" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="useHueRotation" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="useOpacity" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="useSaturation" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+    </entity>
+</model>
