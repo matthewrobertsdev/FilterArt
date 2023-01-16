@@ -44,6 +44,7 @@ struct ImageView: View {
 	@State var loading = false
 	@State private var selectedItem: PhotosPickerItem? = nil
 #if os(macOS)
+	@State private var window: NSWindow?
 	let maxWidth = 300.0
 	let maxHeight = 140.0
 #else
@@ -66,7 +67,7 @@ struct ImageView: View {
 					getDisplay().frame(height: 350)
 					InfoSeperator()
 					ScrollView {
-						getEditor().padding(.bottom).frame(maxWidth: 600)
+						getEditor().padding(.bottom).frame(maxWidth: .infinity)
 					}
 				}.sheet(isPresented: $showingUnmodifiedImage) {
 					VStack(alignment: .leading, spacing: 0) {
@@ -131,7 +132,7 @@ struct ImageView: View {
 						InfoSeperator()
 					}
 					ScrollView {
-						getEditor().padding(.bottom).frame(maxWidth: 600)
+						getEditor().padding(.bottom).frame(maxWidth: .infinity)
 					}
 				}.sheet(isPresented: $showingShareSheet) {
 						ShareSheet(image: getFilteredImage())
@@ -204,6 +205,8 @@ struct ImageView: View {
 		}
 #if os(iOS)
 		.navigationBarTitleDisplayMode(.inline)
+#else
+		.background(WindowAccessor(window: $window))
 #endif
 	}
 	
@@ -272,6 +275,7 @@ struct ImageView: View {
 					}
 				}
 				#if os(iOS)
+				/*
 				HStack(spacing: 20){
 					Button {
 						let imageSaver = ImageSaver(showingSuccessAlert: $showingImageSaveSuccesAlert, showingErrorAlert: $showingImageSaveFailureAlert)
@@ -285,6 +289,13 @@ struct ImageView: View {
 						Text("Share Image")
 					}
 				}
+				 */
+				Button {
+					let imageSaver = ImageSaver(showingSuccessAlert: $showingImageSaveSuccesAlert, showingErrorAlert: $showingImageSaveFailureAlert)
+					imageSaver.writeToPhotoAlbum(image: getFilteredImage())
+				} label: {
+					Text("Save Image")
+				}
 				#else
 				HStack(spacing: 20){
 					getSavePanelButton()
@@ -292,7 +303,7 @@ struct ImageView: View {
 				#endif
 			}
 			getFilterControls()
-		}.padding()
+		}.padding().frame(maxWidth: 600)
 	}
 	
 	func getDisplay() -> some View {
@@ -438,21 +449,23 @@ struct ImageView: View {
 			savePanel.canCreateDirectories = false
 			savePanel.allowedContentTypes = [.image]
 			let dateFormatter = DateFormatter()
-			dateFormatter.dateFormat = "d-M-y h.mm a"
+			dateFormatter.dateFormat = "M-d-y h.mm a"
 			let dateString = dateFormatter.string(from: Date())
 			savePanel.nameFieldStringValue = "Image \(dateString).png"
-			savePanel.begin { (result) -> Void in
-				if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
-					if let url = savePanel.url {
-						let imageRepresentation = NSBitmapImageRep(data: getFilteredImage().tiffRepresentation ?? Data())
-						let pngData = imageRepresentation?.representation(using: .png, properties: [:]) ?? Data()
-						do {
-							try pngData.write(to: url)
-						} catch {
-							print(error)
+			if let window = window {
+				savePanel.beginSheetModal(for: window) { result in
+					if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
+						if let url = savePanel.url {
+							let imageRepresentation = NSBitmapImageRep(data: getFilteredImage().tiffRepresentation ?? Data())
+							let pngData = imageRepresentation?.representation(using: .png, properties: [:]) ?? Data()
+							do {
+								try pngData.write(to: url)
+							} catch {
+								print(error)
+							}
 						}
+						
 					}
-					
 				}
 			}
 		}

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		9F0CFFEA2971340D003064DE /* SharingPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0CFFE92971340D003064DE /* SharingPicker.swift */; };
 		9F264297297051C5009309B4 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F264296297051C5009309B4 /* ImagePicker.swift */; };
+		9F3221BC2975897D0034FDCB /* WindowAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3221BB2975897D0034FDCB /* WindowAccessor.swift */; };
 		9F89DA66296FB65200D46184 /* Filter_ArtApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DA65296FB65200D46184 /* Filter_ArtApp.swift */; };
 		9F89DA68296FB65200D46184 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DA67296FB65200D46184 /* Persistence.swift */; };
 		9F89DA6B296FB65200D46184 /* Filter_Art.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DA69296FB65200D46184 /* Filter_Art.xcdatamodeld */; };
@@ -95,6 +96,7 @@
 /* Begin PBXFileReference section */
 		9F0CFFE92971340D003064DE /* SharingPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharingPicker.swift; sourceTree = "<group>"; };
 		9F264296297051C5009309B4 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		9F3221BB2975897D0034FDCB /* WindowAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAccessor.swift; sourceTree = "<group>"; };
 		9F89DA62296FB65200D46184 /* Filter Art (iOS).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Filter Art (iOS).app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F89DA65296FB65200D46184 /* Filter_ArtApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Filter_ArtApp.swift; sourceTree = "<group>"; };
 		9F89DA67296FB65200D46184 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
@@ -224,6 +226,7 @@
 				9F89DA65296FB65200D46184 /* Filter_ArtApp.swift */,
 				9F89DA67296FB65200D46184 /* Persistence.swift */,
 				9F89DA95296FB6CB00D46184 /* ImageView.swift */,
+				9F3221BB2975897D0034FDCB /* WindowAccessor.swift */,
 				9FF33FA629734A4E005620AD /* ImageSaver.swift */,
 				9F264296297051C5009309B4 /* ImagePicker.swift */,
 				9F89DA9F296FB8A600D46184 /* ContrastControl.swift */,
@@ -633,6 +636,7 @@
 				9FE517D6297266F7003F3CA7 /* ContrastControl.swift in Sources */,
 				9FE517DB2972674D003F3CA7 /* Filter_Art.xcdatamodeld in Sources */,
 				9FE517F529726A0E003F3CA7 /* ContentView.swift in Sources */,
+				9F3221BC2975897D0034FDCB /* WindowAccessor.swift in Sources */,
 				9FE517CE297266F7003F3CA7 /* ShareViewController.swift in Sources */,
 				9FE517C7297266F7003F3CA7 /* OpacityControl.swift in Sources */,
 				9FE517D5297266F7003F3CA7 /* SaturationControl.swift in Sources */,
@@ -821,7 +825,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -865,7 +869,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -1069,7 +1073,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1101,7 +1105,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
