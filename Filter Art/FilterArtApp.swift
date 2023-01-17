@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct Filter_ArtApp: App {
+struct FilterArtApp: App {
 	let persistenceController = PersistenceController.shared
     var body: some Scene {
         WindowGroup {

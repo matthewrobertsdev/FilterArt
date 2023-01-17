@@ -45,6 +45,7 @@ struct ImageView: View {
 	@State var showingImageSaveFailureAlert = false
 	@State var loading = false
 	@State private var selectedItem: PhotosPickerItem? = nil
+	@State var showingFilters = false
 #if os(macOS)
 	@State private var window: NSWindow?
 	let maxWidth = 300.0
@@ -66,11 +67,11 @@ struct ImageView: View {
 			Group {
 #if os(macOS)
 				VStack(spacing: 10) {
-					getDisplay().frame(height: 350)
+					getDisplay()
 					InfoSeperator()
 					ScrollView {
 						getEditor().padding(.bottom).frame(maxWidth: .infinity)
-					}
+					}.frame(height: 400)
 				}.sheet(isPresented: $showingUnmodifiedImage) {
 					VStack(alignment: .leading, spacing: 0) {
 						HStack {
@@ -122,7 +123,9 @@ struct ImageView: View {
 							}
 						}
 					}
-				}.onChange(of: imageDataStore.imageData) { imageData in
+				}.sheet(isPresented: $showingFilters) {
+					FiltersView(showing: $showingFilters)
+				   }.onChange(of: imageDataStore.imageData) { imageData in
 					ImageDataStore.save(imageData: imageDataStore.imageData) { result in
 						
 					}
@@ -139,7 +142,7 @@ struct ImageView: View {
 				}.sheet(isPresented: $showingShareSheet) {
 						ShareSheet(image: getFilteredImage())
 				}.sheet(isPresented: $showingPreviewModal) {
-						NavigationView {
+						NavigationStack {
 							HStack {
 								Spacer()
 								getModalDisplay()
@@ -157,7 +160,7 @@ struct ImageView: View {
 							}.navigationTitle("Larger Modified Image").navigationBarTitleDisplayMode(.inline)
 						}
 					}.sheet(isPresented: $showingUnmodifiedImage) {
-						NavigationView {
+						NavigationStack {
 							HStack {
 								Spacer()
 								getImage().resizable().aspectRatio(contentMode: .fit)
@@ -174,6 +177,8 @@ struct ImageView: View {
 								}
 							}.navigationTitle("Unmodified Image").navigationBarTitleDisplayMode(.inline)
 						}
+					}.sheet(isPresented: $showingFilters) {
+						FiltersView(showing: $showingFilters)
 					}.sheet(isPresented: $showingImagePicker) {
 						ImagePicker(imageData: $imageDataStore.imageData, useOriginalImage: $useOriginalImage, loading: $loading)
 					}.alert("Success!", isPresented: $showingImageSaveSuccesAlert, actions: {
@@ -303,6 +308,14 @@ struct ImageView: View {
 					getSavePanelButton()
 				}
 				#endif
+				HStack {
+					Button {
+						showingFilters = true
+					} label: {
+						Text("Filters...")
+					}
+
+				}
 			}
 			getFilterControls()
 		}.padding().frame(maxWidth: 600)
