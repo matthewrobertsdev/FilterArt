@@ -59,7 +59,7 @@ struct ImageView: View {
 	init() {
 #if os(iOS)
 		if UIDevice.current.userInterfaceIdiom == .pad {
-			maxHeight = 280.0
+			maxHeight = 500
 		}
 #endif
 	}
@@ -95,7 +95,7 @@ struct ImageView: View {
 				}.sheet(isPresented: $showingPreviewModal) {
 						VStack(alignment: .leading, spacing: 0) {
 							HStack {
-								Text("Larger Modified Image:").font(.title).bold()
+								Text("Modified Image:").font(.title).bold()
 								Spacer()
 							}.padding(.bottom, 10)
 							HStack {
@@ -133,7 +133,7 @@ struct ImageView: View {
 #else
 				VStack(spacing: 0) {
 					VStack(spacing: 10) {
-						getDisplay().frame(height: 250)
+						getDisplay().frame(height: maxHeight)
 						InfoSeperator()
 					}
 					ScrollView {
@@ -221,14 +221,21 @@ struct ImageView: View {
 		Group {
 			VStack(spacing: 10) {
 				HStack(spacing: 20) {
+					#if os(iOS)
 					Button("Larger Image") {
 						showingPreviewModal = true
 					}
+					#else
+					Button("Modified Image") {
+						showingPreviewModal = true
+					}
+					#endif
 					Button("Unmodfied Image") {
 						showingUnmodifiedImage = true
 					}
 				}
 				HStack(spacing: 20) {
+					//#if os(iOS)
 					PhotosPicker(
 								selection: $selectedItem,
 								matching: .images,
@@ -247,9 +254,10 @@ struct ImageView: View {
 										}
 									}
 								}
+					//#else
 					/*
 					Button("Choose Image") {
-						#if os(macOS)
+						//#if os(macOS)
 						let openPanel = NSOpenPanel()
 									openPanel.prompt = "Choose Image"
 									openPanel.allowsMultipleSelection = false
@@ -257,25 +265,28 @@ struct ImageView: View {
 										openPanel.canCreateDirectories = false
 										openPanel.canChooseFiles = true
 									openPanel.allowedContentTypes = [.image]
-										openPanel.begin { (result) -> Void in
-											if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
-												if let url = openPanel.url {
-													do {
-														imageDataStore.imageData = try Data(contentsOf: url)
-														useOriginalImage = false
-													} catch {
-														print ("Error getting data from image file url.")
-													}
-												}
-
-											}
+						if let window = window {
+							openPanel.beginSheetModal(for: window) { result in
+								if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
+									if let url = openPanel.url {
+										do {
+											imageDataStore.imageData = try Data(contentsOf: url)
+											useOriginalImage = false
+										} catch {
+											print ("Error getting data from image file url.")
 										}
-						#else
-						showingImagePicker = true
-						#endif
+									}
+									
+								}
+							}
+						}
+						//#else
+						//showingImagePicker = true
 					 
 					}
 					 */
+//#endif
+
 					Button("Default Image") {
 						useOriginalImage = true
 						imageDataStore.imageData = Data()

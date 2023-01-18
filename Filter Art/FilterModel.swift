@@ -31,4 +31,4 @@ struct FilterModel {
 }
 
 
-let originalFilter = FilterModel(blur: 0, colorMultiplyA: 100, colorMultiplyB: 255, colorMultiplyG: 255, colorMultiplyR: 255, contrast: 0, grayscale: 0, hueRotation: 0, id: 1, invertColors: false, opacity: 1, saturation: 0, timestamp: Date(), useBlur: false, useColorMultiply: false, useContrast: false, useGrayscale: false, useHueRotation: false, useOpacity: false, useSaturation: false)
+let originalFilter = FilterModel(blur: 0, colorMultiplyA: 1, colorMultiplyB: 1, colorMultiplyG: 1, colorMultiplyR: 1, contrast: 0, grayscale: 0, hueRotation: 0, id: 1, invertColors: false, opacity: 1, saturation: 0, timestamp: Date(), useBlur: false, useColorMultiply: false, useContrast: false, useGrayscale: false, useHueRotation: false, useOpacity: false, useSaturation: false)

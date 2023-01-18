@@ -29,8 +29,6 @@
 		9F8B1E182976602C004C792B /* FiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8B1E172976602C004C792B /* FiltersView.swift */; };
 		9F8B1E192976602C004C792B /* FiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8B1E172976602C004C792B /* FiltersView.swift */; };
 		9F8B1E1A29766999004C792B /* BlurControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3221BD29758DC50034FDCB /* BlurControl.swift */; };
-		9F8B1E1C29766D52004C792B /* FilterManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8B1E1B29766D52004C792B /* FilterManagedObject.swift */; };
-		9F8B1E1D29766D52004C792B /* FilterManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8B1E1B29766D52004C792B /* FilterManagedObject.swift */; };
 		9F8B1E1F29766E27004C792B /* FilterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8B1E1E29766E27004C792B /* FilterModel.swift */; };
 		9F8B1E2029766E27004C792B /* FilterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8B1E1E29766E27004C792B /* FilterModel.swift */; };
 		9FC012D12972563300309D6D /* OpacityControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FC012D02972563300309D6D /* OpacityControl.swift */; };
@@ -126,7 +124,6 @@
 		9F89DAA7296FB90600D46184 /* ColorComponents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorComponents.swift; sourceTree = "<group>"; };
 		9F89DAA9296FB90C00D46184 /* ColorStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorStorage.swift; sourceTree = "<group>"; };
 		9F8B1E172976602C004C792B /* FiltersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersView.swift; sourceTree = "<group>"; };
-		9F8B1E1B29766D52004C792B /* FilterManagedObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterManagedObject.swift; sourceTree = "<group>"; };
 		9F8B1E1E29766E27004C792B /* FilterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterModel.swift; sourceTree = "<group>"; };
 		9FC012D02972563300309D6D /* OpacityControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpacityControl.swift; sourceTree = "<group>"; };
 		9FE5175229725EA1003F3CA7 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
@@ -266,7 +263,6 @@
 				9F89DA71296FB65300D46184 /* Preview Content */,
 				9F89DA97296FB6F900D46184 /* InfoSeparator.swift */,
 				9F8B1E172976602C004C792B /* FiltersView.swift */,
-				9F8B1E1B29766D52004C792B /* FilterManagedObject.swift */,
 				9F8B1E1E29766E27004C792B /* FilterModel.swift */,
 			);
 			path = "Filter Art";
@@ -600,7 +596,6 @@
 				9F264297297051C5009309B4 /* ImagePicker.swift in Sources */,
 				9F89DAA2296FB8B200D46184 /* ColorMultiplyControl.swift in Sources */,
 				9F89DA9A296FB73E00D46184 /* ImageDataStore.swift in Sources */,
-				9F8B1E1C29766D52004C792B /* FilterManagedObject.swift in Sources */,
 				9F8B1E182976602C004C792B /* FiltersView.swift in Sources */,
 				9F8B1E1F29766E27004C792B /* FilterModel.swift in Sources */,
 			);
@@ -663,7 +658,6 @@
 				9FE517C7297266F7003F3CA7 /* OpacityControl.swift in Sources */,
 				9FE517D5297266F7003F3CA7 /* SaturationControl.swift in Sources */,
 				9FE517D2297266F7003F3CA7 /* ImageDataStore.swift in Sources */,
-				9F8B1E1D29766D52004C792B /* FilterManagedObject.swift in Sources */,
 				9FE517CC297266F7003F3CA7 /* ShareSheetView.swift in Sources */,
 				9F8B1E2029766E27004C792B /* FilterModel.swift in Sources */,
 			);
@@ -825,7 +819,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Filter Art/Filter_Art.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -855,7 +849,7 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -869,7 +863,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Filter Art/Filter_Art.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -899,7 +893,7 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1083,7 +1077,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1115,7 +1109,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
