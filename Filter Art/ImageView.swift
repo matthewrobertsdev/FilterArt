@@ -70,7 +70,7 @@ struct ImageView: View {
 					getDisplay()
 					InfoSeperator()
 					ScrollView {
-						getEditor().padding(.bottom).frame(maxWidth: .infinity)
+						getEditor().frame(maxWidth: .infinity)
 					}.frame(height: 400)
 				}.sheet(isPresented: $showingUnmodifiedImage) {
 					VStack(alignment: .leading, spacing: 0) {
@@ -124,7 +124,7 @@ struct ImageView: View {
 						}
 					}
 				}.sheet(isPresented: $showingFilters) {
-					FiltersView(showing: $showingFilters)
+					FiltersView(showing: $showingFilters).environmentObject(imageDataStore)
 				   }.onChange(of: imageDataStore.imageData) { imageData in
 					ImageDataStore.save(imageData: imageDataStore.imageData) { result in
 						
@@ -157,7 +157,7 @@ struct ImageView: View {
 										Text("Done")
 									}.keyboardShortcut(.defaultAction)
 								}
-							}.navigationTitle("Larger Modified Image").navigationBarTitleDisplayMode(.inline)
+							}.navigationTitle("Modified Image").navigationBarTitleDisplayMode(.inline)
 						}
 					}.sheet(isPresented: $showingUnmodifiedImage) {
 						NavigationStack {
@@ -178,7 +178,7 @@ struct ImageView: View {
 							}.navigationTitle("Unmodified Image").navigationBarTitleDisplayMode(.inline)
 						}
 					}.sheet(isPresented: $showingFilters) {
-						FiltersView(showing: $showingFilters)
+						FiltersView(showing: $showingFilters).environmentObject(imageDataStore)
 					}.sheet(isPresented: $showingImagePicker) {
 						ImagePicker(imageData: $imageDataStore.imageData, useOriginalImage: $useOriginalImage, loading: $loading)
 					}.alert("Success!", isPresented: $showingImageSaveSuccesAlert, actions: {
@@ -221,15 +221,9 @@ struct ImageView: View {
 		Group {
 			VStack(spacing: 10) {
 				HStack(spacing: 20) {
-					#if os(iOS)
-					Button("Larger Image") {
-						showingPreviewModal = true
-					}
-					#else
 					Button("Modified Image") {
 						showingPreviewModal = true
 					}
-					#endif
 					Button("Unmodfied Image") {
 						showingUnmodifiedImage = true
 					}
