@@ -229,7 +229,7 @@ struct ImageView: View {
 					}
 				}
 				HStack(spacing: 20) {
-					//#if os(iOS)
+					#if os(iOS)
 					PhotosPicker(
 								selection: $selectedItem,
 								matching: .images,
@@ -248,8 +248,7 @@ struct ImageView: View {
 										}
 									}
 								}
-					//#else
-					/*
+					#else
 					Button("Choose Image") {
 						//#if os(macOS)
 						let openPanel = NSOpenPanel()
@@ -278,8 +277,7 @@ struct ImageView: View {
 						//showingImagePicker = true
 					 
 					}
-					 */
-//#endif
+#endif
 
 					Button("Default Image") {
 						useOriginalImage = true

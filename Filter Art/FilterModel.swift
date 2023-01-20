@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FilterModel {
+struct FilterModel: Identifiable, Hashable {
 	var blur: Double
 	var colorMultiplyA: Double
 	var colorMultiplyB: Double
