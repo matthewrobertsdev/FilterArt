@@ -15,6 +15,7 @@ import PhotosUI
 
 
 struct ImageView: View {
+	@Environment(\.managedObjectContext) var managedObjectContext
 	@Environment(\.displayScale) var displayScale
 	@StateObject private var imageDataStore = ImageDataStore()
 	@AppStorage("imagWidth") private var width: Double = 300
@@ -304,7 +305,7 @@ struct ImageView: View {
 					let imageSaver = ImageSaver(showingSuccessAlert: $showingImageSaveSuccesAlert, showingErrorAlert: $showingImageSaveFailureAlert)
 					imageSaver.writeToPhotoAlbum(image: getFilteredImage())
 				} label: {
-					Text("Save Image")
+					Text("Export Image to Photos")
 				}
 				#else
 				HStack(spacing: 20){
@@ -313,11 +314,44 @@ struct ImageView: View {
 				#endif
 				HStack {
 					Button {
+						let savedFilter = Filter(context: managedObjectContext)
+						savedFilter.blur = blur
+						savedFilter.colorMultiplyB = colorMultiplyColor.components.blue
+						savedFilter.colorMultiplyG = colorMultiplyColor.components.green
+						savedFilter.colorMultiplyO = colorMultiplyColor.components.opacity
+						savedFilter.colorMultiplyR = colorMultiplyColor.components.red
+						savedFilter.contrast = contrast
+						savedFilter.favoriteDate = Date()
+						savedFilter.grayscale = grayscale
+						savedFilter.hueRotation = hueRotation
+						savedFilter.id = UUID().uuidString
+						savedFilter.invertColors = invertColors
+						savedFilter.isFavorite = false
+						savedFilter.isPreset = false
+						savedFilter.name = "Saved Filter"
+						savedFilter.opacity = opacity
+						savedFilter.saturation = saturation
+						savedFilter.saveDate = Date()
+						savedFilter.useBlur = useBlur
+						savedFilter.useColorMultiply = useColorMultiply
+						savedFilter.useContrast = useContrast
+						savedFilter.useGrayscale = useGrayscale
+						savedFilter.useHueRotation = useHueRotation
+						savedFilter.useOpacity = useOpacity
+						savedFilter.useSaturation = useSaturation
+						do {
+							try managedObjectContext.save()
+						} catch {
+							
+						}
+					} label: {
+						Text("Save Filter")
+					}
+					Button {
 						showingFilters = true
 					} label: {
 						Text("Filters...")
 					}
-
 				}
 			}
 			getFilterControls()

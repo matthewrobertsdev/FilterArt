@@ -12,6 +12,8 @@ import UIKit
 import AppKit
 #endif
 struct FiltersView: View {
+	@Environment(\.managedObjectContext) var managedObjectContext
+	@FetchRequest(sortDescriptors: [SortDescriptor(\.saveDate)]) var savedFilters: FetchedResults<Filter>
 	@AppStorage("imageInvertColors") private var invertColors: Bool = false
 	@AppStorage("imageHueRotation") private var hueRotation: Double = 0
 	@AppStorage("imageUseHueRotation") private var useHueRotation: Bool = false
@@ -31,20 +33,42 @@ struct FiltersView: View {
 	@EnvironmentObject var imageDataStore: ImageDataStore
 	@Binding var showing: Bool
 	@State var filterType = FilterType.presets.rawValue
-	@State var selectedFilter: FilterModel? = nil
+	@State var selectedPreset: FilterModel? = nil
+	@State var selectedSavedFilter: Filter? = nil
     var body: some View {
 		#if os(macOS)
 		VStack(alignment: .center, content: {
-			List(selection: $selectedFilter) {
-				ForEach(presetFilters, id: \.self) { filter in
-					VStack {
-						getFilteredImage(filter: filter).frame(width: 300, height: 175)
-						Text(filter.name)
+			if filterType  == FilterType.presets.rawValue {
+				List(selection: $selectedPreset) {
+					ForEach(presetFilters, id: \.self) { filter in
+						VStack {
+							getFilteredImage(filter: filter).frame(width: 300, height: 175)
+							Text(filter.name)
+						}
 					}
+				}.listStyle(.sidebar).onChange(of: selectedPreset) { newValue in
+					asignFilterComponentsToAppStorage()
+					showing = false
 				}
-			}.listStyle(.sidebar).onChange(of: selectedFilter) { newValue in
-				asignFilterComponentsToAppStorage()
-				showing = false
+			} else if filterType == FilterType.saved.rawValue {
+				List(selection: $selectedSavedFilter) {
+					ForEach(savedFilters, id: \.self) { filter in
+						VStack(alignment: .center) {
+							HStack {
+								Spacer()
+								getFilteredImage(filter: filter).frame(width: 250, height: 175)
+								Spacer()
+							}
+							HStack {
+								Spacer()
+								Text(filter.name ?? "Saved Filter")
+								Spacer()
+							}
+						}
+					}
+				}.listStyle(.sidebar)
+			} else {
+				EmptyView()
 			}
 		}).safeAreaInset(edge: .top, content: {
 			VStack(spacing:0){
@@ -76,17 +100,46 @@ struct FiltersView: View {
 				#else
 		NavigationStack {
 			VStack(alignment: .center, content: {
-				List(selection: $selectedFilter) {
-					ForEach(presetFilters, id: \.self) { filter in
-						VStack {
-							getFilteredImage(filter: filter).frame(width: 250, height: 175)
-							Text(filter.name)
+				if filterType  == FilterType.presets.rawValue {
+					List(selection: $selectedPreset) {
+						ForEach(presetFilters, id: \.self) { filter in
+							VStack(alignment: .center) {
+								HStack {
+									Spacer()
+									getFilteredImage(filter: filter).frame(width: 250, height: 175)
+									Spacer()
+								}
+								HStack {
+									Spacer()
+									Text(filter.name)
+									Spacer()
+								}
+							}
 						}
+					}.listStyle(.sidebar).onChange(of: selectedPreset) { newValue in
+						asignFilterComponentsToAppStorage()
+						showing = false
 					}
-				}.listStyle(.sidebar).frame(width: 300).onChange(of: selectedFilter) { newValue in
-					asignFilterComponentsToAppStorage()
-				 showing = false
-			 }
+				} else if filterType == FilterType.saved.rawValue {
+					List(selection: $selectedSavedFilter) {
+						ForEach(savedFilters, id: \.self) { filter in
+							VStack(alignment: .center) {
+								HStack {
+									Spacer()
+									getFilteredImage(filter: filter).frame(width: 250, height: 175)
+									Spacer()
+								}
+								HStack {
+									Spacer()
+									Text(filter.name ?? "Saved Filter")
+									Spacer()
+								}
+							}
+						}
+					}.listStyle(.sidebar)
+				} else {
+					EmptyView()
+				}
 			}).safeAreaInset(edge: .top, content: {
 				VStack(spacing:0){
 					Picker(selection: $filterType) {
@@ -132,7 +185,27 @@ struct FiltersView: View {
 		}).if(filter.useContrast, transform: { view in
 			view.contrast(filter.contrast)
 		}).if(filter.useColorMultiply, transform: { view in
-			view.colorMultiply(Color(.sRGB, red: filter.colorMultiplyR, green: filter.colorMultiplyG, blue: filter.colorMultiplyB, opacity: filter.colorMultiplyA))
+			view.colorMultiply(Color(.sRGB, red: filter.colorMultiplyR, green: filter.colorMultiplyG, blue: filter.colorMultiplyB, opacity: filter.colorMultiplyO))
+		}).if(filter.useSaturation, transform: { view in
+				view.saturation(filter.saturation)
+			}).if(filter.useGrayscale, transform: { view in
+				view.grayscale(filter.grayscale)
+			}).if(filter.useOpacity, transform: { view in
+				view.opacity(filter.opacity)
+			}).if(filter.useBlur) { view in
+			view.blur(radius: filter.blur)
+		}
+	}
+	
+	func getFilteredImage(filter: Filter) -> some View {
+		return getImage().resizable().aspectRatio(contentMode: .fit).if(filter.invertColors, transform: { view in
+			view.colorInvert()
+		}).if(filter.useHueRotation, transform: { view in
+			view.hueRotation(.degrees(filter.hueRotation))
+		}).if(filter.useContrast, transform: { view in
+			view.contrast(filter.contrast)
+		}).if(filter.useColorMultiply, transform: { view in
+			view.colorMultiply(Color(.sRGB, red: filter.colorMultiplyR, green: filter.colorMultiplyG, blue: filter.colorMultiplyB, opacity: filter.colorMultiplyO))
 		}).if(filter.useSaturation, transform: { view in
 				view.saturation(filter.saturation)
 			}).if(filter.useGrayscale, transform: { view in
@@ -157,14 +230,14 @@ struct FiltersView: View {
 	}
 	
 	func asignFilterComponentsToAppStorage() {
-		if let filter = selectedFilter {
+		if let filter = selectedPreset {
 			invertColors = filter.invertColors
 			useHueRotation = filter.useHueRotation
 			hueRotation = filter.hueRotation
 			useContrast = filter.useContrast
 			contrast = filter.contrast
 			useColorMultiply = filter.useColorMultiply
-			colorMultiplyColor = Color(.sRGB, red: filter.colorMultiplyR, green: filter.colorMultiplyG, blue: filter.colorMultiplyB, opacity: filter.colorMultiplyA)
+			colorMultiplyColor = Color(.sRGB, red: filter.colorMultiplyR, green: filter.colorMultiplyG, blue: filter.colorMultiplyB, opacity: filter.colorMultiplyO)
 			useSaturation = filter.useSaturation
 			saturation = filter.saturation
 			useGrayscale = filter.useGrayscale
