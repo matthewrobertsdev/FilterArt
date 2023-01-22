@@ -305,14 +305,14 @@ struct ImageView: View {
 					let imageSaver = ImageSaver(showingSuccessAlert: $showingImageSaveSuccesAlert, showingErrorAlert: $showingImageSaveFailureAlert)
 					imageSaver.writeToPhotoAlbum(image: getFilteredImage())
 				} label: {
-					Text("Export Image to Photos")
+					Text("Export to Photos")
 				}
 				#else
 				HStack(spacing: 20){
 					getSavePanelButton()
 				}
 				#endif
-				HStack {
+				HStack(spacing: 20) {
 					Button {
 						let savedFilter = Filter(context: managedObjectContext)
 						savedFilter.blur = blur
@@ -345,12 +345,12 @@ struct ImageView: View {
 							
 						}
 					} label: {
-						Text("Save Filter")
+						Text("Add Filter")
 					}
 					Button {
 						showingFilters = true
 					} label: {
-						Text("Filters...")
+						Text("Choose Filter")
 					}
 				}
 			}

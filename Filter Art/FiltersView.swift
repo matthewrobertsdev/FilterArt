@@ -32,9 +32,10 @@ struct FiltersView: View {
 	@AppStorage("imageUseOriginalImage") private var useOriginalImage: Bool = true
 	@EnvironmentObject var imageDataStore: ImageDataStore
 	@Binding var showing: Bool
-	@State var filterType = FilterType.presets.rawValue
+	@AppStorage("filterType") var filterType = FilterType.presets.rawValue
 	@State var selectedPreset: FilterModel? = nil
 	@State var selectedSavedFilter: Filter? = nil
+	@State var isEditing = false
     var body: some View {
 		#if os(macOS)
 		VStack(alignment: .center, content: {
@@ -42,12 +43,20 @@ struct FiltersView: View {
 				List(selection: $selectedPreset) {
 					ForEach(presetFilters, id: \.self) { filter in
 						VStack {
-							getFilteredImage(filter: filter).frame(width: 300, height: 175)
-							Text(filter.name)
+							HStack {
+								Spacer()
+								getFilteredImage(filter: filter).frame(width: 250, height: 175)
+								Spacer()
+							}
+							HStack {
+								Spacer()
+								Text(filter.name)
+								Spacer()
+							}
 						}
 					}
 				}.listStyle(.sidebar).onChange(of: selectedPreset) { newValue in
-					asignFilterComponentsToAppStorage()
+					asignPresetFilterComponentsToAppStorage()
 					showing = false
 				}
 			} else if filterType == FilterType.saved.rawValue {
@@ -56,7 +65,27 @@ struct FiltersView: View {
 						VStack(alignment: .center) {
 							HStack {
 								Spacer()
-								getFilteredImage(filter: filter).frame(width: 250, height: 175)
+								if isEditing {
+									VStack {
+										Button(role: .destructive) {
+											managedObjectContext.delete(filter)
+											do {
+												try managedObjectContext.save()
+											} catch {
+												
+											}
+										} label: {
+											Label("Delete", systemImage: "trash.fill").labelStyle(.titleOnly)
+										}.buttonStyle(.borderless).tint(Color.red)
+										Button {
+										} label: {
+											Label("Rename", systemImage: "pencil").labelStyle(.titleOnly)
+										}.buttonStyle(.borderless).tint(Color.indigo)
+									}.transition(.move(edge: .leading))
+
+									Spacer()
+								}
+								getFilteredImage(filter: filter).frame(width: 250, height: 175).transition(.move(edge: .leading))
 								Spacer()
 							}
 							HStack {
@@ -66,7 +95,10 @@ struct FiltersView: View {
 							}
 						}
 					}
-				}.listStyle(.sidebar)
+				}.listStyle(.sidebar).onChange(of: selectedSavedFilter) { newValue in
+					asignSavedFilterComponentsToAppStorage()
+					showing = false
+				}
 			} else {
 				EmptyView()
 			}
@@ -85,17 +117,32 @@ struct FiltersView: View {
 				.regularMaterial,
 				   in: Rectangle()
 			   )
-		   }).frame(width: 350).toolbar(content: {
-			HStack {
-				Spacer(minLength: 275)
+		   }).frame(width: 400).toolbar(content: {
+				if filterType == FilterType.saved.rawValue {
+					Button {
+						if isEditing {
+							do {
+								try managedObjectContext.save()
+							} catch {
+								
+							}
+						}
+						withAnimation {
+							isEditing.toggle()
+						}
+					} label: {
+						Text(isEditing ? "Done" : "Edit")
+					}
+				}
 				Button {
 					showing = false
 				} label: {
 					Text("Cancel")
 				}
-			}.frame(maxWidth: 350)
 
-		}).frame(width: 350, height: 615, alignment: .topLeading).padding()
+		   }).frame(width: 400, height: 615, alignment: .topLeading).padding().onChange(of: filterType) { _ in
+			   isEditing = false
+		   }
 			
 				#else
 		NavigationStack {
@@ -117,7 +164,7 @@ struct FiltersView: View {
 							}
 						}
 					}.listStyle(.sidebar).onChange(of: selectedPreset) { newValue in
-						asignFilterComponentsToAppStorage()
+						asignPresetFilterComponentsToAppStorage()
 						showing = false
 					}
 				} else if filterType == FilterType.saved.rawValue {
@@ -125,8 +172,26 @@ struct FiltersView: View {
 						ForEach(savedFilters, id: \.self) { filter in
 							VStack(alignment: .center) {
 								HStack {
+									if isEditing {
+										VStack(spacing: 20) {
+											Button(role: .destructive) {
+												managedObjectContext.delete(filter)
+												do {
+													try managedObjectContext.save()
+												} catch {
+													
+												}
+											} label: {
+												Label("Delete", systemImage: "trash.fill").labelStyle(.titleOnly)
+											}.buttonStyle(.borderless).tint(Color.red)
+											Button {
+											} label: {
+												Label("Rename", systemImage: "pencil").labelStyle(.titleOnly)
+											}.buttonStyle(.borderless).tint(Color.indigo)
+										}
+									}
 									Spacer()
-									getFilteredImage(filter: filter).frame(width: 250, height: 175)
+									getFilteredImage(filter: filter).frame(width: isEditing ? 175 : 250, height: 175).transition(.scale).transition(.move(edge: .leading))
 									Spacer()
 								}
 								HStack {
@@ -134,9 +199,24 @@ struct FiltersView: View {
 									Text(filter.name ?? "Saved Filter")
 									Spacer()
 								}
+							}.swipeActions(allowsFullSwipe: false) {
+								Button(role: .destructive) {
+									delete(filter: filter)
+							 } label: {
+								 Label("Delete", systemImage: "trash.fill").labelStyle(.iconOnly)
+							 }
+								Button {
+								 
+							 } label: {
+								 Label("Rename", systemImage: "pencil").labelStyle(.iconOnly)
+							 }.tint(.indigo)
+
 							}
-						}
-					}.listStyle(.sidebar)
+						}.onDelete(perform: delete)
+					}.listStyle(.sidebar).onChange(of: selectedSavedFilter) { newValue in
+						asignSavedFilterComponentsToAppStorage()
+						showing = false
+					}
 				} else {
 					EmptyView()
 				}
@@ -159,9 +239,21 @@ struct FiltersView: View {
 				}
 			}).toolbar {
 				ToolbarItem(placement: .navigation, content: {
-					Button {
-					} label: {
-						Text("Edit")
+					if filterType == FilterType.saved.rawValue {
+						Button {
+							if isEditing {
+								do {
+									try managedObjectContext.save()
+								} catch {
+									
+								}
+							}
+							withAnimation {
+								isEditing.toggle()
+							}
+						} label: {
+							Text(isEditing ? "Done" : "Edit")
+						}
 					}
 				})
 					ToolbarItem(placement: .primaryAction, content: {
@@ -229,7 +321,7 @@ struct FiltersView: View {
 		}
 	}
 	
-	func asignFilterComponentsToAppStorage() {
+	func asignPresetFilterComponentsToAppStorage() {
 		if let filter = selectedPreset {
 			invertColors = filter.invertColors
 			useHueRotation = filter.useHueRotation
@@ -246,6 +338,57 @@ struct FiltersView: View {
 			opacity = filter.opacity
 			useBlur = filter.useBlur
 			blur = filter.blur
+		}
+	}
+	
+	func asignSavedFilterComponentsToAppStorage() {
+		if let filter = selectedSavedFilter {
+			invertColors = filter.invertColors
+			useHueRotation = filter.useHueRotation
+			hueRotation = filter.hueRotation
+			useContrast = filter.useContrast
+			contrast = filter.contrast
+			useColorMultiply = filter.useColorMultiply
+			colorMultiplyColor = Color(.sRGB, red: filter.colorMultiplyR, green: filter.colorMultiplyG, blue: filter.colorMultiplyB, opacity: filter.colorMultiplyO)
+			useSaturation = filter.useSaturation
+			saturation = filter.saturation
+			useGrayscale = filter.useGrayscale
+			grayscale = filter.grayscale
+			useOpacity = filter.useOpacity
+			opacity = filter.opacity
+			useBlur = filter.useBlur
+			blur = filter.blur
+		}
+	}
+	
+	private func optionalBinding<T>(val: Binding<T?>, defaultVal: T)-> Binding<T>{
+		Binding<T>(
+			get: {
+				return val.wrappedValue ?? defaultVal
+			},
+			set: { newVal in
+				val.wrappedValue = newVal
+			}
+		)
+	}
+	
+	func delete(filter: Filter) {
+			do {
+				managedObjectContext.delete(filter)
+				try managedObjectContext.save()
+			} catch {
+				
+			}
+	}
+	
+	func delete(at offsets: IndexSet) {
+		for index in offsets {
+			do {
+				managedObjectContext.delete(savedFilters[index])
+				try managedObjectContext.save()
+			} catch {
+				
+			}
 		}
 	}
 }
