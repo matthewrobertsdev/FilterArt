@@ -345,12 +345,12 @@ struct ImageView: View {
 							
 						}
 					} label: {
-						Text("Add Filter")
+						Text("Add Saved Filter")
 					}
 					Button {
 						showingFilters = true
 					} label: {
-						Text("Choose Filter")
+						Text("Apply Filter...")
 					}
 				}
 			}

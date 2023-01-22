@@ -110,7 +110,7 @@ struct FiltersView: View {
 								  }
 							  }
 						  } label: {
-							  Text("Delete")
+							  Text("Delete Filter")
 						  }
 
 					  }
@@ -139,15 +139,15 @@ struct FiltersView: View {
 				   Text("Cancel")
 			   }
 				if filterType == FilterType.saved.rawValue {
-					Button {
+					Button(role: .destructive) {
 						showingDeleteDialog = true
 					} label: {
 						Text("Delete")
-					}.disabled(buttonShouldBeDisabled()).buttonStyle(.borderedProminent).tint(Color.red)
+					}.disabled(buttonShouldBeDisabled())
 					Button {
 					} label: {
 						Text("Rename")
-					}.disabled(buttonShouldBeDisabled()).buttonStyle(.borderedProminent).tint(Color.indigo)
+					}.disabled(buttonShouldBeDisabled())
 				}
 			   Button {
 				   if filterType == FilterType.presets.rawValue {
@@ -157,8 +157,8 @@ struct FiltersView: View {
 				   }
 				   showing = false
 			   } label: {
-				   Text("Choose")
-			   }.disabled(buttonShouldBeDisabled()).buttonStyle(.borderedProminent)
+				   Text("Apply Filter")
+			   }.disabled(buttonShouldBeDisabled()).keyboardShortcut(.defaultAction)
 
 		   }).frame(width: 350, height: 615, alignment: .topLeading).padding().onChange(of: filterType) { _ in
 			   isEditing = false
@@ -247,7 +247,7 @@ struct FiltersView: View {
 								   }
 							   }
 						   } label: {
-							   Text("Delete")
+							   Text("Delete Filter")
 						   }
 					   }
 				} else {
