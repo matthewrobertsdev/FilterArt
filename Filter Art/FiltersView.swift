@@ -36,6 +36,8 @@ struct FiltersView: View {
 	@State var selectedPreset: FilterModel? = nil
 	@State var selectedSavedFilter: Filter? = nil
 	@State var isEditing = false
+	@State var showingDeleteDialog = false
+	@State var filterToDelete: Filter? = nil
     var body: some View {
 		#if os(macOS)
 		VStack(alignment: .center, content: {
@@ -55,10 +57,10 @@ struct FiltersView: View {
 							}
 						}
 					}
-				}.listStyle(.sidebar).onChange(of: selectedPreset) { newValue in
+				}.listStyle(.sidebar)/*.onChange(of: selectedPreset) { newValue in
 					asignPresetFilterComponentsToAppStorage()
 					showing = false
-				}
+				}*/
 			} else if filterType == FilterType.saved.rawValue {
 				List(selection: $selectedSavedFilter) {
 					ForEach(savedFilters, id: \.self) { filter in
@@ -68,12 +70,8 @@ struct FiltersView: View {
 								if isEditing {
 									VStack {
 										Button(role: .destructive) {
-											managedObjectContext.delete(filter)
-											do {
-												try managedObjectContext.save()
-											} catch {
-												
-											}
+											filterToDelete = filter
+											showingDeleteDialog = true
 										} label: {
 											Label("Delete", systemImage: "trash.fill").labelStyle(.titleOnly)
 										}.buttonStyle(.borderless).tint(Color.red)
@@ -95,10 +93,26 @@ struct FiltersView: View {
 							}
 						}
 					}
-				}.listStyle(.sidebar).onChange(of: selectedSavedFilter) { newValue in
+				}.listStyle(.sidebar)/*.onChange(of: selectedSavedFilter) { newValue in
 					asignSavedFilterComponentsToAppStorage()
 					showing = false
-				}
+				}*/.confirmationDialog(Text("Are you sure you want to delete this filter?"), isPresented: $showingDeleteDialog) {
+					Button(role: .destructive) {
+							  DispatchQueue.main.async {
+								  if let filter = selectedSavedFilter {
+									  managedObjectContext.delete(filter)
+									  do {
+										  try managedObjectContext.save()
+									  } catch {
+										  
+									  }
+								  }
+							  }
+						  } label: {
+							  Text("Delete")
+						  }
+
+					  }
 			} else {
 				EmptyView()
 			}
@@ -117,30 +131,35 @@ struct FiltersView: View {
 				.regularMaterial,
 				   in: Rectangle()
 			   )
-		   }).frame(width: 400).toolbar(content: {
+		   }).frame(width: 350).toolbar(content: {
+			   Button {
+				   showing = false
+			   } label: {
+				   Text("Cancel")
+			   }
 				if filterType == FilterType.saved.rawValue {
 					Button {
-						if isEditing {
-							do {
-								try managedObjectContext.save()
-							} catch {
-								
-							}
-						}
-						withAnimation {
-							isEditing.toggle()
-						}
+						showingDeleteDialog = true
 					} label: {
-						Text(isEditing ? "Done" : "Edit")
-					}
+						Text("Delete")
+					}.disabled(buttonShouldBeDisabled()).buttonStyle(.borderedProminent).tint(Color.red)
+					Button {
+					} label: {
+						Text("Rename")
+					}.disabled(buttonShouldBeDisabled()).buttonStyle(.borderedProminent).tint(Color.indigo)
 				}
-				Button {
-					showing = false
-				} label: {
-					Text("Cancel")
-				}
+			   Button {
+				   if filterType == FilterType.presets.rawValue {
+					   asignPresetFilterComponentsToAppStorage()
+				   } else if filterType == FilterType.saved.rawValue {
+					   asignSavedFilterComponentsToAppStorage()
+				   }
+				   showing = false
+			   } label: {
+				   Text("Choose")
+			   }.disabled(buttonShouldBeDisabled()).buttonStyle(.borderedProminent)
 
-		   }).frame(width: 400, height: 615, alignment: .topLeading).padding().onChange(of: filterType) { _ in
+		   }).frame(width: 350, height: 615, alignment: .topLeading).padding().onChange(of: filterType) { _ in
 			   isEditing = false
 		   }
 			
@@ -175,12 +194,8 @@ struct FiltersView: View {
 									if isEditing {
 										VStack(spacing: 20) {
 											Button(role: .destructive) {
-												managedObjectContext.delete(filter)
-												do {
-													try managedObjectContext.save()
-												} catch {
-													
-												}
+												filterToDelete = filter
+												showingDeleteDialog = true
 											} label: {
 												Label("Delete", systemImage: "trash.fill").labelStyle(.titleOnly)
 											}.buttonStyle(.borderless).tint(Color.red)
@@ -188,7 +203,7 @@ struct FiltersView: View {
 											} label: {
 												Label("Rename", systemImage: "pencil").labelStyle(.titleOnly)
 											}.buttonStyle(.borderless).tint(Color.indigo)
-										}
+										}.transition(.move(edge: .leading))
 									}
 									Spacer()
 									getFilteredImage(filter: filter).frame(width: isEditing ? 175 : 250, height: 175).transition(.scale).transition(.move(edge: .leading))
@@ -201,7 +216,8 @@ struct FiltersView: View {
 								}
 							}.swipeActions(allowsFullSwipe: false) {
 								Button(role: .destructive) {
-									delete(filter: filter)
+									filterToDelete = filter
+									showingDeleteDialog = true
 							 } label: {
 								 Label("Delete", systemImage: "trash.fill").labelStyle(.iconOnly)
 							 }
@@ -216,7 +232,22 @@ struct FiltersView: View {
 					}.listStyle(.sidebar).onChange(of: selectedSavedFilter) { newValue in
 						asignSavedFilterComponentsToAppStorage()
 						showing = false
-					}
+					}.confirmationDialog(Text("Are you sure you want to delete this filter?"), isPresented: $showingDeleteDialog) {
+						Button(role: .destructive) {
+							   DispatchQueue.main.async {
+								   if let filter = filterToDelete {
+									   managedObjectContext.delete(filter)
+									   do {
+										   try managedObjectContext.save()
+									   } catch {
+										   
+									   }
+								   }
+							   }
+						   } label: {
+							   Text("Delete")
+						   }
+					   }
 				} else {
 					EmptyView()
 				}
@@ -361,17 +392,6 @@ struct FiltersView: View {
 		}
 	}
 	
-	private func optionalBinding<T>(val: Binding<T?>, defaultVal: T)-> Binding<T>{
-		Binding<T>(
-			get: {
-				return val.wrappedValue ?? defaultVal
-			},
-			set: { newVal in
-				val.wrappedValue = newVal
-			}
-		)
-	}
-	
 	func delete(filter: Filter) {
 			do {
 				managedObjectContext.delete(filter)
@@ -390,6 +410,9 @@ struct FiltersView: View {
 				
 			}
 		}
+	}
+	func buttonShouldBeDisabled() -> Bool {
+		return (filterType == FilterType.saved.rawValue && selectedSavedFilter == nil) || (filterType == FilterType.presets.rawValue && selectedPreset == nil)
 	}
 }
 
