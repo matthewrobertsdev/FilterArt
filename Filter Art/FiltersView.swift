@@ -37,7 +37,9 @@ struct FiltersView: View {
 	@State var selectedSavedFilter: Filter? = nil
 	@State var isEditing = false
 	@State var showingDeleteDialog = false
+	@State var showingRenameAlert = false
 	@State var filterToDelete: Filter? = nil
+	@State var filterToRename: Filter? = nil
     var body: some View {
 		#if os(macOS)
 		VStack(alignment: .center, content: {
@@ -76,6 +78,8 @@ struct FiltersView: View {
 											Label("Delete", systemImage: "trash.fill").labelStyle(.titleOnly)
 										}.buttonStyle(.borderless).tint(Color.red)
 										Button {
+											filterToRename = filter
+											showingRenameAlert = true
 										} label: {
 											Label("Rename", systemImage: "pencil").labelStyle(.titleOnly)
 										}.buttonStyle(.borderless).tint(Color.indigo)
@@ -113,7 +117,11 @@ struct FiltersView: View {
 							  Text("Delete Filter")
 						  }
 
-					  }
+					  }.alert("Rename Your Filter", isPresented: $showingRenameAlert, actions: {
+						  RenameAlert(selectedSavedFilter: $selectedSavedFilter).environment(\.managedObjectContext, managedObjectContext)
+		  }, message: {
+			  Text("Eenter a new name for your filter:")
+		  })
 			} else {
 				EmptyView()
 			}
@@ -145,6 +153,7 @@ struct FiltersView: View {
 						Text("Delete")
 					}.disabled(buttonShouldBeDisabled())
 					Button {
+						showingRenameAlert = true
 					} label: {
 						Text("Rename")
 					}.disabled(buttonShouldBeDisabled())
@@ -201,6 +210,8 @@ struct FiltersView: View {
 												Label("Delete", systemImage: "trash.fill").labelStyle(.titleOnly)
 											}.buttonStyle(.borderless).tint(Color.red)
 											Button {
+												filterToRename = filter
+												showingRenameAlert = true
 											} label: {
 												Label("Rename", systemImage: "pencil").labelStyle(.titleOnly)
 											}.buttonStyle(.borderless).tint(Color.indigo)
@@ -223,7 +234,8 @@ struct FiltersView: View {
 								 Label("Delete", systemImage: "trash.fill").labelStyle(.iconOnly)
 							 }
 								Button {
-								 
+									filterToRename = filter
+									showingRenameAlert = true
 							 } label: {
 								 Label("Rename", systemImage: "pencil").labelStyle(.iconOnly)
 							 }.tint(.indigo)
@@ -249,7 +261,11 @@ struct FiltersView: View {
 						   } label: {
 							   Text("Delete Filter")
 						   }
-					   }
+					   }.alert("Rename Your Filter", isPresented: $showingRenameAlert, actions: {
+						   RenameAlert(selectedSavedFilter: $filterToRename).environment(\.managedObjectContext, managedObjectContext)
+	 }, message: {
+		 Text("Eenter a new name for your filter:")
+	 })
 				} else {
 					EmptyView()
 				}
