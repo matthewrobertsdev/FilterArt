@@ -101,6 +101,7 @@ struct FiltersView: View {
 							  DispatchQueue.main.async {
 								  if let filter = selectedSavedFilter {
 									  managedObjectContext.delete(filter)
+									  selectedSavedFilter = nil
 									  do {
 										  try managedObjectContext.save()
 									  } catch {
@@ -237,6 +238,7 @@ struct FiltersView: View {
 							   DispatchQueue.main.async {
 								   if let filter = filterToDelete {
 									   managedObjectContext.delete(filter)
+									   selectedSavedFilter = nil
 									   do {
 										   try managedObjectContext.save()
 									   } catch {
@@ -395,6 +397,7 @@ struct FiltersView: View {
 	func delete(filter: Filter) {
 			do {
 				managedObjectContext.delete(filter)
+				selectedSavedFilter = nil
 				try managedObjectContext.save()
 			} catch {
 				
