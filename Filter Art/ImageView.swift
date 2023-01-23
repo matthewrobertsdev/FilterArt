@@ -47,6 +47,7 @@ struct ImageView: View {
 	@State var loading = false
 	@State private var selectedItem: PhotosPickerItem? = nil
 	@State var showingFilters = false
+	@State var showingNameAlert = false
 #if os(macOS)
 	@State private var window: NSWindow?
 	let maxWidth = 300.0
@@ -130,7 +131,11 @@ struct ImageView: View {
 					ImageDataStore.save(imageData: imageDataStore.imageData) { result in
 						
 					}
-				}
+				   }.alert("Name Your Filter", isPresented: $showingNameAlert, actions: {
+					   NameAlert().environment(\.managedObjectContext, managedObjectContext)
+		  }, message: {
+			  Text("Eenter a name for your new filter:")
+		  })
 #else
 				VStack(spacing: 0) {
 					VStack(spacing: 10) {
@@ -208,7 +213,11 @@ struct ImageView: View {
 						}
 					}
 					
-				}
+				}.alert("Name Your Filter", isPresented: $showingNameAlert, actions: {
+					NameAlert().environment(\.managedObjectContext, managedObjectContext)
+	   }, message: {
+		   Text("Eenter a name for your new filter:")
+	   })
 #endif
 		}
 #if os(iOS)
@@ -314,36 +323,7 @@ struct ImageView: View {
 				#endif
 				HStack(spacing: 20) {
 					Button {
-						let savedFilter = Filter(context: managedObjectContext)
-						savedFilter.blur = blur
-						savedFilter.colorMultiplyB = colorMultiplyColor.components.blue
-						savedFilter.colorMultiplyG = colorMultiplyColor.components.green
-						savedFilter.colorMultiplyO = colorMultiplyColor.components.opacity
-						savedFilter.colorMultiplyR = colorMultiplyColor.components.red
-						savedFilter.contrast = contrast
-						savedFilter.favoriteDate = Date()
-						savedFilter.grayscale = grayscale
-						savedFilter.hueRotation = hueRotation
-						savedFilter.id = UUID().uuidString
-						savedFilter.invertColors = invertColors
-						savedFilter.isFavorite = false
-						savedFilter.isPreset = false
-						savedFilter.name = "Saved Filter"
-						savedFilter.opacity = opacity
-						savedFilter.saturation = saturation
-						savedFilter.saveDate = Date()
-						savedFilter.useBlur = useBlur
-						savedFilter.useColorMultiply = useColorMultiply
-						savedFilter.useContrast = useContrast
-						savedFilter.useGrayscale = useGrayscale
-						savedFilter.useHueRotation = useHueRotation
-						savedFilter.useOpacity = useOpacity
-						savedFilter.useSaturation = useSaturation
-						do {
-							try managedObjectContext.save()
-						} catch {
-							
-						}
+						showingNameAlert = true
 					} label: {
 						Text("Add Saved Filter")
 					}

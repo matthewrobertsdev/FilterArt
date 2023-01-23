@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Filter Art mac-512@2.png",
+      "filename" : "Filter Art Mac-100@1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Filter Art Mac-100@2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "Filter Art Mac-100@3.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

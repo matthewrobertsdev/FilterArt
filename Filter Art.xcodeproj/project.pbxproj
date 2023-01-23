@@ -34,6 +34,8 @@
 		9F8FAB6A297DEC6600E5F453 /* RenameAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8FAB69297DEC6600E5F453 /* RenameAlert.swift */; };
 		9F8FAB6B297DEC6600E5F453 /* RenameAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8FAB69297DEC6600E5F453 /* RenameAlert.swift */; };
 		9FC012D12972563300309D6D /* OpacityControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FC012D02972563300309D6D /* OpacityControl.swift */; };
+		9FDB1BCD297EC1CC00911545 /* NameAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDB1BCC297EC1CC00911545 /* NameAlert.swift */; };
+		9FDB1BCE297EC81C00911545 /* NameAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDB1BCC297EC1CC00911545 /* NameAlert.swift */; };
 		9FE5175329725EA1003F3CA7 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9FE5175229725EA1003F3CA7 /* Launch Screen.storyboard */; };
 		9FE517A62972668F003F3CA7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FE517A52972668F003F3CA7 /* Preview Assets.xcassets */; };
 		9FE517C7297266F7003F3CA7 /* OpacityControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FC012D02972563300309D6D /* OpacityControl.swift */; };
@@ -129,6 +131,7 @@
 		9F8B1E1E29766E27004C792B /* FilterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterModel.swift; sourceTree = "<group>"; };
 		9F8FAB69297DEC6600E5F453 /* RenameAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameAlert.swift; sourceTree = "<group>"; };
 		9FC012D02972563300309D6D /* OpacityControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpacityControl.swift; sourceTree = "<group>"; };
+		9FDB1BCC297EC1CC00911545 /* NameAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameAlert.swift; sourceTree = "<group>"; };
 		9FE5175229725EA1003F3CA7 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		9FE5176829726321003F3CA7 /* Fillter ArtTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Fillter ArtTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FE5177229726321003F3CA7 /* Fillter ArtUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Fillter ArtUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -267,6 +270,7 @@
 				9F89DA97296FB6F900D46184 /* InfoSeparator.swift */,
 				9F8B1E172976602C004C792B /* FiltersView.swift */,
 				9F8FAB69297DEC6600E5F453 /* RenameAlert.swift */,
+				9FDB1BCC297EC1CC00911545 /* NameAlert.swift */,
 				9F8B1E1E29766E27004C792B /* FilterModel.swift */,
 			);
 			path = "Filter Art";
@@ -588,6 +592,7 @@
 				9FFCC6DF297116AB007C1CC4 /* ShareViewController.swift in Sources */,
 				9F89DA98296FB6F900D46184 /* InfoSeparator.swift in Sources */,
 				9F0CFFEA2971340D003064DE /* SharingPicker.swift in Sources */,
+				9FDB1BCE297EC81C00911545 /* NameAlert.swift in Sources */,
 				9FE517E529726881003F3CA7 /* FilterArtApp.swift in Sources */,
 				9F89DAAA296FB90C00D46184 /* ColorStorage.swift in Sources */,
 				9FE517F129726983003F3CA7 /* ContentView.swift in Sources */,
@@ -651,6 +656,7 @@
 				9FE517C8297266F7003F3CA7 /* HueRotationControl.swift in Sources */,
 				9FE517DC297267D4003F3CA7 /* FilterArtApp.swift in Sources */,
 				9FE517CB297266F7003F3CA7 /* SharingPicker.swift in Sources */,
+				9FDB1BCD297EC1CC00911545 /* NameAlert.swift in Sources */,
 				9FE517E629726881003F3CA7 /* FilterArtApp.swift in Sources */,
 				9FE517F229726983003F3CA7 /* ContentView.swift in Sources */,
 				9FE517DA29726706003F3CA7 /* InfoSeparator.swift in Sources */,
@@ -1091,7 +1097,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Filter Art";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Matt Roberts. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Matt Roberts. All rights reserved.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -1123,7 +1129,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Filter Art";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Matt Roberts. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Matt Roberts. All rights reserved.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
