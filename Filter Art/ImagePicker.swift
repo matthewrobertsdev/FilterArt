@@ -44,16 +44,16 @@ struct ImagePicker: UIViewControllerRepresentable {
 			self.parent.loading = true
 
 			if provider.canLoadObject(ofClass: UIImage.self) {
-				provider.loadObject(ofClass: UIImage.self) { image, _ in
-					if let image = image as? UIImage {
-						image.jpegData(compressionQuality: 0.2)
-						var rightSideUpImage = image
-						if (image.imageOrientation != UIImage.Orientation.up) {
+				provider.loadObject(ofClass: UIImage.self) { imageData, _ in
+					if let imageData = imageData as? UIImage {
+						imageData.jpegData(compressionQuality: 0.2)
+						var rightSideUpImage = imageData
+						if (imageData.imageOrientation != UIImage.Orientation.up) {
 							
 
-						  UIGraphicsBeginImageContextWithOptions(image.size, false, image.scale);
-						  let rectangle = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-							image.draw(in: rectangle)
+						  UIGraphicsBeginImageContextWithOptions(imageData.size, false, imageData.scale);
+						  let rectangle = CGRect(x: 0, y: 0, width: imageData.size.width, height: imageData.size.height)
+							imageData.draw(in: rectangle)
 
 							rightSideUpImage = UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
 						  UIGraphicsEndImageContext();

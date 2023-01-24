@@ -361,6 +361,16 @@ struct ImageView: View {
 					view.blur(radius: blur)
 				}
 			}
+		}.dropDestination(for: NSImage.self) { items, location in
+			if let image = items.first {
+				DispatchQueue.global(qos: .userInitiated).async {
+					self.image = image.tiffRepresentation ?? Data()
+				}
+				return true
+			}
+			return false
+		}.onChange(of: image) { newValue in
+			imageDataStore.imageData = image
 		}
 	}
 	
@@ -601,3 +611,12 @@ enum SheetType {
 	case unmodifiedImage
 	case modifiedImage
 }
+#if os(macOS)
+extension NSImage: Transferable {
+	public static var transferRepresentation: some TransferRepresentation {
+		DataRepresentation(importedContentType: .image) { data in
+			NSImage(data: data) ?? NSImage()
+		}
+	}
+}
+#endif
