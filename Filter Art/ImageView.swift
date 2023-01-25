@@ -45,6 +45,7 @@ struct ImageView: View {
 	@State var showingImageSaveSuccesAlert = false
 	@State var showingImageSaveFailureAlert = false
 	@State var loading = false
+	@State var waitingForDrop = false
 	@State private var selectedItem: PhotosPickerItem? = nil
 	@State var showingFilters = false
 	@State var showingNameAlert = false
@@ -259,8 +260,10 @@ struct ImageView: View {
 									}
 								}
 					#else
-					Button("Choose Image") {
+					Button("Drag in Image") {
+						waitingForDrop = true
 						//#if os(macOS)
+						/*
 						let openPanel = NSOpenPanel()
 									openPanel.prompt = "Choose Image"
 									openPanel.allowsMultipleSelection = false
@@ -283,6 +286,7 @@ struct ImageView: View {
 								}
 							}
 						}
+						 */
 						//#else
 						//showingImagePicker = true
 					 
@@ -342,6 +346,17 @@ struct ImageView: View {
 		Group {
 			if loading {
 				ProgressView().controlSize(.large)
+			} else if waitingForDrop {
+				VStack(spacing: 20) {
+					Text("Drop image file here:").font(.largeTitle).padding()
+					Image(systemName: "square.and.arrow.down").resizable().aspectRatio(contentMode: .fit).foregroundColor(Color.accentColor).padding()
+					Button {
+						waitingForDrop = false
+					} label: {
+						Text("Cancel Drag and Drop")
+					}.buttonStyle(.borderedProminent).keyboardShortcut(.defaultAction).controlSize(.large).padding()
+
+				}
 			} else {
 				getImage().resizable().aspectRatio(contentMode: .fit).if(invertColors, transform: { view in
 				   view.colorInvert()
@@ -365,6 +380,8 @@ struct ImageView: View {
 			if let image = items.first {
 				DispatchQueue.global(qos: .userInitiated).async {
 					self.image = image.tiffRepresentation ?? Data()
+					useOriginalImage = false
+					waitingForDrop = false
 				}
 				return true
 			}
