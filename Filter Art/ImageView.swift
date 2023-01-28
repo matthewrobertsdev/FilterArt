@@ -147,7 +147,7 @@ struct ImageView: View {
 						getEditor().padding(.bottom).frame(maxWidth: .infinity)
 					}
 				}.sheet(isPresented: $showingShareSheet) {
-						ShareSheet(image: getFilteredImage())
+					ShareSheet(imageData: getFilteredImage())
 				}.sheet(isPresented: $showingPreviewModal) {
 						NavigationStack {
 							HStack {
@@ -217,7 +217,7 @@ struct ImageView: View {
 				}.alert("Name Your Filter", isPresented: $showingNameAlert, actions: {
 					NameAlert().environment(\.managedObjectContext, managedObjectContext)
 	   }, message: {
-		   Text("Eenter a name for your new filter:")
+		   Text("Enter a name for your new filter:")
 	   })
 #endif
 		}
@@ -260,10 +260,10 @@ struct ImageView: View {
 									}
 								}
 					#else
-					Button("Drag in Image") {
-						waitingForDrop = true
+					Button("Choose Image") {
+						//waitingForDrop = true
 						//#if os(macOS)
-						/*
+						
 						let openPanel = NSOpenPanel()
 									openPanel.prompt = "Choose Image"
 									openPanel.allowsMultipleSelection = false
@@ -286,7 +286,7 @@ struct ImageView: View {
 								}
 							}
 						}
-						 */
+						 
 						//#else
 						//showingImagePicker = true
 					 
@@ -314,15 +314,23 @@ struct ImageView: View {
 					}
 				}
 				 */
-				Button {
-					let imageSaver = ImageSaver(showingSuccessAlert: $showingImageSaveSuccesAlert, showingErrorAlert: $showingImageSaveFailureAlert)
-					imageSaver.writeToPhotoAlbum(image: getFilteredImage())
-				} label: {
-					Text("Export to Photos")
+				HStack(spacing: 20){
+					Button {
+						let imageSaver = ImageSaver(showingSuccessAlert: $showingImageSaveSuccesAlert, showingErrorAlert: $showingImageSaveFailureAlert)
+						imageSaver.writeToPhotoAlbum(image: getFilteredImage())
+					} label: {
+						Text("Export to Photos")
+					}
+					Button {
+						showingShareSheet = true
+					} label: {
+						Text("Share Image")
+					}
 				}
 				#else
 				HStack(spacing: 20){
 					getSavePanelButton()
+					ShareLink(Text("Share Image"), item: Image(nsImage: getFilteredImage()), preview: SharePreview("Image to Share", image: Image(nsImage: getFilteredImage()))).labelStyle(.titleOnly)
 				}
 				#endif
 				HStack(spacing: 20) {
@@ -376,19 +384,26 @@ struct ImageView: View {
 					view.blur(radius: blur)
 				}
 			}
-		}.dropDestination(for: NSImage.self) { items, location in
-			if let image = items.first {
-				DispatchQueue.global(qos: .userInitiated).async {
-					self.image = image.tiffRepresentation ?? Data()
-					useOriginalImage = false
-					waitingForDrop = false
+		}
+		/*
+		#if os(macOS)
+		.dropDestination(for: NSImage.self) { items, location in
+				if let image = items.first {
+					DispatchQueue.global(qos: .userInitiated).async {
+						self.image = image.tiffRepresentation ?? Data()
+						useOriginalImage = false
+						waitingForDrop = false
+					}
+					return true
+				} else {
+					return false
 				}
-				return true
-			}
-			return false
-		}.onChange(of: image) { newValue in
+		}
+		#endif
+		.onChange(of: image) { newValue in
 			imageDataStore.imageData = image
 		}
+		 */
 	}
 	
 	func getModalDisplay() -> some View {
