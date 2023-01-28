@@ -13,6 +13,7 @@ import AppKit
 #endif
 struct FiltersView: View {
 	@Environment(\.managedObjectContext) var managedObjectContext
+	@FocusState private var searchFieldInFocus: Bool
 	@FetchRequest(sortDescriptors: [SortDescriptor(\.saveDate)]) var savedFilters: FetchedResults<Filter>
 	@AppStorage("imageInvertColors") private var invertColors: Bool = false
 	@AppStorage("imageHueRotation") private var hueRotation: Double = 0
@@ -79,15 +80,16 @@ struct FiltersView: View {
 				} label: {
 					Text("Filters Picker")
 				}.pickerStyle(.segmented).labelsHidden()
-				TextField("", text: $searchString, prompt: Text("Search \(filterType.lowercased())..."))
+				TextField("", text: $searchString, prompt: Text("Search \(filterType.lowercased())...")).focused($searchFieldInFocus)
 			}.background(
 				.regularMaterial,
 				   in: Rectangle()
 			   )
 		   }).frame(width: 350).frame(width: 350, height: 615, alignment: .topLeading).padding().onChange(of: filterType) { _ in
 			   isEditing = false
+		   }.onChange(of: filterType) { _ in
+			   searchString = ""
 		   }
-			
 				#else
 		NavigationStack {
 			VStack(alignment: .center, content: {
@@ -128,12 +130,15 @@ struct FiltersView: View {
 						.regularMaterial,
 						in: Rectangle()
 					)
-					TextField("", text: $searchString, prompt: Text("Search \(filterType.lowercased())...")).submitLabel(.search).font(.title3).padding(5).background(
+					TextField("", text: $searchString, prompt: Text("Search \(filterType.lowercased())...")).focused($searchFieldInFocus).submitLabel(.search).font(.title3).padding(5).background(
 						   .regularMaterial,
 			in: Rectangle()
 				)
 				}
 			}).navigationTitle(Text("Stored Filters")).navigationBarTitleDisplayMode(.inline)
+		}.onChange(of: filterType) { _ in
+			searchString = ""
+			searchFieldInFocus = false
 		}
 #endif
     }

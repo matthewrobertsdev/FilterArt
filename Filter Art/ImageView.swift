@@ -147,7 +147,7 @@ struct ImageView: View {
 						getEditor().padding(.bottom).frame(maxWidth: .infinity)
 					}
 				}.sheet(isPresented: $showingShareSheet) {
-					ShareSheet(imageData: getFilteredImage())
+					ShareSheet(imageData: getFilteredImage(forSharing: true))
 				}.sheet(isPresented: $showingPreviewModal) {
 						NavigationStack {
 							HStack {
@@ -469,10 +469,21 @@ struct ImageView: View {
 #if os(macOS)
 			return Image(nsImage: (NSImage(data: imageDataStore.imageData) ?? NSImage()))
 #else
+			let uiImage = (UIImage(data: imageDataStore.imageData)  ?? UIImage())
 			return Image(uiImage: (UIImage(data: imageDataStore.imageData)  ?? UIImage()))
 #endif
 		}
 	}
+
+#if os(iOS)
+	func getImageForSharing() -> UIImage {
+		if useOriginalImage {
+			return UIImage(named: "FallColors") ?? UIImage()
+		} else {
+			return UIImage(data: imageDataStore.imageData)  ?? UIImage()
+		}
+	}
+#endif
 	
 	func getFilterControls() -> some View {
 		Group {
@@ -572,8 +583,35 @@ struct ImageView: View {
 	#endif
 	
 	#if os(iOS)
-	@MainActor func getFilteredImage() -> UIImage {
-		let renderer = ImageRenderer(content: getImage().resizable().aspectRatio(contentMode: .fit).if(invertColors, transform: { view in
+	@MainActor func getFilteredImage(forSharing: Bool = false) -> UIImage {
+		var originalWidth = 1000.0
+		var originalHeight = 1000.0
+		var desiredWidth = 1000.0
+		var desiredHeight = 1000.0
+		if useOriginalImage {
+			originalWidth = 750.0
+			originalHeight = 1000.0
+		} else {
+			let uiImage = (UIImage(data: imageDataStore.imageData)  ?? UIImage())
+			originalWidth = uiImage.size.width
+			originalHeight = uiImage.size.height
+			if originalWidth >= originalHeight && originalWidth > 1000.0 {
+				let scaleFactor = 1000.0/originalWidth
+				desiredWidth =  originalWidth * scaleFactor
+				desiredHeight = originalHeight * scaleFactor
+			} else if originalHeight >= originalWidth && originalWidth > 1000.0 {
+				let scaleFactor = 1000.0/originalHeight
+				desiredWidth =  originalWidth * scaleFactor
+				desiredHeight = originalHeight * scaleFactor
+			} else {
+				desiredWidth = originalWidth
+				desiredHeight = originalHeight
+			}
+		}
+		let renderer = ImageRenderer(content: Image(uiImage: getImageForSharing()).resizable().aspectRatio(contentMode: .fit).if(forSharing, transform: { view in
+			view.frame(width: desiredWidth, height: desiredHeight)
+		})
+			.if(invertColors, transform: { view in
 			view.colorInvert()
 			  }).if(useHueRotation, transform: { view in
 				  view.hueRotation(.degrees(hueRotation))
@@ -591,9 +629,9 @@ struct ImageView: View {
 						view.blur(radius: blur)
 				 })
 
-			renderer.scale = displayScale
+			//renderer.scale = displayScale
 			if let uiImage = renderer.uiImage {
-				return  uiImage
+				return uiImage
 			}
 		return UIImage(named: "FallColors") ?? UIImage()
 		}
