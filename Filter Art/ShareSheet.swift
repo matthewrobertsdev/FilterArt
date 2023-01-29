@@ -50,7 +50,7 @@ struct ShareSheet: UIViewControllerRepresentable {
 			let metadata = LPLinkMetadata()
 			
 			// share sheet preview title
-			metadata.title = "Share your image."
+			metadata.title = "Share your image"
 			// share sheet preview icon
 			let imageProvider = NSItemProvider(object: imageData)
 			metadata.imageProvider = imageProvider

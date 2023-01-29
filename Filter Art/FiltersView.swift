@@ -46,25 +46,7 @@ struct FiltersView: View {
 		#if os(macOS)
 		VStack(alignment: .center, content: {
 			if filterType  == FilterType.presets.rawValue {
-				List(selection: $selectedPreset) {
-					ForEach(presetFilters, id: \.self) { filter in
-						VStack {
-							HStack {
-								Spacer()
-								getFilteredImage(filter: filter).frame(width: 250, height: 175)
-								Spacer()
-							}
-							HStack {
-								Spacer()
-								Text(filter.name)
-								Spacer()
-							}
-						}
-					}
-				}.listStyle(.sidebar)/*.onChange(of: selectedPreset) { newValue in
-					asignPresetFilterComponentsToAppStorage()
-					showing = false
-				}*/
+				PresetFiltersView(showing: $showing, searchString: $searchString)
 			} else if filterType == FilterType.saved.rawValue {
 				SavedFiltersView(showing: $showing, searchString: searchString)
 			} else {
@@ -94,25 +76,7 @@ struct FiltersView: View {
 		NavigationStack {
 			VStack(alignment: .center, content: {
 				if filterType  == FilterType.presets.rawValue {
-					List(selection: $selectedPreset) {
-						ForEach(presetFilters, id: \.self) { filter in
-							VStack(alignment: .center) {
-								HStack {
-									Spacer()
-									getFilteredImage(filter: filter).frame(width: 250, height: 175)
-									Spacer()
-								}
-								HStack {
-									Spacer()
-									Text(filter.name)
-									Spacer()
-								}
-							}
-						}
-					}.listStyle(.sidebar).onChange(of: selectedPreset) { newValue in
-						asignPresetFilterComponentsToAppStorage()
-						showing = false
-					}
+					PresetFiltersView(showing: $showing, searchString: $searchString)
 				} else if filterType == FilterType.saved.rawValue {
 					SavedFiltersView(showing: $showing, searchString: searchString)
 				} else {

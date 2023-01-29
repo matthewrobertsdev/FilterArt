@@ -469,7 +469,6 @@ struct ImageView: View {
 #if os(macOS)
 			return Image(nsImage: (NSImage(data: imageDataStore.imageData) ?? NSImage()))
 #else
-			let uiImage = (UIImage(data: imageDataStore.imageData)  ?? UIImage())
 			return Image(uiImage: (UIImage(data: imageDataStore.imageData)  ?? UIImage()))
 #endif
 		}
@@ -589,17 +588,17 @@ struct ImageView: View {
 		var desiredWidth = 1000.0
 		var desiredHeight = 1000.0
 		if useOriginalImage {
-			originalWidth = 750.0
-			originalHeight = 1000.0
+			desiredWidth = 750.0
+			desiredHeight = 1000.0
 		} else {
 			let uiImage = (UIImage(data: imageDataStore.imageData)  ?? UIImage())
 			originalWidth = uiImage.size.width
 			originalHeight = uiImage.size.height
-			if originalWidth >= originalHeight && originalWidth > 1000.0 {
+			if originalWidth >= originalHeight && originalWidth >= 1000.0 {
 				let scaleFactor = 1000.0/originalWidth
 				desiredWidth =  originalWidth * scaleFactor
 				desiredHeight = originalHeight * scaleFactor
-			} else if originalHeight >= originalWidth && originalWidth > 1000.0 {
+			} else if originalHeight >= originalWidth && originalHeight >= 1000.0 {
 				let scaleFactor = 1000.0/originalHeight
 				desiredWidth =  originalWidth * scaleFactor
 				desiredHeight = originalHeight * scaleFactor
