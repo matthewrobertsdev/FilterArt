@@ -88,6 +88,11 @@ struct PresetFiltersView: View {
 												savedFilter.useHueRotation = filterModel.useHueRotation
 												savedFilter.useOpacity = filterModel.useOpacity
 												savedFilter.useSaturation = filterModel.useSaturation
+												do {
+													try managedObjectContext.save()
+												} catch {
+													
+												}
 											}
 										} else {
 											let filterToDelete = presetFavoriteFiltersFetchRequest.first { filter in
@@ -96,11 +101,11 @@ struct PresetFiltersView: View {
 											if let filterToDelete = filterToDelete {
 												managedObjectContext.delete(filterToDelete)
 											}
-										}
-										do {
-											try managedObjectContext.save()
-										} catch {
-											
+											do {
+												try managedObjectContext.save()
+											} catch {
+												
+											}
 										}
 									} label: {
 										Image(systemName: isFavorite(filterModel: filterModel) ? "heart.fill" : "heart").font(.title)
