@@ -82,7 +82,7 @@ struct FavoriteFiltersView: View {
 			}
 		}.listStyle(.sidebar)
 		#if os(iOS)
-			.onChange(of: selectedSavedFilter) { newValue in
+			.onChange(of: selectedFavoriteFilter) { newValue in
 			asignSavedFilterComponentsToAppStorage()
 			showing = false
 		}
