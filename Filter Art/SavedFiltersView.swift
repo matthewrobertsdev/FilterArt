@@ -45,15 +45,13 @@ struct SavedFiltersView: View {
 	}
 	
 	var body: some View {
-		#if os(macOS)
-		VStack(alignment: .center, content: {
-			List(selection: $selectedSavedFilter) {
-				ForEach(savedFilters, id: \.self) { filter in
-					VStack(alignment: .center) {
+		List(selection: $selectedSavedFilter) {
+			ForEach(savedFilters, id: \.self) { filter in
+				VStack(alignment: .center) {
+					ZStack {
 						HStack {
-							Spacer()
 							if isEditing {
-								VStack {
+								VStack(spacing: 20) {
 									Button(role: .destructive) {
 										filterToDelete = filter
 										showingDeleteDialog = true
@@ -67,89 +65,23 @@ struct SavedFiltersView: View {
 										Label("Rename", systemImage: "pencil").labelStyle(.titleOnly)
 									}.buttonStyle(.borderless).tint(Color.indigo)
 								}.transition(.move(edge: .leading))
-								
-								Spacer()
-							}
-							getFilteredImage(filter: filter).frame(width: 250, height: 175).transition(.move(edge: .leading))
-							Spacer()
-						}
-						HStack {
-							Spacer()
-							Text(filter.name ?? "Saved Filter")
-							Spacer()
-						}
-					}
-				}
-			}.listStyle(.sidebar).confirmationDialog(Text("Are you sure you want to delete this filter?"), isPresented: $showingDeleteDialog) {
-									  Button(role: .destructive) {
-										  DispatchQueue.main.async {
-											  if let filter = selectedSavedFilter {
-												  managedObjectContext.delete(filter)
-												  selectedSavedFilter = nil
-												  do {
-													  try managedObjectContext.save()
-												  } catch {
-													  
-												  }
-											  }
-										  }
-									  } label: {
-										  Text("Delete Filter")
-									  }
-									  
-								  }.alert("Rename Your Filter", isPresented: $showingRenameAlert, actions: {
-									  RenameAlert(selectedSavedFilter: $selectedSavedFilter).environment(\.managedObjectContext, managedObjectContext)
-								  }, message: {
-									  Text("Eenter a new name for your filter:")
-								  })
-		}).toolbar(content: {
-			Button {
-				showing = false
-			} label: {
-				Text("Cancel")
-			}
-				 Button(role: .destructive) {
-					 showingDeleteDialog = true
-				 } label: {
-					 Text("Delete")
-				 }.disabled(selectedSavedFilter == nil)
-				 Button {
-					 showingRenameAlert = true
-				 } label: {
-					 Text("Rename")
-				 }.disabled(selectedSavedFilter == nil)
-			Button {
-					asignSavedFilterComponentsToAppStorage()
-				showing = false
-			} label: {
-				Text("Apply Filter")
-			}.disabled(selectedSavedFilter == nil).keyboardShortcut(.defaultAction)
 
-		})
-		#else
-		List(selection: $selectedSavedFilter) {
-			ForEach(savedFilters, id: \.self) { filter in
-				VStack(alignment: .center) {
-					HStack {
-						if isEditing {
-							VStack(spacing: 20) {
-								Button(role: .destructive) {
-									filterToDelete = filter
-									showingDeleteDialog = true
-								} label: {
-									Label("Delete", systemImage: "trash.fill").labelStyle(.titleOnly)
-								}.buttonStyle(.borderless).tint(Color.red)
-								Button {
-									filterToRename = filter
-									showingRenameAlert = true
-								} label: {
-									Label("Rename", systemImage: "pencil").labelStyle(.titleOnly)
-								}.buttonStyle(.borderless).tint(Color.indigo)
-							}.transition(.move(edge: .leading))
+							}
+							Spacer()
+							getFilteredImage(filter: filter).frame(width: isEditing ? 175 : 250, height: 175).transition(.scale).transition(.move(edge: .leading))
+							Spacer()
 						}
-						Spacer()
-						getFilteredImage(filter: filter).frame(width: isEditing ? 175 : 250, height: 175).transition(.scale).transition(.move(edge: .leading))
-						Spacer()
+						VStack {
+							Spacer()
+							HStack {
+								Spacer()
+								Button {
+									
+								} label: {
+									Image(systemName: "heart").font(.title)
+								}.buttonStyle(.plain)
+							}
+						}
 					}
 					HStack {
 						Spacer()
@@ -160,68 +92,99 @@ struct SavedFiltersView: View {
 					Button(role: .destructive) {
 						filterToDelete = filter
 						showingDeleteDialog = true
-				 } label: {
-					 Label("Delete", systemImage: "trash.fill").labelStyle(.iconOnly)
-				 }
+					} label: {
+						Label("Delete", systemImage: "trash.fill").labelStyle(.iconOnly)
+					}
 					Button {
 						filterToRename = filter
 						showingRenameAlert = true
-				 } label: {
-					 Label("Rename", systemImage: "pencil").labelStyle(.iconOnly)
-				 }.tint(.indigo)
-
+					} label: {
+						Label("Rename", systemImage: "pencil").labelStyle(.iconOnly)
+					}.tint(.indigo)
+					
 				}
 			}.onDelete(perform: delete)
-		}.listStyle(.sidebar).onChange(of: selectedSavedFilter) { newValue in
+		}.listStyle(.sidebar)
+		#if os(iOS)
+			.onChange(of: selectedSavedFilter) { newValue in
 			asignSavedFilterComponentsToAppStorage()
 			showing = false
-		}.confirmationDialog(Text("Are you sure you want to delete this filter?"), isPresented: $showingDeleteDialog) {
-			Button(role: .destructive) {
-				   DispatchQueue.main.async {
-					   if let filter = filterToDelete {
-						   managedObjectContext.delete(filter)
-						   selectedSavedFilter = nil
-						   do {
-							   try managedObjectContext.save()
-						   } catch {
-							   
-						   }
-					   }
-				   }
-			   } label: {
-				   Text("Delete Filter")
-			   }
-		   }.alert("Rename Your Filter", isPresented: $showingRenameAlert, actions: {
-			   RenameAlert(selectedSavedFilter: $filterToRename).environment(\.managedObjectContext, managedObjectContext)
-}, message: {
-Text("Eenter a new name for your filter:")
-}).toolbar {
-	ToolbarItem(placement: .navigation, content: {
-					 Button {
-						 if isEditing {
-							 do {
-								 try managedObjectContext.save()
-							 } catch {
-								 
-							 }
-						 }
-						 withAnimation {
-							 isEditing.toggle()
-						 }
-					 } label: {
-						 Text(isEditing ? "Done" : "Edit")
-					 }
-			 })
-				 ToolbarItem(placement: .primaryAction, content: {
-					 Button {
-						 showing = false
-					 } label: {
-						 Text("Cancel")
-					 }
-				 })
-			 
-		 }
+		}
 		#endif
+			.confirmationDialog(Text("Are you sure you want to delete this filter?"), isPresented: $showingDeleteDialog) {
+			Button(role: .destructive) {
+				DispatchQueue.main.async {
+					if let filter = filterToDelete {
+						managedObjectContext.delete(filter)
+						selectedSavedFilter = nil
+						do {
+							try managedObjectContext.save()
+						} catch {
+							
+						}
+					}
+				}
+			} label: {
+				Text("Delete Filter")
+			}
+		}.alert("Rename Your Filter", isPresented: $showingRenameAlert, actions: {
+			RenameAlert(selectedSavedFilter: $filterToRename).environment(\.managedObjectContext, managedObjectContext)
+		}, message: {
+			Text("Eenter a new name for your filter:")
+		})
+		#if os(macOS)
+		.toolbar(content: {
+			Button {
+				showing = false
+			} label: {
+				Text("Cancel")
+			}
+			Button(role: .destructive) {
+				showingDeleteDialog = true
+			} label: {
+				Text("Delete")
+			}.disabled(selectedSavedFilter == nil)
+			Button {
+				showingRenameAlert = true
+			} label: {
+				Text("Rename")
+			}.disabled(selectedSavedFilter == nil)
+			Button {
+				asignSavedFilterComponentsToAppStorage()
+				showing = false
+			} label: {
+				Text("Apply Filter")
+			}.disabled(selectedSavedFilter == nil).keyboardShortcut(.defaultAction)
+			
+		})
+		#else
+		.toolbar {
+			ToolbarItem(placement: .navigation, content: {
+				Button {
+					if isEditing {
+						do {
+							try managedObjectContext.save()
+						} catch {
+							
+						}
+					}
+					withAnimation {
+						isEditing.toggle()
+					}
+				} label: {
+					Text(isEditing ? "Done" : "Edit")
+				}
+			})
+			ToolbarItem(placement: .primaryAction, content: {
+				Button {
+					showing = false
+				} label: {
+					Text("Cancel")
+				}
+			})
+			
+		}
+#endif
 	}
 	
 	func getFilteredImage(filter: Filter) -> some View {
@@ -234,12 +197,12 @@ Text("Eenter a new name for your filter:")
 		}).if(filter.useColorMultiply, transform: { view in
 			view.colorMultiply(Color(.sRGB, red: filter.colorMultiplyR, green: filter.colorMultiplyG, blue: filter.colorMultiplyB, opacity: filter.colorMultiplyO))
 		}).if(filter.useSaturation, transform: { view in
-				view.saturation(filter.saturation)
-			}).if(filter.useGrayscale, transform: { view in
-				view.grayscale(filter.grayscale)
-			}).if(filter.useOpacity, transform: { view in
-				view.opacity(filter.opacity)
-			}).if(filter.useBlur) { view in
+			view.saturation(filter.saturation)
+		}).if(filter.useGrayscale, transform: { view in
+			view.grayscale(filter.grayscale)
+		}).if(filter.useOpacity, transform: { view in
+			view.opacity(filter.opacity)
+		}).if(filter.useBlur) { view in
 			view.blur(radius: filter.blur)
 		}
 	}
@@ -277,13 +240,13 @@ Text("Eenter a new name for your filter:")
 	}
 	
 	func delete(filter: Filter) {
-			do {
-				managedObjectContext.delete(filter)
-				selectedSavedFilter = nil
-				try managedObjectContext.save()
-			} catch {
-				
-			}
+		do {
+			managedObjectContext.delete(filter)
+			selectedSavedFilter = nil
+			try managedObjectContext.save()
+		} catch {
+			
+		}
 	}
 	
 	func delete(at offsets: IndexSet) {
@@ -299,9 +262,9 @@ Text("Eenter a new name for your filter:")
 }
 
 /*
-struct SavedFiltersView_Previews: PreviewProvider {
-	static var previews: some View {
-		SavedFiltersView()
-	}
-}
-*/
+ struct SavedFiltersView_Previews: PreviewProvider {
+ static var previews: some View {
+ SavedFiltersView()
+ }
+ }
+ */

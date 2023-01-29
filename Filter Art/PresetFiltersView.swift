@@ -33,10 +33,23 @@ struct PresetFiltersView: View {
 			List(selection: $selectedPreset) {
 				ForEach(presets, id: \.self) { filter in
 					VStack {
-						HStack {
-							Spacer()
-							getFilteredImage(filter: filter).frame(width: 250, height: 175)
-							Spacer()
+						ZStack {
+							HStack {
+								Spacer()
+								getFilteredImage(filter: filter).frame(width: 250, height: 175)
+								Spacer()
+							}
+							VStack {
+								Spacer()
+								HStack {
+									Spacer()
+									Button {
+										
+									} label: {
+										Image(systemName: "heart").font(.title)
+									}.buttonStyle(.plain)
+								}
+							}
 						}
 						HStack {
 							Spacer()
@@ -46,6 +59,13 @@ struct PresetFiltersView: View {
 					}
 				}
 			}.listStyle(.sidebar)
+#if os(iOS)
+	.onChange(of: selectedPreset) { newValue in
+	asignPresetFilterComponentsToAppStorage()
+	showing = false
+}
+#endif
+		#if os(macOS)
 			.toolbar(content: {
 				Button {
 					showing = false
@@ -60,6 +80,18 @@ struct PresetFiltersView: View {
 				}.disabled(selectedPreset == nil).keyboardShortcut(.defaultAction)
 
 			})
+		#else
+			.toolbar {
+				ToolbarItem(placement: .primaryAction, content: {
+					Button {
+						showing = false
+					} label: {
+						Text("Cancel")
+					}
+				})
+				
+			}
+		#endif
     }
 	
 	func getImage() -> Image {
