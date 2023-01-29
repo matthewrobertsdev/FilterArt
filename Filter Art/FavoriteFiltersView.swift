@@ -33,10 +33,10 @@ struct FavoriteFiltersView: View {
 	init(showing: Binding<Bool>, searchString: String) {
 		_showing = showing
 		let searchStringPredicate = NSPredicate(format: "name CONTAINS[c] %@", searchString)
-		let isFavoritePredciate = NSPredicate(format: "isFavorite == %@", NSNumber(value: true))
-		let compoundPredicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [isFavoritePredciate, searchStringPredicate])
+		let isFavoritePredicate = NSPredicate(format: "isFavorite == %@", NSNumber(value: true))
+		let compoundPredicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [isFavoritePredicate, searchStringPredicate])
 		if searchString == "" {
-			_favoriteFilters = FetchRequest<Filter>(sortDescriptors: [SortDescriptor(\.saveDate)], predicate: isFavoritePredciate)
+			_favoriteFilters = FetchRequest<Filter>(sortDescriptors: [SortDescriptor(\.saveDate)], predicate: isFavoritePredicate)
 		} else {
 			_favoriteFilters = FetchRequest<Filter>(sortDescriptors: [SortDescriptor(\.saveDate)], predicate: compoundPredicate)
 		}
@@ -57,7 +57,11 @@ struct FavoriteFiltersView: View {
 							HStack {
 								Spacer()
 								Button {
-									filter.isFavorite.toggle()
+									if filter.isFavorite && filter.isPreset {
+										managedObjectContext.delete(filter)
+									} else {
+										filter.isFavorite.toggle()
+									}
 									do {
 										try managedObjectContext.save()
 									} catch {

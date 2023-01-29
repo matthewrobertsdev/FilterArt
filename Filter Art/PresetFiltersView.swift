@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PresetFiltersView: View {
 	@Environment(\.managedObjectContext) var managedObjectContext
+	@FetchRequest(sortDescriptors: [SortDescriptor(\.saveDate)]) var presetFavoriteFiltersFetchRequest: FetchedResults<Filter>
 	@AppStorage("imageInvertColors") private var invertColors: Bool = false
 	@AppStorage("imageHueRotation") private var hueRotation: Double = 0
 	@AppStorage("imageUseHueRotation") private var useHueRotation: Bool = false
@@ -29,14 +30,30 @@ struct PresetFiltersView: View {
 	@Binding var showing: Bool
 	@State var selectedPreset: FilterModel? = nil
 	@Binding var searchString: String
+	
+	init(showing: Binding<Bool>, searchString: Binding<String>) {
+		_showing = showing
+		_searchString = searchString
+		let searchStringPredicate = NSPredicate(format: "name CONTAINS[c] %@", _searchString.wrappedValue)
+		let isFavoritePredicate = NSPredicate(format: "isFavorite == %@", NSNumber(value: true))
+		let isPresetPredicate = NSPredicate(format: "isPreset == %@", NSNumber(value: true))
+		let favoriteAndPresetPredicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [isFavoritePredicate, isPresetPredicate])
+		let compoundPredicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [isFavoritePredicate, isPresetPredicate, searchStringPredicate])
+		if _searchString.wrappedValue == "" {
+			_presetFavoriteFiltersFetchRequest = FetchRequest<Filter>(sortDescriptors: [SortDescriptor(\.saveDate)], predicate: favoriteAndPresetPredicate)
+		} else {
+			_presetFavoriteFiltersFetchRequest = FetchRequest<Filter>(sortDescriptors: [SortDescriptor(\.saveDate)], predicate: compoundPredicate)
+		}
+	}
+	
     var body: some View {
 			List(selection: $selectedPreset) {
-				ForEach(presets, id: \.self) { filter in
+				ForEach(presets, id: \.self) { filterModel in
 					VStack {
 						ZStack {
 							HStack {
 								Spacer()
-								getFilteredImage(filter: filter).frame(width: 250, height: 175)
+								getFilteredImage(filter: filterModel).frame(width: 250, height: 175)
 								Spacer()
 							}
 							VStack {
@@ -44,16 +61,56 @@ struct PresetFiltersView: View {
 								HStack {
 									Spacer()
 									Button {
-										
+										if !isFavorite(filterModel: filterModel) {
+											DispatchQueue.main.async {
+												let savedFilter = Filter(context: managedObjectContext)
+												savedFilter.blur = filterModel.blur
+												savedFilter.colorMultiplyB = filterModel.colorMultiplyB
+												savedFilter.colorMultiplyG = filterModel.colorMultiplyG
+												savedFilter.colorMultiplyO = filterModel.colorMultiplyO
+												savedFilter.colorMultiplyR = filterModel.colorMultiplyR
+												savedFilter.contrast = filterModel.contrast
+												savedFilter.favoriteDate = Date()
+												savedFilter.grayscale = filterModel.grayscale
+												savedFilter.hueRotation = filterModel.hueRotation
+												savedFilter.id = filterModel.id.description
+												savedFilter.invertColors = filterModel.invertColors
+												savedFilter.isFavorite = !isFavorite(filterModel: filterModel)
+												savedFilter.isPreset = true
+												savedFilter.name = filterModel.name
+												savedFilter.opacity = filterModel.opacity
+												savedFilter.saturation = filterModel.saturation
+												savedFilter.saveDate = Date()
+												savedFilter.useBlur = filterModel.useBlur
+												savedFilter.useColorMultiply = filterModel.useColorMultiply
+												savedFilter.useContrast = filterModel.useContrast
+												savedFilter.useGrayscale = filterModel.useGrayscale
+												savedFilter.useHueRotation = filterModel.useHueRotation
+												savedFilter.useOpacity = filterModel.useOpacity
+												savedFilter.useSaturation = filterModel.useSaturation
+											}
+										} else {
+											let filterToDelete = presetFavoriteFiltersFetchRequest.first { filter in
+												filterModel.id.description == filter.id
+											}
+											if let filterToDelete = filterToDelete {
+												managedObjectContext.delete(filterToDelete)
+											}
+										}
+										do {
+											try managedObjectContext.save()
+										} catch {
+											
+										}
 									} label: {
-										Image(systemName: "heart").font(.title)
+										Image(systemName: isFavorite(filterModel: filterModel) ? "heart.fill" : "heart").font(.title)
 									}.buttonStyle(.plain)
 								}
 							}
 						}
 						HStack {
 							Spacer()
-							Text(filter.name)
+							Text(filterModel.name)
 							Spacer()
 						}
 					}
@@ -153,6 +210,15 @@ struct PresetFiltersView: View {
 			opacity = filter.opacity
 			useBlur = filter.useBlur
 			blur = filter.blur
+		}
+	}
+	
+	func isFavorite(filterModel: FilterModel) -> Bool {
+		return presetFavoriteFiltersFetchRequest.contains { filter in
+			guard let filterId = filter.id else {
+				return false
+			}
+			return filterId == filterModel.id.description
 		}
 	}
 }
