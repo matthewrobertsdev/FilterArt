@@ -37,10 +37,13 @@ struct SavedFiltersView: View {
 	
 	init(showing: Binding<Bool>, searchString: String) {
 		_showing = showing
+		let searchStringPredicate = NSPredicate(format: "name CONTAINS[c] %@", searchString)
+		let isNotPresetPredicate = NSPredicate(format: "isPreset == %@", NSNumber(value: false))
+		let compoundPredicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [isNotPresetPredicate, searchStringPredicate])
 		if searchString == "" {
-			_savedFilters = FetchRequest<Filter>(sortDescriptors: [SortDescriptor(\.saveDate)])
+			_savedFilters = FetchRequest<Filter>(sortDescriptors: [SortDescriptor(\.saveDate)], predicate: isNotPresetPredicate)
 		} else {
-			_savedFilters = FetchRequest<Filter>(sortDescriptors: [SortDescriptor(\.saveDate)], predicate: NSPredicate(format: "name CONTAINS[c] %@", searchString))
+			_savedFilters = FetchRequest<Filter>(sortDescriptors: [SortDescriptor(\.saveDate)], predicate: compoundPredicate)
 		}
 	}
 	
@@ -48,7 +51,6 @@ struct SavedFiltersView: View {
 		List(selection: $selectedSavedFilter) {
 			ForEach(savedFilters, id: \.self) { filter in
 				VStack(alignment: .center) {
-					ZStack {
 						HStack {
 							if isEditing {
 								VStack(spacing: 20) {
@@ -71,28 +73,22 @@ struct SavedFiltersView: View {
 							getFilteredImage(filter: filter).frame(width: isEditing ? 175 : 250, height: 175).transition(.scale).transition(.move(edge: .leading))
 							Spacer()
 						}
-						VStack {
-							Spacer()
-							HStack {
-								Spacer()
-								Button {
-									filter.isFavorite.toggle()
-									do {
-										try managedObjectContext.save()
-									} catch {
-										
-									}
-								} label: {
-									Image(systemName: filter.isFavorite ? "heart.fill" : "heart").font(.title)
-								}.buttonStyle(.plain)
-							}
-						}
-					}
 					HStack {
 						Spacer()
 						Text(filter.name ?? "Saved Filter")
 						Spacer()
-					}
+						Button {
+							filter.isFavorite.toggle()
+							do {
+								try managedObjectContext.save()
+							} catch {
+								
+							}
+						} label: {
+							Image(systemName: filter.isFavorite ? "heart.fill" : "heart").font(.title)
+						}.buttonStyle(.plain)
+					}.frame(maxWidth: 300)
+					Spacer()
 				}.swipeActions(allowsFullSwipe: false) {
 					Button(role: .destructive) {
 						filterToDelete = filter

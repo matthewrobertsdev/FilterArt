@@ -46,88 +46,81 @@ struct PresetFiltersView: View {
 		}
 	}
 	
-    var body: some View {
-			List(selection: $selectedPreset) {
-				ForEach(presets, id: \.self) { filterModel in
-					VStack {
-						ZStack {
-							HStack {
-								Spacer()
-								getFilteredImage(filter: filterModel).frame(width: 250, height: 175)
-								Spacer()
-							}
-							VStack {
-								Spacer()
-								HStack {
-									Spacer()
-									Button {
-										if !isFavorite(filterModel: filterModel) {
-											DispatchQueue.main.async {
-												let savedFilter = Filter(context: managedObjectContext)
-												savedFilter.blur = filterModel.blur
-												savedFilter.colorMultiplyB = filterModel.colorMultiplyB
-												savedFilter.colorMultiplyG = filterModel.colorMultiplyG
-												savedFilter.colorMultiplyO = filterModel.colorMultiplyO
-												savedFilter.colorMultiplyR = filterModel.colorMultiplyR
-												savedFilter.contrast = filterModel.contrast
-												savedFilter.favoriteDate = Date()
-												savedFilter.grayscale = filterModel.grayscale
-												savedFilter.hueRotation = filterModel.hueRotation
-												savedFilter.id = filterModel.id.description
-												savedFilter.invertColors = filterModel.invertColors
-												savedFilter.isFavorite = !isFavorite(filterModel: filterModel)
-												savedFilter.isPreset = true
-												savedFilter.name = filterModel.name
-												savedFilter.opacity = filterModel.opacity
-												savedFilter.saturation = filterModel.saturation
-												savedFilter.saveDate = Date()
-												savedFilter.useBlur = filterModel.useBlur
-												savedFilter.useColorMultiply = filterModel.useColorMultiply
-												savedFilter.useContrast = filterModel.useContrast
-												savedFilter.useGrayscale = filterModel.useGrayscale
-												savedFilter.useHueRotation = filterModel.useHueRotation
-												savedFilter.useOpacity = filterModel.useOpacity
-												savedFilter.useSaturation = filterModel.useSaturation
-												do {
-													try managedObjectContext.save()
-												} catch {
-													
-												}
-											}
-										} else {
-											let filterToDelete = presetFavoriteFiltersFetchRequest.first { filter in
-												filterModel.id.description == filter.id
-											}
-											if let filterToDelete = filterToDelete {
-												managedObjectContext.delete(filterToDelete)
-											}
-											do {
-												try managedObjectContext.save()
-											} catch {
-												
-											}
-										}
-									} label: {
-										Image(systemName: isFavorite(filterModel: filterModel) ? "heart.fill" : "heart").font(.title)
-									}.buttonStyle(.plain)
+	var body: some View {
+		List(selection: $selectedPreset) {
+			ForEach(presets, id: \.self) { filterModel in
+				VStack {
+					HStack {
+						Spacer()
+						getFilteredImage(filter: filterModel).frame(width: 250, height: 175)
+						Spacer()
+					}
+					HStack {
+						Spacer()
+						Text(filterModel.name)
+						Spacer()
+						Button {
+							if !isFavorite(filterModel: filterModel) {
+								DispatchQueue.main.async {
+									let savedFilter = Filter(context: managedObjectContext)
+									savedFilter.blur = filterModel.blur
+									savedFilter.colorMultiplyB = filterModel.colorMultiplyB
+									savedFilter.colorMultiplyG = filterModel.colorMultiplyG
+									savedFilter.colorMultiplyO = filterModel.colorMultiplyO
+									savedFilter.colorMultiplyR = filterModel.colorMultiplyR
+									savedFilter.contrast = filterModel.contrast
+									savedFilter.favoriteDate = Date()
+									savedFilter.grayscale = filterModel.grayscale
+									savedFilter.hueRotation = filterModel.hueRotation
+									savedFilter.id = filterModel.id.description
+									savedFilter.invertColors = filterModel.invertColors
+									savedFilter.isFavorite = !isFavorite(filterModel: filterModel)
+									savedFilter.isPreset = true
+									savedFilter.name = filterModel.name
+									savedFilter.opacity = filterModel.opacity
+									savedFilter.saturation = filterModel.saturation
+									savedFilter.saveDate = Date()
+									savedFilter.useBlur = filterModel.useBlur
+									savedFilter.useColorMultiply = filterModel.useColorMultiply
+									savedFilter.useContrast = filterModel.useContrast
+									savedFilter.useGrayscale = filterModel.useGrayscale
+									savedFilter.useHueRotation = filterModel.useHueRotation
+									savedFilter.useOpacity = filterModel.useOpacity
+									savedFilter.useSaturation = filterModel.useSaturation
+									do {
+										try managedObjectContext.save()
+									} catch {
+										
+									}
+								}
+							} else {
+								let filterToDelete = presetFavoriteFiltersFetchRequest.first { filter in
+									filterModel.id.description == filter.id
+								}
+								if let filterToDelete = filterToDelete {
+									managedObjectContext.delete(filterToDelete)
+								}
+								do {
+									try managedObjectContext.save()
+								} catch {
+									
 								}
 							}
-						}
-						HStack {
-							Spacer()
-							Text(filterModel.name)
-							Spacer()
-						}
-					}
+						} label: {
+							Image(systemName: isFavorite(filterModel: filterModel) ? "heart.fill" : "heart").font(.title)
+						}.buttonStyle(.plain)
+					}.frame(maxWidth: 300)
+					Spacer()
 				}
-			}.listStyle(.sidebar)
+			}
+		}.listStyle(.sidebar)
 #if os(iOS)
-	.onChange(of: selectedPreset) { newValue in
-	asignPresetFilterComponentsToAppStorage()
-	showing = false
-}
+			.onChange(of: selectedPreset) { newValue in
+				asignPresetFilterComponentsToAppStorage()
+				showing = false
+			}
 #endif
-		#if os(macOS)
+#if os(macOS)
 			.toolbar(content: {
 				Button {
 					showing = false
@@ -140,9 +133,9 @@ struct PresetFiltersView: View {
 				} label: {
 					Text("Apply Filter")
 				}.disabled(selectedPreset == nil).keyboardShortcut(.defaultAction)
-
+				
 			})
-		#else
+#else
 			.toolbar {
 				ToolbarItem(placement: .primaryAction, content: {
 					Button {
@@ -153,8 +146,8 @@ struct PresetFiltersView: View {
 				})
 				
 			}
-		#endif
-    }
+#endif
+	}
 	
 	func getImage() -> Image {
 		if useOriginalImage {
@@ -188,12 +181,12 @@ struct PresetFiltersView: View {
 		}).if(filter.useColorMultiply, transform: { view in
 			view.colorMultiply(Color(.sRGB, red: filter.colorMultiplyR, green: filter.colorMultiplyG, blue: filter.colorMultiplyB, opacity: filter.colorMultiplyO))
 		}).if(filter.useSaturation, transform: { view in
-				view.saturation(filter.saturation)
-			}).if(filter.useGrayscale, transform: { view in
-				view.grayscale(filter.grayscale)
-			}).if(filter.useOpacity, transform: { view in
-				view.opacity(filter.opacity)
-			}).if(filter.useBlur) { view in
+			view.saturation(filter.saturation)
+		}).if(filter.useGrayscale, transform: { view in
+			view.grayscale(filter.grayscale)
+		}).if(filter.useOpacity, transform: { view in
+			view.opacity(filter.opacity)
+		}).if(filter.useBlur) { view in
 			view.blur(radius: filter.blur)
 		}
 	}
@@ -229,9 +222,9 @@ struct PresetFiltersView: View {
 }
 
 /*
-struct PresetFiltersView_Previews: PreviewProvider {
-    static var previews: some View {
-        PresetFiltersView()
-    }
-}
-*/
+ struct PresetFiltersView_Previews: PreviewProvider {
+ static var previews: some View {
+ PresetFiltersView()
+ }
+ }
+ */

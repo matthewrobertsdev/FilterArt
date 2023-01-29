@@ -46,38 +46,31 @@ struct FavoriteFiltersView: View {
 		List(selection: $selectedFavoriteFilter) {
 			ForEach(favoriteFilters, id: \.self) { filter in
 				VStack(alignment: .center) {
-					ZStack {
 						HStack {
 							Spacer()
 							getFilteredImage(filter: filter).frame(width: 250, height: 175).transition(.scale).transition(.move(edge: .leading))
 							Spacer()
 						}
-						VStack {
-							Spacer()
-							HStack {
-								Spacer()
-								Button {
-									if filter.isFavorite && filter.isPreset {
-										managedObjectContext.delete(filter)
-									} else {
-										filter.isFavorite.toggle()
-									}
-									do {
-										try managedObjectContext.save()
-									} catch {
-										
-									}
-								} label: {
-									Image(systemName: filter.isFavorite ? "heart.fill" : "heart").font(.title)
-								}.buttonStyle(.plain)
-							}
-						}
-					}
 					HStack {
 						Spacer()
 						Text(filter.name ?? "Saved Filter")
 						Spacer()
-					}
+							Button {
+								if filter.isFavorite && filter.isPreset {
+									managedObjectContext.delete(filter)
+								} else {
+									filter.isFavorite.toggle()
+								}
+								do {
+									try managedObjectContext.save()
+								} catch {
+									
+								}
+							} label: {
+								Image(systemName: filter.isFavorite ? "heart.fill" : "heart").font(.title)
+							}.buttonStyle(.plain)
+					}.frame(maxWidth: 300)
+					Spacer()
 				}
 			}
 		}.listStyle(.sidebar)
