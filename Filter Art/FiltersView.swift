@@ -27,7 +27,7 @@ struct FiltersView: View {
 			} else if filterType == FilterType.saved.rawValue {
 				SavedFiltersView(showing: $showing, searchString: searchString)
 			} else {
-				EmptyView()
+				FavoriteFiltersView(showing: $showing, searchString: searchString)
 			}
 		}).safeAreaInset(edge: .top, content: {
 			VStack(spacing:0){
@@ -55,7 +55,7 @@ struct FiltersView: View {
 				} else if filterType == FilterType.saved.rawValue {
 					SavedFiltersView(showing: $showing, searchString: searchString)
 				} else {
-					EmptyView()
+					FavoriteFiltersView(showing: $showing, searchString: searchString)
 				}
 			}).safeAreaInset(edge: .top, content: {
 				VStack(spacing:0){

@@ -1,15 +1,15 @@
 //
-//  SavedFiltersView.swift
+//  FavoriteFiltersView.swift
 //  Filter Art
 //
-//  Created by Matt Roberts on 1/27/23.
+//  Created by Matt Roberts on 1/29/23.
 //
 
 import SwiftUI
 
-struct SavedFiltersView: View {
+struct FavoriteFiltersView: View {
 	@Environment(\.managedObjectContext) var managedObjectContext
-	@FetchRequest(sortDescriptors: [SortDescriptor(\.saveDate)]) var savedFilters: FetchedResults<Filter>
+	@FetchRequest(sortDescriptors: [SortDescriptor(\.saveDate)]) var favoriteFilters: FetchedResults<Filter>
 	@AppStorage("imageInvertColors") private var invertColors: Bool = false
 	@AppStorage("imageHueRotation") private var hueRotation: Double = 0
 	@AppStorage("imageUseHueRotation") private var useHueRotation: Bool = false
@@ -28,47 +28,28 @@ struct SavedFiltersView: View {
 	@AppStorage("imageUseOriginalImage") private var useOriginalImage: Bool = true
 	@EnvironmentObject var imageDataStore: ImageDataStore
 	@Binding var showing: Bool
-	@State var selectedSavedFilter: Filter? = nil
-	@State var isEditing = false
-	@State var showingDeleteDialog = false
-	@State var showingRenameAlert = false
-	@State var filterToDelete: Filter? = nil
-	@State var filterToRename: Filter? = nil
+	@State var selectedFavoriteFilter: Filter? = nil
 	
 	init(showing: Binding<Bool>, searchString: String) {
 		_showing = showing
+		let searchStringPredicate = NSPredicate(format: "name CONTAINS[c] %@", searchString)
+		let isFavoritePredciate = NSPredicate(format: "isFavorite == %@", NSNumber(value: true))
+		let compoundPredicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [isFavoritePredciate, searchStringPredicate])
 		if searchString == "" {
-			_savedFilters = FetchRequest<Filter>(sortDescriptors: [SortDescriptor(\.saveDate)])
+			_favoriteFilters = FetchRequest<Filter>(sortDescriptors: [SortDescriptor(\.saveDate)], predicate: isFavoritePredciate)
 		} else {
-			_savedFilters = FetchRequest<Filter>(sortDescriptors: [SortDescriptor(\.saveDate)], predicate: NSPredicate(format: "name CONTAINS[c] %@", searchString))
+			_favoriteFilters = FetchRequest<Filter>(sortDescriptors: [SortDescriptor(\.saveDate)], predicate: compoundPredicate)
 		}
 	}
 	
 	var body: some View {
-		List(selection: $selectedSavedFilter) {
-			ForEach(savedFilters, id: \.self) { filter in
+		List(selection: $selectedFavoriteFilter) {
+			ForEach(favoriteFilters, id: \.self) { filter in
 				VStack(alignment: .center) {
 					ZStack {
 						HStack {
-							if isEditing {
-								VStack(spacing: 20) {
-									Button(role: .destructive) {
-										filterToDelete = filter
-										showingDeleteDialog = true
-									} label: {
-										Label("Delete", systemImage: "trash.fill").labelStyle(.titleOnly)
-									}.buttonStyle(.borderless).tint(Color.red)
-									Button {
-										filterToRename = filter
-										showingRenameAlert = true
-									} label: {
-										Label("Rename", systemImage: "pencil").labelStyle(.titleOnly)
-									}.buttonStyle(.borderless).tint(Color.indigo)
-								}.transition(.move(edge: .leading))
-
-							}
 							Spacer()
-							getFilteredImage(filter: filter).frame(width: isEditing ? 175 : 250, height: 175).transition(.scale).transition(.move(edge: .leading))
+							getFilteredImage(filter: filter).frame(width: 250, height: 175).transition(.scale).transition(.move(edge: .leading))
 							Spacer()
 						}
 						VStack {
@@ -93,22 +74,8 @@ struct SavedFiltersView: View {
 						Text(filter.name ?? "Saved Filter")
 						Spacer()
 					}
-				}.swipeActions(allowsFullSwipe: false) {
-					Button(role: .destructive) {
-						filterToDelete = filter
-						showingDeleteDialog = true
-					} label: {
-						Label("Delete", systemImage: "trash.fill").labelStyle(.iconOnly)
-					}
-					Button {
-						filterToRename = filter
-						showingRenameAlert = true
-					} label: {
-						Label("Rename", systemImage: "pencil").labelStyle(.iconOnly)
-					}.tint(.indigo)
-					
 				}
-			}.onDelete(perform: delete)
+			}
 		}.listStyle(.sidebar)
 		#if os(iOS)
 			.onChange(of: selectedSavedFilter) { newValue in
@@ -116,27 +83,6 @@ struct SavedFiltersView: View {
 			showing = false
 		}
 		#endif
-			.confirmationDialog(Text("Are you sure you want to delete this filter?"), isPresented: $showingDeleteDialog) {
-			Button(role: .destructive) {
-				DispatchQueue.main.async {
-					if let filter = filterToDelete {
-						managedObjectContext.delete(filter)
-						selectedSavedFilter = nil
-						do {
-							try managedObjectContext.save()
-						} catch {
-							
-						}
-					}
-				}
-			} label: {
-				Text("Delete Filter")
-			}
-		}.alert("Rename Your Filter", isPresented: $showingRenameAlert, actions: {
-			RenameAlert(selectedSavedFilter: $filterToRename).environment(\.managedObjectContext, managedObjectContext)
-		}, message: {
-			Text("Eenter a new name for your filter:")
-		})
 		#if os(macOS)
 		.toolbar(content: {
 			Button {
@@ -144,42 +90,16 @@ struct SavedFiltersView: View {
 			} label: {
 				Text("Cancel")
 			}
-			Button(role: .destructive) {
-				showingDeleteDialog = true
-			} label: {
-				Text("Delete")
-			}.disabled(selectedSavedFilter == nil)
-			Button {
-				showingRenameAlert = true
-			} label: {
-				Text("Rename")
-			}.disabled(selectedSavedFilter == nil)
 			Button {
 				asignSavedFilterComponentsToAppStorage()
 				showing = false
 			} label: {
 				Text("Apply Filter")
-			}.disabled(selectedSavedFilter == nil).keyboardShortcut(.defaultAction)
+			}.disabled(selectedFavoriteFilter == nil).keyboardShortcut(.defaultAction)
 			
 		})
 		#else
 		.toolbar {
-			ToolbarItem(placement: .navigation, content: {
-				Button {
-					if isEditing {
-						do {
-							try managedObjectContext.save()
-						} catch {
-							
-						}
-					}
-					withAnimation {
-						isEditing.toggle()
-					}
-				} label: {
-					Text(isEditing ? "Done" : "Edit")
-				}
-			})
 			ToolbarItem(placement: .primaryAction, content: {
 				Button {
 					showing = false
@@ -225,7 +145,7 @@ struct SavedFiltersView: View {
 	}
 	
 	func asignSavedFilterComponentsToAppStorage() {
-		if let filter = selectedSavedFilter {
+		if let filter = selectedFavoriteFilter {
 			invertColors = filter.invertColors
 			useHueRotation = filter.useHueRotation
 			hueRotation = filter.hueRotation
@@ -244,32 +164,12 @@ struct SavedFiltersView: View {
 		}
 	}
 	
-	func delete(filter: Filter) {
-		do {
-			managedObjectContext.delete(filter)
-			selectedSavedFilter = nil
-			try managedObjectContext.save()
-		} catch {
-			
-		}
-	}
-	
-	func delete(at offsets: IndexSet) {
-		for index in offsets {
-			do {
-				managedObjectContext.delete(savedFilters[index])
-				try managedObjectContext.save()
-			} catch {
-				
-			}
-		}
-	}
 }
 
 /*
- struct SavedFiltersView_Previews: PreviewProvider {
- static var previews: some View {
- SavedFiltersView()
- }
- }
- */
+struct FavoriteFiltersView_Previews: PreviewProvider {
+    static var previews: some View {
+        FavoriteFiltersView()
+    }
+}
+*/

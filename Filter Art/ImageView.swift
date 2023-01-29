@@ -231,6 +231,7 @@ struct ImageView: View {
 	func getEditor() -> some View {
 		Group {
 			VStack(spacing: 10) {
+				#if os(iOS)
 				HStack(spacing: 20) {
 					Button("Modified Image") {
 						showingPreviewModal = true
@@ -240,7 +241,6 @@ struct ImageView: View {
 					}
 				}
 				HStack(spacing: 20) {
-					#if os(iOS)
 					PhotosPicker(
 								selection: $selectedItem,
 								matching: .images,
@@ -259,7 +259,19 @@ struct ImageView: View {
 										}
 									}
 								}
-					#else
+					Button("Default Image") {
+						useOriginalImage = true
+						imageDataStore.imageData = Data()
+					}
+				}
+				#else
+				HStack(spacing: 20) {
+					Button("Modified Image") {
+						showingPreviewModal = true
+					}
+					Button("Unmodfied Image") {
+						showingUnmodifiedImage = true
+					}
 					Button("Choose Image") {
 						//waitingForDrop = true
 						//#if os(macOS)
@@ -291,13 +303,13 @@ struct ImageView: View {
 						//showingImagePicker = true
 					 
 					}
-#endif
 
 					Button("Default Image") {
 						useOriginalImage = true
 						imageDataStore.imageData = Data()
 					}
 				}
+#endif
 				#if os(iOS)
 				/*
 				HStack(spacing: 20){
@@ -327,12 +339,6 @@ struct ImageView: View {
 						Text("Share Image")
 					}
 				}
-				#else
-				HStack(spacing: 20){
-					getSavePanelButton()
-					ShareLink(Text("Share Image"), item: Image(nsImage: getFilteredImage()), preview: SharePreview("Image to Share", image: Image(nsImage: getFilteredImage()))).labelStyle(.titleOnly)
-				}
-				#endif
 				HStack(spacing: 20) {
 					Button {
 						showingNameAlert = true
@@ -345,8 +351,26 @@ struct ImageView: View {
 						Text("Apply Filter...")
 					}
 				}
+				#else
+				HStack(spacing: 20){
+					getSavePanelButton()
+					ShareLink(Text("Share Image"), item: Image(nsImage: getFilteredImage()), preview: SharePreview("Image to Share", image: Image(nsImage: getFilteredImage()))).labelStyle(.titleOnly)
+						Button {
+							showingNameAlert = true
+						} label: {
+							//Label("Add Saved Filter", systemImage: "plus")
+							Text("Add Saved Filter")
+						}
+						Button {
+							showingFilters = true
+						} label: {
+							//Label("Apply Filter...", systemImage: "camera.filters")
+							Text("Apply Filter...")
+						}
+				}
+				#endif
+				getFilterControls()
 			}
-			getFilterControls()
 		}.padding().frame(maxWidth: 600)
 	}
 	
@@ -551,7 +575,8 @@ struct ImageView: View {
 	
 	#if os(macOS)
 	func getSavePanelButton() -> some View {
-		Button("Export Image") {
+		
+		Button {
 			let savePanel = NSSavePanel()
 			savePanel.title = "Export Image"
 			savePanel.prompt = "Export Image"
@@ -577,6 +602,9 @@ struct ImageView: View {
 					}
 				}
 			}
+		} label: {
+			//Label("Export Image", systemImage: "square.and.arrow.down")
+			Text("Export Image")
 		}
 	}
 	#endif

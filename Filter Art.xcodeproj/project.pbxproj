@@ -38,6 +38,8 @@
 		9FB89EB62986286B00C9DF75 /* PresetFiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB89EB52986286B00C9DF75 /* PresetFiltersView.swift */; };
 		9FB89EB72986286B00C9DF75 /* PresetFiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB89EB52986286B00C9DF75 /* PresetFiltersView.swift */; };
 		9FC012D12972563300309D6D /* OpacityControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FC012D02972563300309D6D /* OpacityControl.swift */; };
+		9FCF2F352986DEEA00C5868C /* FavoriteFiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCF2F342986DEEA00C5868C /* FavoriteFiltersView.swift */; };
+		9FCF2F362986DEEA00C5868C /* FavoriteFiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCF2F342986DEEA00C5868C /* FavoriteFiltersView.swift */; };
 		9FDB1BCD297EC1CC00911545 /* NameAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDB1BCC297EC1CC00911545 /* NameAlert.swift */; };
 		9FDB1BCE297EC81C00911545 /* NameAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDB1BCC297EC1CC00911545 /* NameAlert.swift */; };
 		9FE5175329725EA1003F3CA7 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9FE5175229725EA1003F3CA7 /* Launch Screen.storyboard */; };
@@ -137,6 +139,7 @@
 		9F9708BF2984E0CD00D6ABC9 /* SavedFiltersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedFiltersView.swift; sourceTree = "<group>"; };
 		9FB89EB52986286B00C9DF75 /* PresetFiltersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetFiltersView.swift; sourceTree = "<group>"; };
 		9FC012D02972563300309D6D /* OpacityControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpacityControl.swift; sourceTree = "<group>"; };
+		9FCF2F342986DEEA00C5868C /* FavoriteFiltersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteFiltersView.swift; sourceTree = "<group>"; };
 		9FDB1BCC297EC1CC00911545 /* NameAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameAlert.swift; sourceTree = "<group>"; };
 		9FE5175229725EA1003F3CA7 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		9FE5176829726321003F3CA7 /* Fillter ArtTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Fillter ArtTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -276,6 +279,7 @@
 				9F89DA97296FB6F900D46184 /* InfoSeparator.swift */,
 				9F8B1E172976602C004C792B /* FiltersView.swift */,
 				9F9708BF2984E0CD00D6ABC9 /* SavedFiltersView.swift */,
+				9FCF2F342986DEEA00C5868C /* FavoriteFiltersView.swift */,
 				9FB89EB52986286B00C9DF75 /* PresetFiltersView.swift */,
 				9F8FAB69297DEC6600E5F453 /* RenameAlert.swift */,
 				9FDB1BCC297EC1CC00911545 /* NameAlert.swift */,
@@ -595,6 +599,7 @@
 				9F8FAB6A297DEC6600E5F453 /* RenameAlert.swift in Sources */,
 				9F8B1E1A29766999004C792B /* BlurControl.swift in Sources */,
 				9F89DA6B296FB65200D46184 /* FilterArt.xcdatamodeld in Sources */,
+				9FCF2F352986DEEA00C5868C /* FavoriteFiltersView.swift in Sources */,
 				9FFCC6D92971137B007C1CC4 /* ShareSheet.swift in Sources */,
 				9F89DA66296FB65200D46184 /* FilterArtApp.swift in Sources */,
 				9FF33FA829734A54005620AD /* ImageSaver.swift in Sources */,
@@ -661,6 +666,7 @@
 				9F8FAB6B297DEC6600E5F453 /* RenameAlert.swift in Sources */,
 				9FE517D8297266F7003F3CA7 /* ColorStorage.swift in Sources */,
 				9FE517D4297266F7003F3CA7 /* ConditionalViewModifier.swift in Sources */,
+				9FCF2F362986DEEA00C5868C /* FavoriteFiltersView.swift in Sources */,
 				9FE517C9297266F7003F3CA7 /* ColorComponents.swift in Sources */,
 				9FE517CA297266F7003F3CA7 /* ImagePicker.swift in Sources */,
 				9FE517D7297266F7003F3CA7 /* ShareSheet.swift in Sources */,

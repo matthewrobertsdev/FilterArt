@@ -15,7 +15,7 @@ struct FilterArtApp: App {
             ContentView()
 				.environment(\.managedObjectContext, persistenceController.container.viewContext)
 #if os(macOS)
-				.frame(minWidth: 300, minHeight: 600)
+				.frame(minWidth: 600, minHeight: 600)
 #endif
         }
     }
