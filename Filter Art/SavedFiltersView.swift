@@ -141,11 +141,13 @@ struct SavedFiltersView: View {
 				Text("Cancel")
 			}
 			Button(role: .destructive) {
+				filterToDelete = selectedSavedFilter
 				showingDeleteDialog = true
 			} label: {
 				Text("Delete")
 			}.disabled(selectedSavedFilter == nil)
 			Button {
+				filterToRename = selectedSavedFilter
 				showingRenameAlert = true
 			} label: {
 				Text("Rename")

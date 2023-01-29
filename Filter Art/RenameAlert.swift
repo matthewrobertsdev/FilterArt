@@ -14,8 +14,6 @@ struct RenameAlert: View {
     var body: some View {
 		Group {
 			TextField("Rename Text Field", text: $renameString, prompt: Text("Filter Name"))
-			
-			
 			Button {
 				DispatchQueue.main.async {
 					if let filter = selectedSavedFilter {
@@ -23,7 +21,7 @@ struct RenameAlert: View {
 						do {
 							try managedObjectContext.save()
 						} catch {
-							
+							print(error)
 						}
 					}
 				}
