@@ -354,7 +354,9 @@ struct ImageView: View {
 				#else
 				HStack(spacing: 20){
 					getSavePanelButton()
-					ShareLink(Text("Share Image"), item: Image(nsImage: getFilteredImage()), preview: SharePreview("Image to Share", image: Image(nsImage: getFilteredImage()))).labelStyle(.titleOnly)
+					/*
+					ShareLink(Text("Share Image"), item: Image(nsImage: getFilteredImage(forSharing: true)), preview: SharePreview("Image to Share", image: Image(nsImage: getFilteredImage(forSharing: true)))).labelStyle(.titleOnly)
+					 */
 						Button {
 							showingNameAlert = true
 						} label: {
@@ -663,8 +665,34 @@ struct ImageView: View {
 		return UIImage(named: "FallColors") ?? UIImage()
 		}
 	#else
-	@MainActor func getFilteredImage() -> NSImage{
-		let renderer = ImageRenderer(content: getImage().resizable().aspectRatio(contentMode: .fit).if(invertColors, transform: { view in
+	@MainActor func getFilteredImage(forSharing: Bool = false) -> NSImage{
+		var originalWidth = 1000.0
+		var originalHeight = 1000.0
+		var desiredWidth = 1000.0
+		var desiredHeight = 1000.0
+		if useOriginalImage {
+			desiredWidth = 750.0
+			desiredHeight = 1000.0
+		} else {
+			let nsImage = (NSImage(data: imageDataStore.imageData)  ?? NSImage())
+			originalWidth = nsImage.size.width
+			originalHeight = nsImage.size.height
+			if originalWidth >= originalHeight && originalWidth >= 1000.0 {
+				let scaleFactor = 1000.0/originalWidth
+				desiredWidth =  originalWidth * scaleFactor
+				desiredHeight = originalHeight * scaleFactor
+			} else if originalHeight >= originalWidth && originalHeight >= 1000.0 {
+				let scaleFactor = 1000.0/originalHeight
+				desiredWidth =  originalWidth * scaleFactor
+				desiredHeight = originalHeight * scaleFactor
+			} else {
+				desiredWidth = originalWidth
+				desiredHeight = originalHeight
+			}
+		}
+		let renderer = ImageRenderer(content: getImage().resizable().aspectRatio(contentMode: .fit).if(forSharing, transform: { view in
+			view.frame(width: desiredWidth, height: desiredHeight)
+		}).if(invertColors, transform: { view in
 			view.colorInvert()
 			  }).if(useHueRotation, transform: { view in
 				  view.hueRotation(.degrees(hueRotation))

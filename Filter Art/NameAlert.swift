@@ -30,8 +30,6 @@ struct NameAlert: View {
     var body: some View {
 		Group {
 			TextField("Name Text Field", text: $renameString, prompt: Text("Filter Name"))
-			
-			
 			Button {
 				DispatchQueue.main.async {
 					let savedFilter = Filter(context: managedObjectContext)

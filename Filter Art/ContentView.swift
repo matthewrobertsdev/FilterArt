@@ -12,6 +12,34 @@ struct ContentView: View {
 
     var body: some View {
 		ImageView().navigationTitle(Text("Filter Art"))
+		/*
+		#if os(macOS)
+			.toolbar {
+				ToolbarItemGroup(placement: .principal) {
+					Button {
+						//showingNameAlert = true
+					} label: {
+						Label("Add Saved Filter", systemImage: "plus")
+					}
+					Button {
+						//showingFilters = true
+					} label: {
+						Label("Apply Filter...", systemImage: "camera.filters")
+					}
+					Button {
+						//showingNameAlert = true
+					} label: {
+						Label("Export Image", systemImage: "square.and.arrow.down")
+					}
+					Button {
+						//showingNameAlert = true
+					} label: {
+						Label("Share Image", systemImage: "square.and.arrow.up")
+					}
+				}
+			}
+		#endif
+		 */
     }
 }
 

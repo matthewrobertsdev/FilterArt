@@ -25,10 +25,5 @@
         <attribute name="useHueRotation" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="useOpacity" optional="YES" attributeType="Boolean" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="useSaturation" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="id"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
     </entity>
 </model>

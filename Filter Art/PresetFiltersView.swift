@@ -94,11 +94,11 @@ struct PresetFiltersView: View {
 									}
 								}
 							} else {
-								let filterToDelete = presetFavoriteFiltersFetchRequest.first { filter in
+								let filtersToDelete = presetFavoriteFiltersFetchRequest.filter({ filter in
 									filterModel.id.description == filter.id
-								}
-								if let filterToDelete = filterToDelete {
-									managedObjectContext.delete(filterToDelete)
+								})
+								for toDelete in filtersToDelete {
+									managedObjectContext.delete(toDelete)
 								}
 								do {
 									try managedObjectContext.save()

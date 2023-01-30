@@ -89,7 +89,7 @@ struct SavedFiltersView: View {
 						}.buttonStyle(.plain)
 					}.frame(maxWidth: 300)
 					Spacer()
-				}.swipeActions(allowsFullSwipe: false) {
+				}/*.swipeActions(allowsFullSwipe: false) {
 					Button(role: .destructive) {
 						filterToDelete = filter
 						showingDeleteDialog = true
@@ -104,7 +104,8 @@ struct SavedFiltersView: View {
 					}.tint(.indigo)
 					
 				}
-			}.onDelete(perform: delete)
+				  */
+			}//.onDelete(perform: delete)
 		}.listStyle(.sidebar)
 		#if os(iOS)
 			.onChange(of: selectedSavedFilter) { newValue in

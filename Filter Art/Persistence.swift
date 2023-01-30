@@ -34,6 +34,28 @@ struct PersistenceController {
 
     init() {
         container = NSPersistentCloudKitContainer(name: "FilterArt")
+		let groupIdentifier="group.com.apps.celeritas.FilterArt"
+		//file url for app group
+		if let fileContainerURL=FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupIdentifier) {
+			//store url for sqlite database
+			let storeURL=fileContainerURL.appendingPathComponent("FilterArt.sqlite")
+			let storeDescription=NSPersistentStoreDescription(url: storeURL)
+			//iCloud container identifier
+			storeDescription.cloudKitContainerOptions=NSPersistentCloudKitContainerOptions(containerIdentifier: "iCloud.com.apps.celeritas.FilterArt")
+			//listen to remote changes
+			let remoteChangeKey = NSPersistentStoreRemoteChangeNotificationPostOptionKey
+			storeDescription.setOption(true as NSNumber,
+											   forKey: remoteChangeKey)
+			//track history
+			storeDescription.setOption(true as NSObject, forKey: NSPersistentHistoryTrackingKey)
+			//assign store description
+			container.persistentStoreDescriptions=[storeDescription]
+			//reflect changes
+			container.viewContext.automaticallyMergesChangesFromParent=true
+			//trump merge policy
+			container.viewContext.mergePolicy=NSMergeByPropertyObjectTrumpMergePolicy
+			try? container.viewContext.setQueryGenerationFrom(.current)
+		}
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let _ = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.
@@ -50,6 +72,5 @@ struct PersistenceController {
                 //fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
-        container.viewContext.automaticallyMergesChangesFromParent = true
     }
 }
