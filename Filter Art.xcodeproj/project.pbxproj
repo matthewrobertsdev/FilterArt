@@ -248,6 +248,7 @@
 			isa = PBXGroup;
 			children = (
 				9F89DA65296FB65200D46184 /* FilterArtApp.swift */,
+				9FE517F329726A0D003F3CA7 /* ContentView.swift */,
 				9F89DA67296FB65200D46184 /* Persistence.swift */,
 				9F89DA95296FB6CB00D46184 /* ImageView.swift */,
 				9F3221BB2975897D0034FDCB /* WindowAccessor.swift */,
@@ -256,7 +257,6 @@
 				9F89DA9F296FB8A600D46184 /* ContrastControl.swift */,
 				9F89DAA1296FB8B200D46184 /* ColorMultiplyControl.swift */,
 				9F89DA9B296FB85300D46184 /* ConditionalViewModifier.swift */,
-				9FE517F329726A0D003F3CA7 /* ContentView.swift */,
 				9F89DAA3296FB8B800D46184 /* SaturationControl.swift */,
 				9F3221BD29758DC50034FDCB /* BlurControl.swift */,
 				9F89DA99296FB73E00D46184 /* ImageDataStore.swift */,

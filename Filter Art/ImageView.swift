@@ -146,7 +146,44 @@ struct ImageView: View {
 					ScrollView {
 						getEditor().padding(.bottom).frame(maxWidth: .infinity)
 					}
-				}.sheet(isPresented: $showingShareSheet) {
+				}
+			/*
+	.toolbar {
+		ToolbarItemGroup(placement: .bottomBar) {
+			Button {
+				//showingNameAlert = true
+			} label: {
+				Label("Choose Image", systemImage: "photo")
+			}
+			Spacer()
+			Button {
+				//showingNameAlert = true
+			} label: {
+				Label("Add Saved Filter", systemImage: "plus")
+			}
+			Spacer()
+			Button {
+				//showingFilters = true
+			} label: {
+				Label("Apply Filter...", systemImage: "camera.filters")
+			}
+			Spacer()
+			Button {
+				//showingNameAlert = true
+			} label: {
+				Label("Export Image", systemImage: "square.and.arrow.down")
+			}
+			Spacer()
+			Button {
+				//showingNameAlert = true
+			} label: {
+				Label("Share Image", systemImage: "square.and.arrow.up")
+			}
+		}
+	}
+			 */
+
+ .sheet(isPresented: $showingShareSheet) {
 					ShareSheet(imageData: getFilteredImage(forSharing: true))
 				}.sheet(isPresented: $showingPreviewModal) {
 						NavigationStack {

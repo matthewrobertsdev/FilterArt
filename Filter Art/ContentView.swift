@@ -19,27 +19,37 @@ struct ContentView: View {
 					Button {
 						//showingNameAlert = true
 					} label: {
+						Label("Choose Image", systemImage: "photo")
+					}
+					Spacer()
+					Button {
+						//showingNameAlert = true
+					} label: {
 						Label("Add Saved Filter", systemImage: "plus")
 					}
+					Spacer()
 					Button {
 						//showingFilters = true
 					} label: {
 						Label("Apply Filter...", systemImage: "camera.filters")
 					}
+					Spacer()
 					Button {
 						//showingNameAlert = true
 					} label: {
 						Label("Export Image", systemImage: "square.and.arrow.down")
 					}
+					/*
 					Button {
 						//showingNameAlert = true
 					} label: {
 						Label("Share Image", systemImage: "square.and.arrow.up")
 					}
+					 */
 				}
 			}
 		#endif
-		 */
+		*/
     }
 }
 
