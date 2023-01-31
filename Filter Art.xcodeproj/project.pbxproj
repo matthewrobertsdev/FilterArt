@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9F0CFFEA2971340D003064DE /* SharingPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0CFFE92971340D003064DE /* SharingPicker.swift */; };
+		9F1258BB2988C81B00A08636 /* ModalStateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1258BA2988C81B00A08636 /* ModalStateViewModel.swift */; };
 		9F264297297051C5009309B4 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F264296297051C5009309B4 /* ImagePicker.swift */; };
 		9F3221BC2975897D0034FDCB /* WindowAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3221BB2975897D0034FDCB /* WindowAccessor.swift */; };
 		9F3221BE29758DC50034FDCB /* BlurControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3221BD29758DC50034FDCB /* BlurControl.swift */; };
@@ -111,6 +112,7 @@
 
 /* Begin PBXFileReference section */
 		9F0CFFE92971340D003064DE /* SharingPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharingPicker.swift; sourceTree = "<group>"; };
+		9F1258BA2988C81B00A08636 /* ModalStateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalStateViewModel.swift; sourceTree = "<group>"; };
 		9F264296297051C5009309B4 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		9F3221BB2975897D0034FDCB /* WindowAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAccessor.swift; sourceTree = "<group>"; };
 		9F3221BD29758DC50034FDCB /* BlurControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurControl.swift; sourceTree = "<group>"; };
@@ -248,6 +250,7 @@
 			isa = PBXGroup;
 			children = (
 				9F89DA65296FB65200D46184 /* FilterArtApp.swift */,
+				9F1258BA2988C81B00A08636 /* ModalStateViewModel.swift */,
 				9FE517F329726A0D003F3CA7 /* ContentView.swift */,
 				9F89DA67296FB65200D46184 /* Persistence.swift */,
 				9F89DA95296FB6CB00D46184 /* ImageView.swift */,
@@ -669,6 +672,7 @@
 				9FCF2F362986DEEA00C5868C /* FavoriteFiltersView.swift in Sources */,
 				9FE517C9297266F7003F3CA7 /* ColorComponents.swift in Sources */,
 				9FE517CA297266F7003F3CA7 /* ImagePicker.swift in Sources */,
+				9F1258BB2988C81B00A08636 /* ModalStateViewModel.swift in Sources */,
 				9FE517D7297266F7003F3CA7 /* ShareSheet.swift in Sources */,
 				9FE517C8297266F7003F3CA7 /* HueRotationControl.swift in Sources */,
 				9FE517DC297267D4003F3CA7 /* FilterArtApp.swift in Sources */,

@@ -9,9 +9,9 @@ import SwiftUI
 
 struct ContentView: View {
 	@Environment(\.managedObjectContext) private var viewContext
-
+	@EnvironmentObject var imageDataStore: ImageDataStore
     var body: some View {
-		ImageView().navigationTitle(Text("Filter Art"))
+		ImageView().navigationTitle(Text("Filter Art")).environmentObject(imageDataStore)
 		/*
 		#if os(macOS)
 			.toolbar {

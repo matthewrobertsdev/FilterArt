@@ -17,7 +17,7 @@ import PhotosUI
 struct ImageView: View {
 	@Environment(\.managedObjectContext) var managedObjectContext
 	@Environment(\.displayScale) var displayScale
-	@StateObject private var imageDataStore = ImageDataStore()
+	@EnvironmentObject var imageDataStore: ImageDataStore
 	@AppStorage("imagWidth") private var width: Double = 300
 	@AppStorage("imageHeight") private var height: Double = 160
 	@AppStorage("imageInvertColors") private var invertColors: Bool = false
