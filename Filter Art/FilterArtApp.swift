@@ -27,7 +27,10 @@ struct FilterArtApp: App {
 #endif
         }.commands {
 			CommandGroup(replacing: CommandGroupPlacement.newItem) {
+#if os(macOS)
 				Button {
+					NotificationCenter.default.post(name: .showOpenPanel,
+																	object: nil, userInfo: nil)
 					modalStateViewModel.showingImagePicker = true
 				} label: {
 					Label("Choose Image", systemImage: "photo")
@@ -35,9 +38,12 @@ struct FilterArtApp: App {
 				Divider()
 				Button {
 					modalStateViewModel.showingSavePanel = true
+					NotificationCenter.default.post(name: .showSavePanel,
+																	object: nil, userInfo: nil)
 				} label: {
 					Label("Export Image", systemImage: "square.and.arrow.down")
 				}.keyboardShortcut(KeyboardShortcut("e", modifiers: .command)).disabled(modalStateViewModel.isModal())
+#endif
 			}
 			CommandMenu("Image") {
 				Button {
@@ -56,18 +62,21 @@ struct FilterArtApp: App {
 				} label: {
 					Text("Default Image")
 				}.keyboardShortcut(KeyboardShortcut("d", modifiers: .command))
+#if os(macOS)
 				Button {
-					modalStateViewModel.showingOpenPanel = true
+NotificationCenter.default.post(name: .showOpenPanel,
+												object: nil, userInfo: nil)
 				} label: {
 					Label("Choose Image", systemImage: "photo")
-				}.disabled(modalStateViewModel.isModal())
+				}.keyboardShortcut(KeyboardShortcut("1", modifiers: .command)).disabled(modalStateViewModel.isModal())
 				Divider()
 				Button {
-					modalStateViewModel.showingSavePanel = true
+NotificationCenter.default.post(name: .showSavePanel,
+												object: nil, userInfo: nil)
 				} label: {
 					Label("Export Image", systemImage: "square.and.arrow.down")
 				}.keyboardShortcut(KeyboardShortcut("e", modifiers: .command)).disabled(modalStateViewModel.isModal())
-				
+#endif
 			}
 			CommandMenu("Filters") {
 				Button {
@@ -118,3 +127,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	}
 }
 #endif
+
+extension Notification.Name {
+	static let showSavePanel = Notification.Name("showSavePanel")
+	static let showOpenPanel = Notification.Name("showOpenPanel")
+}

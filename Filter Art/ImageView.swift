@@ -250,7 +250,13 @@ struct ImageView: View {
 		   Text("Enter a name for your new filter:")
 	   })
 #endif
-		}
+		}.onReceive(NotificationCenter.default.publisher(for: .showOpenPanel))
+		{ notification in
+					 showOpenPanel()
+				 }.onReceive(NotificationCenter.default.publisher(for: .showSavePanel))
+		{ notification in
+					 showSavePanel()
+				 }
 #if os(iOS)
 		.navigationBarTitleDisplayMode(.inline)
 #else
@@ -306,28 +312,7 @@ struct ImageView: View {
 						//waitingForDrop = true
 						//#if os(macOS)
 						
-						let openPanel = NSOpenPanel()
-									openPanel.prompt = "Choose Image"
-									openPanel.allowsMultipleSelection = false
-										openPanel.canChooseDirectories = false
-										openPanel.canCreateDirectories = false
-										openPanel.canChooseFiles = true
-									openPanel.allowedContentTypes = [.image]
-						if let window = window {
-							openPanel.beginSheetModal(for: window) { result in
-								if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
-									if let url = openPanel.url {
-										do {
-											imageDataStore.imageData = try Data(contentsOf: url)
-											useOriginalImage = false
-										} catch {
-											print ("Error getting data from image file url.")
-										}
-									}
-									
-								}
-							}
-						}
+						showOpenPanel()
 						 
 						//#else
 						//showingImagePicker = true
@@ -609,31 +594,7 @@ struct ImageView: View {
 	func getSavePanelButton() -> some View {
 		
 		Button {
-			let savePanel = NSSavePanel()
-			savePanel.title = "Export Image"
-			savePanel.prompt = "Export Image"
-			savePanel.canCreateDirectories = false
-			savePanel.allowedContentTypes = [.image]
-			let dateFormatter = DateFormatter()
-			dateFormatter.dateFormat = "M-d-y h.mm a"
-			let dateString = dateFormatter.string(from: Date())
-			savePanel.nameFieldStringValue = "Image \(dateString).png"
-			if let window = window {
-				savePanel.beginSheetModal(for: window) { result in
-					if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
-						if let url = savePanel.url {
-							let imageRepresentation = NSBitmapImageRep(data: getFilteredImage().tiffRepresentation ?? Data())
-							let pngData = imageRepresentation?.representation(using: .png, properties: [:]) ?? Data()
-							do {
-								try pngData.write(to: url)
-							} catch {
-								print(error)
-							}
-						}
-						
-					}
-				}
-			}
+			showSavePanel()
 		} label: {
 			//Label("Export Image", systemImage: "square.and.arrow.down")
 			Text("Export Image")
@@ -747,6 +708,67 @@ struct ImageView: View {
 		return NSImage(named: "FallColors") ?? NSImage()
 		}
 	#endif
+
+	#if os(macOS)
+	func showOpenPanel() {
+		modalStateViewModel.showingOpenPanel = true
+		let openPanel = NSOpenPanel()
+					openPanel.prompt = "Choose Image"
+					openPanel.allowsMultipleSelection = false
+						openPanel.canChooseDirectories = false
+						openPanel.canCreateDirectories = false
+						openPanel.canChooseFiles = true
+					openPanel.allowedContentTypes = [.image]
+		if let window = window {
+			openPanel.beginSheetModal(for: window) { result in
+				if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
+					if let url = openPanel.url {
+						do {
+							imageDataStore.imageData = try Data(contentsOf: url)
+							useOriginalImage = false
+						} catch {
+							print ("Error getting data from image file url.")
+						}
+					}
+				}
+				modalStateViewModel.showingOpenPanel = false
+			}
+		}
+	}
+	
+	func showSavePanel() {
+		modalStateViewModel.showingSavePanel = true
+		let savePanel = NSSavePanel()
+		savePanel.title = "Export Image"
+		savePanel.prompt = "Export Image"
+		savePanel.canCreateDirectories = false
+		savePanel.allowedContentTypes = [.image]
+		let dateFormatter = DateFormatter()
+		dateFormatter.dateFormat = "M-d-y h.mm a"
+		let dateString = dateFormatter.string(from: Date())
+		savePanel.nameFieldStringValue = "Image \(dateString).png"
+		if let window = window {
+			savePanel.beginSheetModal(for: window) { result in
+				if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
+					if let url = savePanel.url {
+						let imageRepresentation = NSBitmapImageRep(data: getFilteredImage().tiffRepresentation ?? Data())
+						let pngData = imageRepresentation?.representation(using: .png, properties: [:]) ?? Data()
+						do {
+							try pngData.write(to: url)
+						} catch {
+							print(error)
+						}
+					}
+					
+				} else {
+					
+				}
+				modalStateViewModel.showingSavePanel = false
+			}
+		}
+	}
+	#endif
+	
 }
 
 struct ImageView_Previews: PreviewProvider {
