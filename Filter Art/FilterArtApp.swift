@@ -10,7 +10,6 @@ import SwiftUI
 @main
 struct FilterArtApp: App {
 	@StateObject private var modalStateViewModel = ModalStateViewModel()
-	@StateObject private var imageDataStore = ImageDataStore()
 	@AppStorage("imageUseOriginalImage") private var useOriginalImage: Bool = true
 	#if os(macOS)
 	@NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -19,7 +18,7 @@ struct FilterArtApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-				.environment(\.managedObjectContext, persistenceController.container.viewContext).environmentObject(imageDataStore)
+				.environment(\.managedObjectContext, persistenceController.container.viewContext).environmentObject(modalStateViewModel)
 #if os(macOS)
 				.frame(minWidth: 600, minHeight: 725)
 				.onAppear {
@@ -32,42 +31,42 @@ struct FilterArtApp: App {
 					modalStateViewModel.showingImagePicker = true
 				} label: {
 					Label("Choose Image", systemImage: "photo")
-				}
+				}.disabled(modalStateViewModel.isModal())
 				Divider()
 				Button {
 					modalStateViewModel.showingSavePanel = true
 				} label: {
 					Label("Export Image", systemImage: "square.and.arrow.down")
-				}.keyboardShortcut(KeyboardShortcut("e", modifiers: .command))
+				}.keyboardShortcut(KeyboardShortcut("e", modifiers: .command)).disabled(modalStateViewModel.isModal())
 			}
 			CommandMenu("Image") {
 				Button {
 					modalStateViewModel.showingPreviewModal = true
 				} label: {
 					Text("Modified Image")
-				}
+				}.keyboardShortcut(KeyboardShortcut("1", modifiers: .command)).disabled(modalStateViewModel.isModal())
 				Button {
 					modalStateViewModel.showingUnmodifiedImage = true
 				} label: {
 					Text("Unmodified Image")
-				}
+				}.keyboardShortcut(KeyboardShortcut("2", modifiers: .command)).disabled(modalStateViewModel.isModal())
 				Divider()
 				Button {
 					useOriginalImage = true
 				} label: {
 					Text("Default Image")
-				}
+				}.keyboardShortcut(KeyboardShortcut("d", modifiers: .command))
 				Button {
 					modalStateViewModel.showingOpenPanel = true
 				} label: {
 					Label("Choose Image", systemImage: "photo")
-				}
+				}.disabled(modalStateViewModel.isModal())
 				Divider()
 				Button {
 					modalStateViewModel.showingSavePanel = true
 				} label: {
 					Label("Export Image", systemImage: "square.and.arrow.down")
-				}.keyboardShortcut(KeyboardShortcut("e", modifiers: .command))
+				}.keyboardShortcut(KeyboardShortcut("e", modifiers: .command)).disabled(modalStateViewModel.isModal())
 				
 			}
 			CommandMenu("Filters") {
@@ -75,13 +74,13 @@ struct FilterArtApp: App {
 					modalStateViewModel.showingNameAlert = true
 				} label: {
 					Label("Add Saved Filter", systemImage: "plus")
-				}
+				}.keyboardShortcut(KeyboardShortcut("3", modifiers: .command)).disabled(modalStateViewModel.isModal())
 				Divider()
 				Button {
 					modalStateViewModel.showingFilters = true
 				} label: {
 					Label("Apply Filter...", systemImage: "camera.filters")
-				}
+				}.keyboardShortcut(KeyboardShortcut("4", modifiers: .command)).disabled(modalStateViewModel.isModal())
 			}
 			CommandGroup(replacing: CommandGroupPlacement.help) {
 				Button {

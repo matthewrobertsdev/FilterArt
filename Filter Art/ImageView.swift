@@ -17,7 +17,8 @@ import PhotosUI
 struct ImageView: View {
 	@Environment(\.managedObjectContext) var managedObjectContext
 	@Environment(\.displayScale) var displayScale
-	@EnvironmentObject var imageDataStore: ImageDataStore
+	@EnvironmentObject var modalStateViewModel: ModalStateViewModel
+	@StateObject private var imageDataStore = ImageDataStore()
 	@AppStorage("imagWidth") private var width: Double = 300
 	@AppStorage("imageHeight") private var height: Double = 160
 	@AppStorage("imageInvertColors") private var invertColors: Bool = false
@@ -37,18 +38,10 @@ struct ImageView: View {
 	@AppStorage("imageBlur") private var blur: Double = 0
 	@State private var image: Data = Data()
 	@AppStorage("imageUseOriginalImage") private var useOriginalImage: Bool = true
-	@State var showingUnmodifiedImage = false
-	@State var showingPreviewModal = false
-	@State var showingImagePicker = false
-	@State var showingShareSheet = false
-	@State var showingSharingPicker = false
-	@State var showingImageSaveSuccesAlert = false
 	@State var showingImageSaveFailureAlert = false
 	@State var loading = false
 	@State var waitingForDrop = false
 	@State private var selectedItem: PhotosPickerItem? = nil
-	@State var showingFilters = false
-	@State var showingNameAlert = false
 #if os(macOS)
 	@State private var window: NSWindow?
 	let maxWidth = 300.0
@@ -75,7 +68,7 @@ struct ImageView: View {
 					ScrollView {
 						getEditor().frame(maxWidth: .infinity)
 					}.frame(height: 400)
-				}.sheet(isPresented: $showingUnmodifiedImage) {
+				}.sheet(isPresented: $modalStateViewModel.showingUnmodifiedImage) {
 					VStack(alignment: .leading, spacing: 0) {
 						HStack {
 							Text("Unmodified Image:").font(.title).bold()
@@ -89,13 +82,13 @@ struct ImageView: View {
 						HStack {
 							Spacer()
 							Button {
-								showingUnmodifiedImage = false
+								modalStateViewModel.showingUnmodifiedImage = false
 							} label: {
 								Text("Done")
 							}.keyboardShortcut(.defaultAction)
 						}.padding(.top, 20)
 					}.frame(width: 650, height: 600, alignment: .topLeading).padding()
-				}.sheet(isPresented: $showingPreviewModal) {
+				}.sheet(isPresented: $modalStateViewModel.showingPreviewModal) {
 						VStack(alignment: .leading, spacing: 0) {
 							HStack {
 								Text("Modified Image:").font(.title).bold()
@@ -109,7 +102,7 @@ struct ImageView: View {
 							HStack {
 								Spacer()
 								Button {
-									showingPreviewModal = false
+									modalStateViewModel.showingPreviewModal = false
 								} label: {
 									Text("Done")
 								}.keyboardShortcut(.defaultAction)
@@ -126,13 +119,13 @@ struct ImageView: View {
 							}
 						}
 					}
-				}.sheet(isPresented: $showingFilters) {
-					FiltersView(showing: $showingFilters).environmentObject(imageDataStore)
+					}.sheet(isPresented: $modalStateViewModel.showingFilters) {
+						FiltersView(showing: $modalStateViewModel.showingFilters).environmentObject(imageDataStore)
 				   }.onChange(of: imageDataStore.imageData) { imageData in
 					ImageDataStore.save(imageData: imageDataStore.imageData) { result in
 						
 					}
-				   }.alert("Name Your Filter", isPresented: $showingNameAlert, actions: {
+				   }.alert("Name Your Filter", isPresented: $modalStateViewModel.showingNameAlert, actions: {
 					   NameAlert().environment(\.managedObjectContext, managedObjectContext)
 		  }, message: {
 			  Text("Eenter a name for your new filter:")
@@ -183,9 +176,9 @@ struct ImageView: View {
 	}
 			 */
 
- .sheet(isPresented: $showingShareSheet) {
+				.sheet(isPresented: $modalStateViewModel.showingShareSheet) {
 					ShareSheet(imageData: getFilteredImage(forSharing: true))
-				}.sheet(isPresented: $showingPreviewModal) {
+				}.sheet(isPresented: $modalStateViewModel.showingPreviewModal) {
 						NavigationStack {
 							HStack {
 								Spacer()
@@ -196,14 +189,14 @@ struct ImageView: View {
 									// MARK: Done
 									Button {
 										//handle done
-										showingPreviewModal = false
+										modalStateViewModel.showingPreviewModal = false
 									} label: {
 										Text("Done")
 									}.keyboardShortcut(.defaultAction)
 								}
 							}.navigationTitle("Modified Image").navigationBarTitleDisplayMode(.inline)
 						}
-					}.sheet(isPresented: $showingUnmodifiedImage) {
+					}.sheet(isPresented: $modalStateViewModel.showingUnmodifiedImage) {
 						NavigationStack {
 							HStack {
 								Spacer()
@@ -214,18 +207,18 @@ struct ImageView: View {
 									// MARK: Done
 									Button {
 										//handle done
-										showingUnmodifiedImage = false
+										modalStateViewModel.showingUnmodifiedImage = false
 									} label: {
 										Text("Done")
 									}.keyboardShortcut(.defaultAction)
 								}
 							}.navigationTitle("Unmodified Image").navigationBarTitleDisplayMode(.inline)
 						}
-					}.sheet(isPresented: $showingFilters) {
-						FiltersView(showing: $showingFilters).environmentObject(imageDataStore)
-					}.sheet(isPresented: $showingImagePicker) {
+					}.sheet(isPresented: $modalStateViewModel.showingFilters) {
+						FiltersView(showing: $modalStateViewModel.showingFilters).environmentObject(imageDataStore)
+					}.sheet(isPresented: $modalStateViewModel.showingImagePicker) {
 						ImagePicker(imageData: $imageDataStore.imageData, useOriginalImage: $useOriginalImage, loading: $loading)
-					}.alert("Success!", isPresented: $showingImageSaveSuccesAlert, actions: {
+					}.alert("Success!", isPresented: $modalStateViewModel.showingImageSaveSuccesAlert, actions: {
 						// actions
 					}, message: {
 							Text("Image saved to photo library.")
@@ -251,7 +244,7 @@ struct ImageView: View {
 						}
 					}
 					
-				}.alert("Name Your Filter", isPresented: $showingNameAlert, actions: {
+				}.alert("Name Your Filter", isPresented: $modalStateViewModel.showingNameAlert, actions: {
 					NameAlert().environment(\.managedObjectContext, managedObjectContext)
 	   }, message: {
 		   Text("Enter a name for your new filter:")
@@ -271,10 +264,10 @@ struct ImageView: View {
 				#if os(iOS)
 				HStack(spacing: 20) {
 					Button("Modified Image") {
-						showingPreviewModal = true
+						modalStateViewModel.showingPreviewModal = true
 					}
 					Button("Unmodfied Image") {
-						showingUnmodifiedImage = true
+						modalStateViewModel.showingUnmodifiedImage = true
 					}
 				}
 				HStack(spacing: 20) {
@@ -304,10 +297,10 @@ struct ImageView: View {
 				#else
 				HStack(spacing: 20) {
 					Button("Modified Image") {
-						showingPreviewModal = true
+						modalStateViewModel.showingPreviewModal = true
 					}
 					Button("Unmodfied Image") {
-						showingUnmodifiedImage = true
+						modalStateViewModel.showingUnmodifiedImage = true
 					}
 					Button("Choose Image") {
 						//waitingForDrop = true
@@ -365,25 +358,25 @@ struct ImageView: View {
 				 */
 				HStack(spacing: 20){
 					Button {
-						let imageSaver = ImageSaver(showingSuccessAlert: $showingImageSaveSuccesAlert, showingErrorAlert: $showingImageSaveFailureAlert)
+						let imageSaver = ImageSaver(showingSuccessAlert: $modalStateViewModel.showingImageSaveSuccesAlert, showingErrorAlert: $showingImageSaveFailureAlert)
 						imageSaver.writeToPhotoAlbum(image: getFilteredImage())
 					} label: {
 						Text("Export to Photos")
 					}
 					Button {
-						showingShareSheet = true
+						modalStateViewModel.showingShareSheet = true
 					} label: {
 						Text("Share Image")
 					}
 				}
 				HStack(spacing: 20) {
 					Button {
-						showingNameAlert = true
+						modalStateViewModel.showingNameAlert = true
 					} label: {
 						Text("Add Saved Filter")
 					}
 					Button {
-						showingFilters = true
+						modalStateViewModel.showingFilters = true
 					} label: {
 						Text("Apply Filter...")
 					}
@@ -395,13 +388,13 @@ struct ImageView: View {
 					ShareLink(Text("Share Image"), item: Image(nsImage: getFilteredImage(forSharing: true)), preview: SharePreview("Image to Share", image: Image(nsImage: getFilteredImage(forSharing: true)))).labelStyle(.titleOnly)
 					 */
 						Button {
-							showingNameAlert = true
+							modalStateViewModel.showingNameAlert = true
 						} label: {
 							//Label("Add Saved Filter", systemImage: "plus")
 							Text("Add Saved Filter")
 						}
 						Button {
-							showingFilters = true
+							modalStateViewModel.showingFilters = true
 						} label: {
 							//Label("Apply Filter...", systemImage: "camera.filters")
 							Text("Apply Filter...")

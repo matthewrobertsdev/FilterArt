@@ -19,4 +19,11 @@ class ModalStateViewModel: ObservableObject {
 	@Published var showingNameAlert = false
 	@Published var showingOpenPanel = false
 	@Published var showingSavePanel = false
+	
+	func isModal() -> Bool {
+		return showingUnmodifiedImage || showingPreviewModal ||
+		showingImagePicker || showingShareSheet || showingSharingPicker
+		|| showingImageSaveSuccesAlert || showingImageSaveFailureAlert
+		|| showingFilters || showingNameAlert || showingOpenPanel || showingSavePanel
+	}
 }
