@@ -31,7 +31,7 @@ struct FilterArtApp: App {
 					modalStateViewModel.showingImagePicker = true
 				} label: {
 					Label("Choose Image", systemImage: "photo")
-				}.disabled(modalStateViewModel.isModal())
+				}.keyboardShortcut(KeyboardShortcut("1", modifiers: .command)).disabled(modalStateViewModel.isModal())
 				Divider()
 				Button {
 					modalStateViewModel.showingSavePanel = true
@@ -44,12 +44,12 @@ struct FilterArtApp: App {
 					modalStateViewModel.showingPreviewModal = true
 				} label: {
 					Text("Modified Image")
-				}.keyboardShortcut(KeyboardShortcut("1", modifiers: .command)).disabled(modalStateViewModel.isModal())
+				}.keyboardShortcut(KeyboardShortcut("2", modifiers: .command)).disabled(modalStateViewModel.isModal())
 				Button {
 					modalStateViewModel.showingUnmodifiedImage = true
 				} label: {
 					Text("Unmodified Image")
-				}.keyboardShortcut(KeyboardShortcut("2", modifiers: .command)).disabled(modalStateViewModel.isModal())
+				}.keyboardShortcut(KeyboardShortcut("3", modifiers: .command)).disabled(modalStateViewModel.isModal())
 				Divider()
 				Button {
 					useOriginalImage = true
@@ -74,13 +74,13 @@ struct FilterArtApp: App {
 					modalStateViewModel.showingNameAlert = true
 				} label: {
 					Label("Add Saved Filter", systemImage: "plus")
-				}.keyboardShortcut(KeyboardShortcut("3", modifiers: .command)).disabled(modalStateViewModel.isModal())
+				}.keyboardShortcut(KeyboardShortcut("4", modifiers: .command)).disabled(modalStateViewModel.isModal())
 				Divider()
 				Button {
 					modalStateViewModel.showingFilters = true
 				} label: {
 					Label("Apply Filter...", systemImage: "camera.filters")
-				}.keyboardShortcut(KeyboardShortcut("4", modifiers: .command)).disabled(modalStateViewModel.isModal())
+				}.keyboardShortcut(KeyboardShortcut("5", modifiers: .command)).disabled(modalStateViewModel.isModal())
 			}
 			CommandGroup(replacing: CommandGroupPlacement.help) {
 				Button {
