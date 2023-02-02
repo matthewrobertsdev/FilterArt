@@ -369,9 +369,9 @@ struct ImageView: View {
 				#else
 				HStack(spacing: 20){
 					getSavePanelButton()
-					/*
+					
 					ShareLink(Text("Share Image"), item: Image(nsImage: getFilteredImage(forSharing: true)), preview: SharePreview("Image to Share", image: Image(nsImage: getFilteredImage(forSharing: true)))).labelStyle(.titleOnly)
-					 */
+					 
 						Button {
 							modalStateViewModel.showingNameAlert = true
 						} label: {
@@ -657,23 +657,23 @@ struct ImageView: View {
 		}
 	#else
 	@MainActor func getFilteredImage(forSharing: Bool = false) -> NSImage{
-		var originalWidth = 1000.0
-		var originalHeight = 1000.0
-		var desiredWidth = 1000.0
-		var desiredHeight = 1000.0
+		var originalWidth = 1500.0
+		var originalHeight = 1500.0
+		var desiredWidth = 1500.0
+		var desiredHeight = 1500.0
 		if useOriginalImage {
-			desiredWidth = 750.0
-			desiredHeight = 1000.0
+			desiredWidth = 1125.0
+			desiredHeight = 1500.0
 		} else {
 			let nsImage = (NSImage(data: imageDataStore.imageData)  ?? NSImage())
 			originalWidth = nsImage.size.width
 			originalHeight = nsImage.size.height
-			if originalWidth >= originalHeight && originalWidth >= 1000.0 {
-				let scaleFactor = 1000.0/originalWidth
+			if originalWidth >= originalHeight && originalWidth >= 1500.0 {
+				let scaleFactor = 1500.0/originalWidth
 				desiredWidth =  originalWidth * scaleFactor
 				desiredHeight = originalHeight * scaleFactor
-			} else if originalHeight >= originalWidth && originalHeight >= 1000.0 {
-				let scaleFactor = 1000.0/originalHeight
+			} else if originalHeight >= originalWidth && originalHeight >= 1500.0 {
+				let scaleFactor = 1500.0/originalHeight
 				desiredWidth =  originalWidth * scaleFactor
 				desiredHeight = originalHeight * scaleFactor
 			} else {
@@ -724,8 +724,37 @@ struct ImageView: View {
 				if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
 					if let url = openPanel.url {
 						do {
-							imageDataStore.imageData = try Data(contentsOf: url)
-							useOriginalImage = false
+							let imageData = try Data(contentsOf: url)
+							var originalWidth = 1500.0
+							var originalHeight = 1500.0
+							var desiredWidth = 1500.0
+							var desiredHeight = 1500.0
+							if let fullSizeImage = NSImage(data: imageData) {
+								originalWidth = fullSizeImage.size.width
+								originalHeight = fullSizeImage.size.height
+								if originalWidth >= originalHeight && originalWidth >= 1500.0 {
+									let scaleFactor = 1500.0/originalWidth
+									desiredWidth =  originalWidth * scaleFactor
+									desiredHeight = originalHeight * scaleFactor
+								} else if originalHeight >= originalWidth && originalHeight >= 1500.0 {
+									let scaleFactor = 1500.0/originalHeight
+									desiredWidth =  originalWidth * scaleFactor
+									desiredHeight = originalHeight * scaleFactor
+								} else {
+									desiredWidth = originalWidth
+									desiredHeight = originalHeight
+								}
+								let destSize = NSMakeSize(desiredWidth, desiredHeight)
+								let newImage = NSImage(size: destSize)
+								newImage.lockFocus()
+								fullSizeImage.draw(in: NSMakeRect(0, 0, destSize.width, destSize.height), from: NSMakeRect(0, 0, fullSizeImage.size.width, fullSizeImage.size.height), operation: NSCompositingOperation.sourceOver, fraction: CGFloat(1))
+								newImage.unlockFocus()
+								newImage.size = destSize
+								if let newImageData = newImage.tiffRepresentation {
+									imageDataStore.imageData = newImageData
+									useOriginalImage = false
+								}
+							}
 						} catch {
 							print ("Error getting data from image file url.")
 						}
