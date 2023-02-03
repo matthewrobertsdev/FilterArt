@@ -70,6 +70,7 @@
 		9FE517E22972684A003F3CA7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FE517E12972684A003F3CA7 /* Assets.xcassets */; };
 		9FE517E32972684A003F3CA7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FE517E12972684A003F3CA7 /* Assets.xcassets */; };
 		9FF33FA829734A54005620AD /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FF33FA629734A4E005620AD /* ImageSaver.swift */; };
+		9FF4CE73298C9D0700E2A51A /* ModalStateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1258BA2988C81B00A08636 /* ModalStateViewModel.swift */; };
 		9FFCC6D92971137B007C1CC4 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCC6D82971137A007C1CC4 /* ShareSheet.swift */; };
 		9FFCC6DF297116AB007C1CC4 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCC6DE297116AB007C1CC4 /* ShareViewController.swift */; };
 		9FFCC6E1297116B6007C1CC4 /* ShareSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCC6E0297116B6007C1CC4 /* ShareSheetView.swift */; };
@@ -611,6 +612,7 @@
 				9F89DA9C296FB85300D46184 /* ConditionalViewModifier.swift in Sources */,
 				9F89DA9E296FB89300D46184 /* HueRotationControl.swift in Sources */,
 				9F89DAA4296FB8B800D46184 /* SaturationControl.swift in Sources */,
+				9FF4CE73298C9D0700E2A51A /* ModalStateViewModel.swift in Sources */,
 				9F264297297051C5009309B4 /* ImagePicker.swift in Sources */,
 				9F89DAA2296FB8B200D46184 /* ColorMultiplyControl.swift in Sources */,
 				9F89DA9A296FB73E00D46184 /* ImageDataStore.swift in Sources */,

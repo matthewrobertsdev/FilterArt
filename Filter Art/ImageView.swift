@@ -250,13 +250,17 @@ struct ImageView: View {
 		   Text("Enter a name for your new filter:")
 	   })
 #endif
-		}.onReceive(NotificationCenter.default.publisher(for: .showOpenPanel))
+		}
+#if os(macOS)
+
+			.onReceive(NotificationCenter.default.publisher(for: .showOpenPanel))
 		{ notification in
 					 showOpenPanel()
 				 }.onReceive(NotificationCenter.default.publisher(for: .showSavePanel))
 		{ notification in
 					 showSavePanel()
 				 }
+		#endif
 #if os(iOS)
 		.navigationBarTitleDisplayMode(.inline)
 #else
@@ -285,6 +289,7 @@ struct ImageView: View {
 								}
 								.onChange(of: selectedItem) { newItem in
 									loading = true
+									/*
 									Task {
 										if let data = try? await newItem?.loadTransferable(type: Data.self) {
 											imageDataStore.imageData = data
@@ -294,6 +299,21 @@ struct ImageView: View {
 											loading = false
 										}
 									}
+									 */
+									 newItem?.loadTransferable(type: Data.self, completionHandler: { result in
+										switch result  {
+										case .success(let data):
+											if let data = data {
+												DispatchQueue.main.async {
+													imageDataStore.imageData = data
+													useOriginalImage = false
+												}
+											}
+										case .failure( _):
+											break
+										}
+										loading = false
+									})
 								}
 					Button("Default Image") {
 						useOriginalImage = true
@@ -394,7 +414,10 @@ struct ImageView: View {
 	func getDisplay() -> some View {
 		Group {
 			if loading {
-				ProgressView().controlSize(.large)
+				VStack {
+					Text("Loading Image...")
+					ProgressView().controlSize(.large)
+				}
 			} else if waitingForDrop {
 				VStack(spacing: 20) {
 					Text("Drop image file here:").font(.largeTitle).padding()
