@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct FilterArtApp: App {
+	private let baseUrl = "https://matthewrobertsdev.github.io/celeritasapps/#/"
 	@StateObject private var modalStateViewModel = ModalStateViewModel()
 	@AppStorage("imageUseOriginalImage") private var useOriginalImage: Bool = true
 	#if os(macOS)
@@ -92,25 +93,25 @@ NotificationCenter.default.post(name: .showSavePanel,
 				}.keyboardShortcut(KeyboardShortcut("5", modifiers: .command)).disabled(modalStateViewModel.isModal())
 			}
 			CommandGroup(replacing: CommandGroupPlacement.help) {
-				Button {
-					//showingNameAlert = true
-				} label: {
-					Text("Frequently Asked Questions")
+				if let contactUrl = URL(string: "\(baseUrl)faq/filterart") {
+					Link(destination: contactUrl) {
+						Text("Frequently Asked Questions")
+					}
 				}
-				Button {
-					//showingNameAlert = true
-				} label: {
-					Text("Homepage")
+				if let homepageUrl = URL(string: "\(baseUrl)filterart") {
+					Link(destination: homepageUrl) {
+						Text("Homepage")
+					}
 				}
-				Button {
-					//showingNameAlert = true
-				} label: {
-					Text("Contact the Developer")
+				if let contactUrl = URL(string: "\(baseUrl)contact") {
+					Link(destination: contactUrl) {
+						Text("Contact the Developer")
+					}
 				}
-				Button {
-					//showingNameAlert = true
-				} label: {
-					Text("Privacy Policy")
+				if let contactUrl = URL(string: "\(baseUrl)privacy/filterart") {
+					Link(destination: contactUrl) {
+						Text("Privacy Policy")
+					}
 				}
 			}
 		}
