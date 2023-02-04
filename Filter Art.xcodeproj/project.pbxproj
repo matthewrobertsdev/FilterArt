@@ -114,7 +114,7 @@
 		9F3221BB2975897D0034FDCB /* WindowAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAccessor.swift; sourceTree = "<group>"; };
 		9F3221BD29758DC50034FDCB /* BlurControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurControl.swift; sourceTree = "<group>"; };
 		9F86876E298A2BA200856D96 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		9F89DA62296FB65200D46184 /* Filter Art (iOS).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Filter Art (iOS).app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9F89DA62296FB65200D46184 /* Filter Art iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Filter Art iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F89DA65296FB65200D46184 /* FilterArtApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterArtApp.swift; sourceTree = "<group>"; };
 		9F89DA67296FB65200D46184 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		9F89DA6A296FB65200D46184 /* Filter_Art.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Filter_Art.xcdatamodel; sourceTree = "<group>"; };
@@ -229,7 +229,7 @@
 		9F89DA63296FB65200D46184 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				9F89DA62296FB65200D46184 /* Filter Art (iOS).app */,
+				9F89DA62296FB65200D46184 /* Filter Art iOS.app */,
 				9F89DA78296FB65300D46184 /* Filter ArtTests.xctest */,
 				9F89DA82296FB65300D46184 /* Filter ArtUITests.xctest */,
 				9FE5176829726321003F3CA7 /* Fillter ArtTests.xctest */,
@@ -311,9 +311,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9F89DA61296FB65200D46184 /* Filter Art (iOS) */ = {
+		9F89DA61296FB65200D46184 /* Filter Art iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9F89DA8C296FB65300D46184 /* Build configuration list for PBXNativeTarget "Filter Art (iOS)" */;
+			buildConfigurationList = 9F89DA8C296FB65300D46184 /* Build configuration list for PBXNativeTarget "Filter Art iOS" */;
 			buildPhases = (
 				9F89DA5E296FB65200D46184 /* Sources */,
 				9F89DA5F296FB65200D46184 /* Frameworks */,
@@ -323,9 +323,9 @@
 			);
 			dependencies = (
 			);
-			name = "Filter Art (iOS)";
+			name = "Filter Art iOS";
 			productName = "Filter Art";
-			productReference = 9F89DA62296FB65200D46184 /* Filter Art (iOS).app */;
+			productReference = 9F89DA62296FB65200D46184 /* Filter Art iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 		9F89DA77296FB65300D46184 /* Filter ArtTests */ = {
@@ -506,7 +506,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9F89DA61296FB65200D46184 /* Filter Art (iOS) */,
+				9F89DA61296FB65200D46184 /* Filter Art iOS */,
 				9F89DA77296FB65300D46184 /* Filter ArtTests */,
 				9F89DA81296FB65300D46184 /* Filter ArtUITests */,
 				9FE5176729726321003F3CA7 /* Fillter ArtTests */,
@@ -706,12 +706,12 @@
 /* Begin PBXTargetDependency section */
 		9F89DA7A296FB65300D46184 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 9F89DA61296FB65200D46184 /* Filter Art (iOS) */;
+			target = 9F89DA61296FB65200D46184 /* Filter Art iOS */;
 			targetProxy = 9F89DA79296FB65300D46184 /* PBXContainerItemProxy */;
 		};
 		9F89DA84296FB65300D46184 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 9F89DA61296FB65200D46184 /* Filter Art (iOS) */;
+			target = 9F89DA61296FB65200D46184 /* Filter Art iOS */;
 			targetProxy = 9F89DA83296FB65300D46184 /* PBXContainerItemProxy */;
 		};
 		9FE517AE2972668F003F3CA7 /* PBXTargetDependency */ = {
@@ -843,7 +843,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Filter Art/Filter_Art.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -867,7 +867,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -887,7 +887,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Filter Art/Filter_Art.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -911,7 +911,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -1101,7 +1101,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1115,7 +1115,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1133,7 +1133,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1147,7 +1147,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1246,7 +1246,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9F89DA8C296FB65300D46184 /* Build configuration list for PBXNativeTarget "Filter Art (iOS)" */ = {
+		9F89DA8C296FB65300D46184 /* Build configuration list for PBXNativeTarget "Filter Art iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9F89DA8D296FB65300D46184 /* Debug */,

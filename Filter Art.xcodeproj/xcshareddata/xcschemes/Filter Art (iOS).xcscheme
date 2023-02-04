@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9F89DA61296FB65200D46184"
-               BuildableName = "Filter Art (iOS).app"
-               BlueprintName = "Filter Art (iOS)"
+               BuildableName = "Filter Art iOS.app"
+               BlueprintName = "Filter Art iOS"
                ReferencedContainer = "container:Filter Art.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9F89DA61296FB65200D46184"
-            BuildableName = "Filter Art (iOS).app"
-            BlueprintName = "Filter Art (iOS)"
+            BuildableName = "Filter Art iOS.app"
+            BlueprintName = "Filter Art iOS"
             ReferencedContainer = "container:Filter Art.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9F89DA61296FB65200D46184"
-            BuildableName = "Filter Art (iOS).app"
-            BlueprintName = "Filter Art (iOS)"
+            BuildableName = "Filter Art iOS.app"
+            BlueprintName = "Filter Art iOS"
             ReferencedContainer = "container:Filter Art.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

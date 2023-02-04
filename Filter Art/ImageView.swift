@@ -107,7 +107,7 @@ struct ImageView: View {
 									Text("Done")
 								}.keyboardShortcut(.defaultAction)
 							}.padding(.top, 20)
-						}.frame(width: 650, height: 615, alignment: .topLeading).padding()
+						}.frame(width: 650, height: 600, alignment: .topLeading).padding()
 					}.onAppear() {
 					if !useOriginalImage {
 						ImageDataStore.load { result in
@@ -128,7 +128,7 @@ struct ImageView: View {
 				   }.alert("Name Your Filter", isPresented: $modalStateViewModel.showingNameAlert, actions: {
 					   NameAlert().environment(\.managedObjectContext, managedObjectContext)
 		  }, message: {
-			  Text("Eenter a name for your new filter:")
+			  Text("Enter a name for your new filter:")
 		  })
 #else
 				VStack(spacing: 0) {
