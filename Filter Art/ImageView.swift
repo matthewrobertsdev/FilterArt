@@ -269,7 +269,7 @@ struct ImageView: View {
 	}
 	
 	func getEditor() -> some View {
-		Group {
+		GroupBox {
 			VStack(spacing: 10) {
 				#if os(iOS)
 				HStack(spacing: 20) {
@@ -383,15 +383,15 @@ struct ImageView: View {
 					Button {
 						modalStateViewModel.showingFilters = true
 					} label: {
-						Text("Apply Filter...")
+						Text("Filters...")
 					}
 				}
 				#else
 				HStack(spacing: 20){
 					getSavePanelButton()
-					
+					/*
 					ShareLink(Text("Share Image"), item: Image(nsImage: getFilteredImage(forSharing: true)), preview: SharePreview("Image to Share", image: Image(nsImage: getFilteredImage(forSharing: true)))).labelStyle(.titleOnly)
-					 
+					 */
 						Button {
 							modalStateViewModel.showingNameAlert = true
 						} label: {
@@ -402,12 +402,15 @@ struct ImageView: View {
 							modalStateViewModel.showingFilters = true
 						} label: {
 							//Label("Apply Filter...", systemImage: "camera.filters")
-							Text("Apply Filter...")
+							Text("Filters...")
 						}
 				}
 				#endif
 				getFilterControls()
 			}
+			#if os(macOS)
+			.padding()
+			#endif
 		}.padding().frame(maxWidth: 600)
 	}
 	
@@ -680,23 +683,23 @@ struct ImageView: View {
 		}
 	#else
 	@MainActor func getFilteredImage(forSharing: Bool = false) -> NSImage{
-		var originalWidth = 1500.0
-		var originalHeight = 1500.0
-		var desiredWidth = 1500.0
-		var desiredHeight = 1500.0
+		var originalWidth = 1000.0
+		var originalHeight = 1000.0
+		var desiredWidth = 1000.0
+		var desiredHeight = 1000.0
 		if useOriginalImage {
-			desiredWidth = 1125.0
-			desiredHeight = 1500.0
+			desiredWidth = 750.0
+			desiredHeight = 1000.0
 		} else {
 			let nsImage = (NSImage(data: imageDataStore.imageData)  ?? NSImage())
 			originalWidth = nsImage.size.width
 			originalHeight = nsImage.size.height
-			if originalWidth >= originalHeight && originalWidth >= 1500.0 {
-				let scaleFactor = 1500.0/originalWidth
+			if originalWidth >= originalHeight && originalWidth >= 1000.0 {
+				let scaleFactor = 1000.0/originalWidth
 				desiredWidth =  originalWidth * scaleFactor
 				desiredHeight = originalHeight * scaleFactor
-			} else if originalHeight >= originalWidth && originalHeight >= 1500.0 {
-				let scaleFactor = 1500.0/originalHeight
+			} else if originalHeight >= originalWidth && originalHeight >= 1000.0 {
+				let scaleFactor = 1000.0/originalHeight
 				desiredWidth =  originalWidth * scaleFactor
 				desiredHeight = originalHeight * scaleFactor
 			} else {
@@ -724,7 +727,7 @@ struct ImageView: View {
 						view.blur(radius: blur)
 				 })
 
-			renderer.scale = displayScale
+			//renderer.scale = displayScale
 		if let nsImage = renderer.nsImage {
 			return  nsImage
 		}
@@ -748,19 +751,19 @@ struct ImageView: View {
 					if let url = openPanel.url {
 						do {
 							let imageData = try Data(contentsOf: url)
-							var originalWidth = 1500.0
-							var originalHeight = 1500.0
-							var desiredWidth = 1500.0
-							var desiredHeight = 1500.0
+							var originalWidth = 1000.0
+							var originalHeight = 1000.0
+							var desiredWidth = 1000.0
+							var desiredHeight = 1000.0
 							if let fullSizeImage = NSImage(data: imageData) {
 								originalWidth = fullSizeImage.size.width
 								originalHeight = fullSizeImage.size.height
-								if originalWidth >= originalHeight && originalWidth >= 1500.0 {
-									let scaleFactor = 1500.0/originalWidth
+								if originalWidth >= originalHeight && originalWidth >= 1000.0 {
+									let scaleFactor = 1000.0/originalWidth
 									desiredWidth =  originalWidth * scaleFactor
 									desiredHeight = originalHeight * scaleFactor
-								} else if originalHeight >= originalWidth && originalHeight >= 1500.0 {
-									let scaleFactor = 1500.0/originalHeight
+								} else if originalHeight >= originalWidth && originalHeight >= 1000.0 {
+									let scaleFactor = 1000.0/originalHeight
 									desiredWidth =  originalWidth * scaleFactor
 									desiredHeight = originalHeight * scaleFactor
 								} else {

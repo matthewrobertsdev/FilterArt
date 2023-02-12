@@ -89,7 +89,7 @@ NotificationCenter.default.post(name: .showSavePanel,
 				Button {
 					modalStateViewModel.showingFilters = true
 				} label: {
-					Label("Apply Filter...", systemImage: "camera.filters")
+					Label("Filters...", systemImage: "camera.filters")
 				}.keyboardShortcut(KeyboardShortcut("5", modifiers: .command)).disabled(modalStateViewModel.isModal())
 			}
 			CommandGroup(replacing: CommandGroupPlacement.help) {
