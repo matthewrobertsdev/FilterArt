@@ -53,9 +53,11 @@ let pinkSaturated = FilterModel(blur: 0, colorMultiplyO: 1, colorMultiplyB: 1.04
 
 let rainbowSaturated = FilterModel(blur: 0, colorMultiplyO: 1, colorMultiplyB: 0.58, colorMultiplyG: 1.00, colorMultiplyR: 0.96, contrast: 1.57, grayscale: 0, hueRotation: 210.53, id: "rainbowSaturated", invertColors: false, opacity: 1, name: "Rainbow Saturated", saturation: 4.46, timestamp: Date(), useBlur: false, useColorMultiply: true, useContrast: true, useGrayscale: false, useHueRotation: true, useOpacity: false, useSaturation: true)
 
-let blueInverted = FilterModel(blur: 0, colorMultiplyO: 1, colorMultiplyB: 1, colorMultiplyG: 1, colorMultiplyR: 1, contrast: 1, grayscale: 0, hueRotation: 0, id: "blueInverted", invertColors: true, opacity: 1, name: "Blue Inverted", saturation: 3.85, timestamp: Date(), useBlur: false, useColorMultiply: false, useContrast: false, useGrayscale: false, useHueRotation: false, useOpacity: false, useSaturation: true)
+/*
+let invertedWildNumber1 = FilterModel(blur: 0, colorMultiplyO: 1, colorMultiplyB: 1, colorMultiplyG: 1, colorMultiplyR: 1, contrast: 1, grayscale: 0, hueRotation: 0, id: "invertedWildNumber1", invertColors: true, opacity: 1, name: "Inverted Wild #1", saturation: 3.85, timestamp: Date(), useBlur: false, useColorMultiply: false, useContrast: false, useGrayscale: false, useHueRotation: false, useOpacity: false, useSaturation: true)
 
-let redInverted = FilterModel(blur: 0, colorMultiplyO: 1, colorMultiplyB: 1, colorMultiplyG: 1, colorMultiplyR: 1, contrast: 1, grayscale: 0, hueRotation: 150, id: "redInverted", invertColors: true, opacity: 1, name: "Red Inverted", saturation: 3.10, timestamp: Date(), useBlur: false, useColorMultiply: false, useContrast: false, useGrayscale: false, useHueRotation: true, useOpacity: false, useSaturation: true)
+let invertedWildNumber2 = FilterModel(blur: 0, colorMultiplyO: 1, colorMultiplyB: 1, colorMultiplyG: 1, colorMultiplyR: 1, contrast: 1, grayscale: 0, hueRotation: 150, id: "invertedWildNumber2", invertColors: true, opacity: 1, name: "Inverted Wild #2", saturation: 3.10, timestamp: Date(), useBlur: false, useColorMultiply: false, useContrast: false, useGrayscale: false, useHueRotation: true, useOpacity: false, useSaturation: true)
+*/
 
 let contrastFilter = FilterModel(blur: 0, colorMultiplyO: 1, colorMultiplyB: 1, colorMultiplyG: 1, colorMultiplyR: 1, contrast: 2.0, grayscale: 0, hueRotation: 0, id: "contrast", invertColors: false, opacity: 1, name: "Contrast", saturation: 1, timestamp: Date(), useBlur: false, useColorMultiply: false, useContrast: true, useGrayscale: false, useHueRotation: false, useOpacity: false, useSaturation: false)
 
@@ -91,8 +93,6 @@ let presetFilters = [
 	greenSaturated,
 	pinkSaturated,
 	rainbowSaturated,
-	blueInverted,
-	redInverted,
 	vibrantFilter,
 	contrastFilter,
 	redFilter,
