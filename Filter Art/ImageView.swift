@@ -270,79 +270,111 @@ struct ImageView: View {
 	
 	func getEditor() -> some View {
 		GroupBox {
-			VStack(spacing: 10) {
+			VStack(spacing: 20) {
 				#if os(iOS)
-				HStack(spacing: 20) {
-					Button("Modified Image") {
-						modalStateViewModel.showingPreviewModal = true
-					}
-					Button("Unmodfied Image") {
-						modalStateViewModel.showingUnmodifiedImage = true
-					}
-				}
-				HStack(spacing: 20) {
-					PhotosPicker(
-								selection: $selectedItem,
-								matching: .images,
-								photoLibrary: .shared()) {
-									Text("Choose Image")
-								}
-								.onChange(of: selectedItem) { newItem in
-									loading = true
-									/*
-									Task {
-										if let data = try? await newItem?.loadTransferable(type: Data.self) {
-											imageDataStore.imageData = data
-											useOriginalImage = false
-											loading = false
-										} else {
-											loading = false
-										}
-									}
-									 */
-									 newItem?.loadTransferable(type: Data.self, completionHandler: { result in
-										switch result  {
-										case .success(let data):
-											if let data = data {
-												DispatchQueue.main.async {
-													imageDataStore.imageData = data
-													useOriginalImage = false
-												}
+				HStack(spacing: 50) {
+					Menu(content: {
+						Button("Modified Image") {
+							modalStateViewModel.showingPreviewModal = true
+						}
+						Button("Unmodfied Image") {
+							modalStateViewModel.showingUnmodifiedImage = true
+						}
+					}, label: {
+						Text("View")
+					})
+					Menu {
+						PhotosPicker(
+							selection: $selectedItem,
+							matching: .images,
+							photoLibrary: .shared()) {
+								Text("Choose Image")
+							}
+							.onChange(of: selectedItem) { newItem in
+								loading = true
+								/*
+								 Task {
+								 if let data = try? await newItem?.loadTransferable(type: Data.self) {
+								 imageDataStore.imageData = data
+								 useOriginalImage = false
+								 loading = false
+								 } else {
+								 loading = false
+								 }
+								 }
+								 */
+								newItem?.loadTransferable(type: Data.self, completionHandler: { result in
+									switch result  {
+									case .success(let data):
+										if let data = data {
+											DispatchQueue.main.async {
+												imageDataStore.imageData = data
+												useOriginalImage = false
 											}
-										case .failure( _):
-											break
 										}
-										loading = false
-									})
-								}
-					Button("Default Image") {
-						useOriginalImage = true
-						imageDataStore.imageData = Data()
+									case .failure( _):
+										break
+									}
+									loading = false
+								})
+							}
+						Button("Default Image") {
+							useOriginalImage = true
+							imageDataStore.imageData = Data()
+						}
+					} label: {
+						Text("Image")
 					}
 				}
+
 				#else
 				HStack(spacing: 20) {
-					Button("Modified Image") {
-						modalStateViewModel.showingPreviewModal = true
-					}
-					Button("Unmodfied Image") {
-						modalStateViewModel.showingUnmodifiedImage = true
-					}
-					Button("Choose Image") {
-						//waitingForDrop = true
-						//#if os(macOS)
-						
-						showOpenPanel()
+					Menu(content: {
+						Button("Modified Image") {
+							modalStateViewModel.showingPreviewModal = true
+						}
+						Button("Unmodfied Image") {
+							modalStateViewModel.showingUnmodifiedImage = true
+						}
+					}, label: {
+						Text("View")
+					}).frame(width: 100)
+					Menu(content: {
+						Button("Choose Image") {
+							//waitingForDrop = true
+							//#if os(macOS)
+							
+							showOpenPanel()
+							 
+							//#else
+							//showingImagePicker = true
 						 
-						//#else
-						//showingImagePicker = true
-					 
-					}
+						}
 
-					Button("Default Image") {
-						useOriginalImage = true
-						imageDataStore.imageData = Data()
-					}
+						Button("Default Image") {
+							useOriginalImage = true
+							imageDataStore.imageData = Data()
+						}
+					}, label: {
+						Text("Image")
+					}).frame(width: 100)
+					Menu {
+						Button {
+							modalStateViewModel.showingNameAlert = true
+						} label: {
+							//Label("Add Saved Filter", systemImage: "plus")
+							Text("Add Saved Filter")
+						}
+						Button {
+							modalStateViewModel.showingFilters = true
+						} label: {
+							//Label("Apply Filter...", systemImage: "camera.filters")
+							Text("Saved Filters")
+						}
+					} label: {
+						Text("Filters...")
+					}.frame(width: 100)
+						getSavePanelButton()
 				}
 #endif
 				#if os(iOS)
@@ -361,50 +393,42 @@ struct ImageView: View {
 					}
 				}
 				 */
-				HStack(spacing: 20){
-					Button {
-						let imageSaver = ImageSaver(showingSuccessAlert: $modalStateViewModel.showingImageSaveSuccesAlert, showingErrorAlert: $showingImageSaveFailureAlert)
-						imageSaver.writeToPhotoAlbum(image: getFilteredImage())
+				HStack(spacing: 50) {
+					Menu {
+						Button {
+							let imageSaver = ImageSaver(showingSuccessAlert: $modalStateViewModel.showingImageSaveSuccesAlert, showingErrorAlert: $showingImageSaveFailureAlert)
+							imageSaver.writeToPhotoAlbum(image: getFilteredImage())
+						} label: {
+							Text("Export to Photos")
+						}
+						Button {
+							modalStateViewModel.showingShareSheet = true
+						} label: {
+							Text("Share Image")
+						}
 					} label: {
-						Text("Export to Photos")
+						Text("Share/Export")
 					}
-					Button {
-						modalStateViewModel.showingShareSheet = true
-					} label: {
-						Text("Share Image")
-					}
-				}
-				HStack(spacing: 20) {
-					Button {
-						modalStateViewModel.showingNameAlert = true
-					} label: {
-						Text("Add Saved Filter")
-					}
-					Button {
-						modalStateViewModel.showingFilters = true
-					} label: {
-						Text("Filters...")
-					}
-				}
-				#else
-				HStack(spacing: 20){
-					getSavePanelButton()
-					/*
-					ShareLink(Text("Share Image"), item: Image(nsImage: getFilteredImage(forSharing: true)), preview: SharePreview("Image to Share", image: Image(nsImage: getFilteredImage(forSharing: true)))).labelStyle(.titleOnly)
-					 */
+					Menu {
 						Button {
 							modalStateViewModel.showingNameAlert = true
 						} label: {
-							//Label("Add Saved Filter", systemImage: "plus")
 							Text("Add Saved Filter")
 						}
 						Button {
 							modalStateViewModel.showingFilters = true
 						} label: {
-							//Label("Apply Filter...", systemImage: "camera.filters")
-							Text("Filters...")
+							Text("Saved Filters")
 						}
+					} label: {
+						Text("Filters...")
+					}
 				}
+
+				#else
+					/*
+					ShareLink(Text("Share Image"), item: Image(nsImage: getFilteredImage(forSharing: true)), preview: SharePreview("Image to Share", image: Image(nsImage: getFilteredImage(forSharing: true)))).labelStyle(.titleOnly)
+					 */
 				#endif
 				getFilterControls()
 			}
