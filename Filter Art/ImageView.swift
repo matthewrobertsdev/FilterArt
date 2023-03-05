@@ -19,8 +19,6 @@ struct ImageView: View {
 	@Environment(\.displayScale) var displayScale
 	@EnvironmentObject var modalStateViewModel: ModalStateViewModel
 	@StateObject private var imageDataStore = ImageDataStore()
-	@AppStorage("imagWidth") private var width: Double = 300
-	@AppStorage("imageHeight") private var height: Double = 160
 	@AppStorage("imageInvertColors") private var invertColors: Bool = false
 	@AppStorage("imageHueRotation") private var hueRotation: Double = 0
 	@AppStorage("imageUseHueRotation") private var useHueRotation: Bool = false
@@ -42,22 +40,12 @@ struct ImageView: View {
 	@State var loading = false
 	@State var waitingForDrop = false
 	@State private var selectedItem: PhotosPickerItem? = nil
-#if os(macOS)
+	@State private var editMode: ImageEditMode? = nil
+	@State private var showingPhotoPicker: Bool = false
+	#if os(macOS)
 	@State private var window: NSWindow?
-	let maxWidth = 300.0
-	let maxHeight = 140.0
-#else
-	let maxWidth = 300.0
-	var maxHeight = 250.0
-#endif
-	let minHeight = 50
-	let minWidth = 50
+	#endif
 	init() {
-#if os(iOS)
-		if UIDevice.current.userInterfaceIdiom == .pad {
-			maxHeight = 500
-		}
-#endif
 	}
 	var body: some View {
 			Group {
@@ -65,9 +53,7 @@ struct ImageView: View {
 				VStack(spacing: 10) {
 					getDisplay()
 					InfoSeperator()
-					ScrollView {
-						getEditor().frame(maxWidth: .infinity)
-					}.frame(height: 400)
+					getEditor().frame(maxWidth: .infinity).frame(height: 200)
 				}.sheet(isPresented: $modalStateViewModel.showingUnmodifiedImage) {
 					VStack(alignment: .leading, spacing: 0) {
 						HStack {
@@ -131,14 +117,14 @@ struct ImageView: View {
 			  Text("Enter a name for your new filter:")
 		  })
 #else
-				VStack(spacing: 0) {
+				VStack(spacing: 5) {
 					VStack(spacing: 10) {
-						getDisplay().frame(height: maxHeight)
+						getDisplay()
 						InfoSeperator()
 					}
 					ScrollView {
-						getEditor().padding(.bottom).frame(maxWidth: .infinity)
-					}
+						getEditor().frame(maxWidth: .infinity)
+					}.frame(height: 215)
 				}
 			/*
 	.toolbar {
@@ -269,8 +255,8 @@ struct ImageView: View {
 	}
 	
 	func getEditor() -> some View {
-		GroupBox {
-			VStack(spacing: 20) {
+		//GroupBox {
+			VStack(spacing: 10) {
 				#if os(iOS)
 				HStack(spacing: 50) {
 					Menu(content: {
@@ -281,51 +267,48 @@ struct ImageView: View {
 							modalStateViewModel.showingUnmodifiedImage = true
 						}
 					}, label: {
-						Text("View")
+						Text("View").controlSize(.large)
 					})
 					Menu {
-						PhotosPicker(
-							selection: $selectedItem,
-							matching: .images,
-							photoLibrary: .shared()) {
-								Text("Choose Image")
-							}
-							.onChange(of: selectedItem) { newItem in
-								loading = true
-								/*
-								 Task {
-								 if let data = try? await newItem?.loadTransferable(type: Data.self) {
-								 imageDataStore.imageData = data
-								 useOriginalImage = false
-								 loading = false
-								 } else {
-								 loading = false
-								 }
-								 }
-								 */
-								newItem?.loadTransferable(type: Data.self, completionHandler: { result in
-									switch result  {
-									case .success(let data):
-										if let data = data {
-											DispatchQueue.main.async {
-												imageDataStore.imageData = data
-												useOriginalImage = false
-											}
-										}
-									case .failure( _):
-										break
-									}
-									loading = false
-								})
-							}
-						Button("Default Image") {
+						Button("Choose Photo") {
+							showingPhotoPicker = true
+						}
+						Button("Default Photo") {
 							useOriginalImage = true
 							imageDataStore.imageData = Data()
 						}
 					} label: {
-						Text("Image")
+						Text("Photo").controlSize(.large)
+					}.photosPicker(isPresented: $showingPhotoPicker, selection:  $selectedItem, matching: .images).onChange(of: selectedItem) { newItem in
+						loading = true
+						/*
+						 Task {
+						 if let data = try? await newItem?.loadTransferable(type: Data.self) {
+						 imageDataStore.imageData = data
+						 useOriginalImage = false
+						 loading = false
+						 } else {
+						 loading = false
+						 }
+						 }
+						 */
+						newItem?.loadTransferable(type: Data.self, completionHandler: { result in
+							switch result  {
+							case .success(let data):
+								if let data = data {
+									DispatchQueue.main.async {
+										imageDataStore.imageData = data
+										useOriginalImage = false
+									}
+								}
+							case .failure( _):
+								break
+							}
+							loading = false
+						})
 					}
 				}
+					
 
 				#else
 				HStack(spacing: 20) {
@@ -340,7 +323,7 @@ struct ImageView: View {
 						Text("View")
 					}).frame(width: 100)
 					Menu(content: {
-						Button("Choose Image") {
+						Button("Choose Photo") {
 							//waitingForDrop = true
 							//#if os(macOS)
 							
@@ -351,12 +334,12 @@ struct ImageView: View {
 						 
 						}
 
-						Button("Default Image") {
+						Button("Default Photo") {
 							useOriginalImage = true
 							imageDataStore.imageData = Data()
 						}
 					}, label: {
-						Text("Image")
+						Text("Photo")
 					}).frame(width: 100)
 					Menu {
 						Button {
@@ -369,13 +352,13 @@ struct ImageView: View {
 							modalStateViewModel.showingFilters = true
 						} label: {
 							//Label("Apply Filter...", systemImage: "camera.filters")
-							Text("Saved Filters")
+							Text("All Filters")
 						}
 					} label: {
 						Text("Filters...")
 					}.frame(width: 100)
 						getSavePanelButton()
-				}
+				}.padding(.bottom)
 #endif
 				#if os(iOS)
 				/*
@@ -407,7 +390,7 @@ struct ImageView: View {
 							Text("Share Image")
 						}
 					} label: {
-						Text("Share/Export")
+						Text("Share/Export").controlSize(.large)
 					}
 					Menu {
 						Button {
@@ -421,7 +404,7 @@ struct ImageView: View {
 							Text("Saved Filters")
 						}
 					} label: {
-						Text("Filters...")
+						Text("Filters...").controlSize(.large)
 					}
 				}
 
@@ -430,12 +413,16 @@ struct ImageView: View {
 					ShareLink(Text("Share Image"), item: Image(nsImage: getFilteredImage(forSharing: true)), preview: SharePreview("Image to Share", image: Image(nsImage: getFilteredImage(forSharing: true)))).labelStyle(.titleOnly)
 					 */
 				#endif
-				getFilterControls()
+				InfoSeperator()
+				VStack {
+					getFilterControls()//.padding()
+					getFilterControl().frame(maxWidth: 600)
+				}
 			}
 			#if os(macOS)
-			.padding()
+			.padding(.vertical)
 			#endif
-		}.padding().frame(maxWidth: 600)
+		//}.padding().frame(maxWidth: 600)
 	}
 	
 	func getDisplay() -> some View {
@@ -574,47 +561,90 @@ struct ImageView: View {
 		}
 	}
 #endif
-	
+	#if os (macOS)
 	func getFilterControls() -> some View {
-		Group {
-			getColorControls()
-			getStyleControls()
+		GeometryReader { geo in
+			ScrollView([.horizontal]) {
+				HStack(alignment: .top) {
+					ForEach(imageEditModesData, id: \.mode.rawValue) { modeData in
+						VStack {
+							Text(modeData.mode.rawValue.capitalized).font(.system(.callout)).fixedSize().if(modeData.mode == editMode) { view in
+								view.foregroundColor(Color.accentColor)
+							}
+							Image(systemName: modeData.imageName).font(.system(.title)).if(modeData.mode == editMode) { view in
+								view.foregroundColor(Color.accentColor)
+							}
+						}.padding(.horizontal).contentShape(Rectangle()).onTapGesture {
+							editMode = modeData.mode
+						   }
+					}
+				}
+				#if os(macOS)
+				.frame(width: geo.size.width)
+				#endif
+			}.frame(width: geo.size.width)
 		}
+		
 	}
+	#else
+	func getFilterControls() -> some View {
+			ScrollView([.horizontal]) {
+				HStack(alignment: .top) {
+					ForEach(imageEditModesData, id: \.mode.rawValue) { modeData in
+						VStack {
+							Text(modeData.mode.rawValue.capitalized).font(.system(.callout)).fixedSize().if(modeData.mode == editMode) { view in
+								view.foregroundColor(Color.accentColor)
+							}
+							Image(systemName: modeData.imageName).font(.system(.title)).onTapGesture {
+								editMode = modeData.mode
+							}.if(modeData.mode == editMode) { view in
+								view.foregroundColor(Color.accentColor)
+							}
+						}.padding(.horizontal)
+					}
+				}
+		}
+		
+	}
+	#endif
 	
-	func getColorControls() -> some View {
-		Group {
-			Group {
-				Group {
-					Toggle("Use Hue Rotation", isOn: $useHueRotation.animation()).toggleStyle(.switch).tint(Color.accentColor)
-					if useHueRotation {
-						HueRotationControl(hueRotation: $hueRotation)
-					}
-				}
-				Group {
-					Toggle("Use Contrast", isOn: $useContrast.animation()).toggleStyle(.switch).tint(Color.accentColor)
-					if useContrast {
-						ContrastControl(contrast: $contrast)
-					}
-				}
-				Toggle("Invert Colors", isOn: $invertColors.animation()).toggleStyle(.switch).tint(Color.accentColor)
+	func getFilterControl() -> some View {
+		Group{
+			if editMode == nil {
+				EmptyView()
 			}
-			Group {
-				Group {
-					Toggle("Use Color Multiply", isOn: $useColorMultiply.animation()).toggleStyle(.switch).tint(Color.accentColor)
-					if useColorMultiply {
-						ColorMultiplyControl(colorMultiplyColor: $colorMultiplyColor)
-					}
-				}
-				Group {
-					Toggle("Use Saturation", isOn: $useSaturation.animation()).toggleStyle(.switch).tint(Color.accentColor)
-					if useSaturation {
-						SaturationControl(saturation: $saturation)
-					}
+			else {
+				switch editMode {
+				case .hue:
+					Toggle("Use Hue Rotation", isOn: $useHueRotation.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
+					HueRotationControl(hueRotation: $hueRotation).disabled(!useHueRotation)
+				case .contrast:
+					Toggle("Use Contrast", isOn: $useContrast.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
+						ContrastControl(contrast: $contrast).disabled(!useContrast)
+				case .invert:
+					Toggle("Invert Colors", isOn: $invertColors.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
+				case .colorMultiply:
+					Toggle("Use Color Multiply", isOn: $useColorMultiply.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
+					ColorMultiplyControl(colorMultiplyColor: $colorMultiplyColor).disabled(!useColorMultiply)
+				case .saturation:
+					Toggle("Use Saturation", isOn: $useSaturation.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
+					SaturationControl(saturation: $saturation).disabled(!useHueRotation)
+				case .grayscale:
+					Toggle("Use Grayscale", isOn: $useGrayscale.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
+					GrayscaleControl(grayscale: $grayscale).disabled(!useGrayscale)
+				case .opacity:
+					Toggle("Use Opacity", isOn: $useOpacity.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
+					OpacityControl(opacity: $opacity).disabled(!useOpacity)
+				case .blur:
+					Toggle("Use Blur", isOn: $useBlur.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
+					BlurControl(blur: $blur).disabled(!useBlur)
+				case .none:
+					EmptyView()
 				}
 			}
 		}
 	}
+		
 
 	func getStyleControls() -> some View {
 		Group {
@@ -763,7 +793,7 @@ struct ImageView: View {
 	func showOpenPanel() {
 		modalStateViewModel.showingOpenPanel = true
 		let openPanel = NSOpenPanel()
-					openPanel.prompt = "Choose Image"
+					openPanel.prompt = "Choose Photo"
 					openPanel.allowsMultipleSelection = false
 						openPanel.canChooseDirectories = false
 						openPanel.canCreateDirectories = false
@@ -876,3 +906,28 @@ extension NSImage: Transferable {
 	}
 }
 #endif
+
+enum ImageEditMode: String, CaseIterable {
+	case hue
+	case contrast
+	case invert
+	case colorMultiply = "Color Multiply"
+	case saturation
+	case grayscale
+	case opacity
+	case blur
+}
+
+struct ImageEditModeData {
+	var mode: ImageEditMode
+	var imageName: String
+}
+
+let imageEditModesData = [ImageEditModeData(mode: .hue, imageName: "paintbrush"),
+					  ImageEditModeData(mode: .contrast, imageName: "circle.lefthalf.filled"),
+					  ImageEditModeData(mode: .invert, imageName: "lightswitch.off"),
+					  ImageEditModeData(mode: .colorMultiply, imageName: "paintpalette"),
+					  ImageEditModeData(mode: .saturation, imageName: "sun.max"),
+					  ImageEditModeData(mode: .grayscale, imageName: "circle.dotted"),
+					  ImageEditModeData(mode: .opacity, imageName: "circle"),
+					  ImageEditModeData(mode: .blur, imageName: "camera.filters")]
