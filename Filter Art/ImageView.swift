@@ -55,7 +55,7 @@ struct ImageView: View {
 					InfoSeperator()
 					GeometryReader { proxy in
 						getEditor(proxy: proxy).frame(maxWidth: .infinity)
-					}.frame(height: 200)
+					}.frame(height: 175)
 				}.sheet(isPresented: $modalStateViewModel.showingUnmodifiedImage) {
 					VStack(alignment: .leading, spacing: 0) {
 						HStack {
@@ -128,7 +128,7 @@ struct ImageView: View {
 						ScrollView {
 							getEditor(proxy: proxy).frame(maxWidth: .infinity)
 						}
-					}.frame(height: 215)
+					}.frame(height: 200)
 				}
 			/*
 	.toolbar {
@@ -565,26 +565,33 @@ struct ImageView: View {
 	}
 #endif
 	func getFilterControls(proxy: GeometryProxy) -> some View {
-			VStack {
-				ScrollView([.horizontal]) {
-					HStack(alignment: .top) {
-						ForEach(imageEditModesData, id: \.mode.rawValue) { modeData in
-							VStack {
-								Text(modeData.mode.rawValue.capitalized).font(.system(.callout)).fixedSize().if(modeData.mode == editMode) { view in
-									view.foregroundColor(Color.accentColor)
+		Group {
+			if editMode == nil {
+				VStack {
+					ScrollView([.horizontal]) {
+						HStack(alignment: .top) {
+							ForEach(imageEditModesData, id: \.mode.rawValue) { modeData in
+								VStack(spacing: 10) {
+									Text(modeData.mode.rawValue.capitalized).font(.system(.callout)).fixedSize().if(modeData.mode == editMode) { view in
+										view.foregroundColor(Color.accentColor)
+									}
+									Image(systemName: modeData.imageName).font(.system(.title)).if(true) { view in
+										view.foregroundColor(Color.accentColor)
+									}
+								}.padding(.horizontal).contentShape(Rectangle()).onTapGesture {
+									withAnimation {
+										editMode = modeData.mode
+									}
 								}
-								Image(systemName: modeData.imageName).font(.system(.title)).if(modeData.mode == editMode) { view in
-									view.foregroundColor(Color.accentColor)
-								}
-							}.padding(.horizontal).contentShape(Rectangle()).onTapGesture {
-								editMode = modeData.mode
-							}
+							}.padding(.vertical)
+						}.if(proxy.size.width > 1000) { view in
+							view.frame(width: proxy.size.width)
 						}
-					}.if(proxy.size.width > 1000) { view in
-						view.frame(width: proxy.size.width)
 					}
 				}
+			} else {
 				getFilterControl().frame(maxWidth: 600)
+			}
 		}
 		
 	}
@@ -623,6 +630,14 @@ struct ImageView: View {
 					EmptyView()
 				}
 			}
+			Button {
+				withAnimation {
+					editMode = nil
+				}
+			} label: {
+				Text("Done")
+			}.buttonStyle(.borderedProminent)
+
 		}
 	}
 		

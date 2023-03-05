@@ -46,7 +46,7 @@ struct FilterArtApp: App {
 				}.keyboardShortcut(KeyboardShortcut("e", modifiers: .command)).disabled(modalStateViewModel.isModal())
 #endif
 			}
-			CommandMenu("Image") {
+			CommandGroup(before: .sidebar) {
 				Button {
 					modalStateViewModel.showingPreviewModal = true
 				} label: {
@@ -57,18 +57,19 @@ struct FilterArtApp: App {
 				} label: {
 					Text("Unmodified Image")
 				}.keyboardShortcut(KeyboardShortcut("3", modifiers: .command)).disabled(modalStateViewModel.isModal())
-				Divider()
+			}
+			CommandMenu("Photo") {
 				Button {
 					useOriginalImage = true
 				} label: {
-					Text("Default Image")
+					Text("Default Photo")
 				}.keyboardShortcut(KeyboardShortcut("d", modifiers: .command))
 #if os(macOS)
 				Button {
 NotificationCenter.default.post(name: .showOpenPanel,
 												object: nil, userInfo: nil)
 				} label: {
-					Label("Choose Image", systemImage: "photo")
+					Label("Choose Photo", systemImage: "photo")
 				}.keyboardShortcut(KeyboardShortcut("1", modifiers: .command)).disabled(modalStateViewModel.isModal())
 				Divider()
 				Button {
