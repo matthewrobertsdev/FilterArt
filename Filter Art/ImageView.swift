@@ -34,6 +34,21 @@ struct ImageView: View {
 	@AppStorage("imageOpacity") private var opacity: Double = 1
 	@AppStorage("imageUseBlur") private var useBlur: Bool = false
 	@AppStorage("imageBlur") private var blur: Double = 0
+	@State private var invertColorsSnaphhot: Bool = false
+	@State private var hueRotationSnaphhot: Double = 0
+	@State private var useHueRotationSnapshot: Bool = false
+	@State private var contrastSnapshot: Double = 1
+	@State private var useContrastSnapshot: Bool = false
+	@State private var useColorMultiplySnapshot: Bool = false
+	@State private var colorMultiplyColorSnapshot: Color = Color.blue
+	@State private var useSaturationSnapshot: Bool = false
+	@State private var saturationSnapshot: Double = 1
+	@State private var useGrayscaleSnapshot: Bool = false
+	@State private var grayscaleSnapshot: Double = 0
+	@State private var useOpacitySnapshot: Bool = false
+	@State private var opacitySnapshot: Double = 1
+	@State private var useBlurSnapshot: Bool = false
+	@State private var blurSnapshot: Double = 0
 	@State private var image: Data = Data()
 	@AppStorage("imageUseOriginalImage") private var useOriginalImage: Bool = true
 	@State var showingImageSaveFailureAlert = false
@@ -130,42 +145,6 @@ struct ImageView: View {
 						}
 					}.frame(height: 200)
 				}
-			/*
-	.toolbar {
-		ToolbarItemGroup(placement: .bottomBar) {
-			Button {
-				//showingNameAlert = true
-			} label: {
-				Label("Choose Image", systemImage: "photo")
-			}
-			Spacer()
-			Button {
-				//showingNameAlert = true
-			} label: {
-				Label("Add Saved Filter", systemImage: "plus")
-			}
-			Spacer()
-			Button {
-				//showingFilters = true
-			} label: {
-				Label("Apply Filter...", systemImage: "camera.filters")
-			}
-			Spacer()
-			Button {
-				//showingNameAlert = true
-			} label: {
-				Label("Export Image", systemImage: "square.and.arrow.down")
-			}
-			Spacer()
-			Button {
-				//showingNameAlert = true
-			} label: {
-				Label("Share Image", systemImage: "square.and.arrow.up")
-			}
-		}
-	}
-			 */
-
 				.sheet(isPresented: $modalStateViewModel.showingShareSheet) {
 					ShareSheet(imageData: getFilteredImage(forSharing: true))
 				}.sheet(isPresented: $modalStateViewModel.showingPreviewModal) {
@@ -411,21 +390,15 @@ struct ImageView: View {
 						Text("Filters...").controlSize(.large)
 					}
 				}
-
-				#else
-					/*
-					ShareLink(Text("Share Image"), item: Image(nsImage: getFilteredImage(forSharing: true)), preview: SharePreview("Image to Share", image: Image(nsImage: getFilteredImage(forSharing: true)))).labelStyle(.titleOnly)
-					 */
 				#endif
 				InfoSeperator()
 				VStack {
-					getFilterControls(proxy: proxy)//.padding()
+					getFilterControls(proxy: proxy)
 				}
 			}
 			#if os(macOS)
 			.padding(.vertical)
 			#endif
-		//}.padding().frame(maxWidth: 600)
 	}
 	
 	func getDisplay() -> some View {
@@ -579,6 +552,7 @@ struct ImageView: View {
 										view.foregroundColor(Color.accentColor)
 									}
 								}.padding(.horizontal).contentShape(Rectangle()).onTapGesture {
+									storeSnapshot()
 									withAnimation {
 										editMode = modeData.mode
 									}
@@ -594,6 +568,42 @@ struct ImageView: View {
 			}
 		}
 		
+	}
+	
+	func storeSnapshot() {
+		invertColorsSnaphhot = invertColors
+		hueRotationSnaphhot = hueRotation
+		useHueRotationSnapshot = useHueRotation
+		contrastSnapshot = contrast
+		useContrastSnapshot = useContrast
+		useColorMultiplySnapshot = useColorMultiply
+		colorMultiplyColorSnapshot = colorMultiplyColor
+		useSaturationSnapshot = useSaturation
+		saturationSnapshot = saturation
+		useGrayscaleSnapshot = useGrayscale
+		grayscaleSnapshot = grayscale
+		useOpacitySnapshot = useOpacity
+		opacitySnapshot = opacity
+		useBlurSnapshot = useBlur
+		blurSnapshot = blur
+	}
+	
+	func restoreSnapshot() {
+		invertColors = invertColorsSnaphhot
+		hueRotation = hueRotationSnaphhot
+		useHueRotation = useHueRotationSnapshot
+		contrast = contrastSnapshot
+		useContrast = useContrastSnapshot
+		useColorMultiply = useColorMultiplySnapshot
+		colorMultiplyColor = colorMultiplyColorSnapshot
+		useSaturation = useSaturationSnapshot
+		saturation = saturationSnapshot
+		useGrayscale = useGrayscaleSnapshot
+		grayscale = grayscaleSnapshot
+		useOpacity = useOpacitySnapshot
+		opacity = opacitySnapshot
+		useBlur = useBlurSnapshot
+		blur = blurSnapshot
 	}
 	
 	func getFilterControl() -> some View {
@@ -630,13 +640,23 @@ struct ImageView: View {
 					EmptyView()
 				}
 			}
-			Button {
-				withAnimation {
-					editMode = nil
-				}
-			} label: {
-				Text("Done")
-			}.buttonStyle(.borderedProminent)
+			HStack {
+				Button {
+					withAnimation {
+						restoreSnapshot()
+						editMode = nil
+					}
+				} label: {
+					Text("Cancel")
+				}.buttonStyle(.bordered)
+				Button {
+					withAnimation {
+						editMode = nil
+					}
+				} label: {
+					Text("Done")
+				}.buttonStyle(.borderedProminent)
+			}
 
 		}
 	}
