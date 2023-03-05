@@ -405,7 +405,7 @@ struct ImageView: View {
 						Button {
 							modalStateViewModel.showingFilters = true
 						} label: {
-							Text("Saved Filters")
+							Text("All Filters")
 						}
 					} label: {
 						Text("Filters...").controlSize(.large)
