@@ -53,7 +53,9 @@ struct ImageView: View {
 				VStack(spacing: 10) {
 					getDisplay()
 					InfoSeperator()
-					getEditor().frame(maxWidth: .infinity).frame(height: 200)
+					GeometryReader { proxy in
+						getEditor(proxy: proxy).frame(maxWidth: .infinity)
+					}.frame(height: 200)
 				}.sheet(isPresented: $modalStateViewModel.showingUnmodifiedImage) {
 					VStack(alignment: .leading, spacing: 0) {
 						HStack {
@@ -122,8 +124,10 @@ struct ImageView: View {
 						getDisplay()
 						InfoSeperator()
 					}
-					ScrollView {
-						getEditor().frame(maxWidth: .infinity)
+					GeometryReader { proxy in
+						ScrollView {
+							getEditor(proxy: proxy).frame(maxWidth: .infinity)
+						}
 					}.frame(height: 215)
 				}
 			/*
@@ -254,7 +258,7 @@ struct ImageView: View {
 #endif
 	}
 	
-	func getEditor() -> some View {
+	func getEditor(proxy: GeometryProxy) -> some View {
 		//GroupBox {
 			VStack(spacing: 10) {
 				#if os(iOS)
@@ -415,8 +419,7 @@ struct ImageView: View {
 				#endif
 				InfoSeperator()
 				VStack {
-					getFilterControls()//.padding()
-					getFilterControl().frame(maxWidth: 600)
+					getFilterControls(proxy: proxy)//.padding()
 				}
 			}
 			#if os(macOS)
@@ -561,52 +564,30 @@ struct ImageView: View {
 		}
 	}
 #endif
-	#if os (macOS)
-	func getFilterControls() -> some View {
-		GeometryReader { geo in
-			ScrollView([.horizontal]) {
-				HStack(alignment: .top) {
-					ForEach(imageEditModesData, id: \.mode.rawValue) { modeData in
-						VStack {
-							Text(modeData.mode.rawValue.capitalized).font(.system(.callout)).fixedSize().if(modeData.mode == editMode) { view in
-								view.foregroundColor(Color.accentColor)
-							}
-							Image(systemName: modeData.imageName).font(.system(.title)).if(modeData.mode == editMode) { view in
-								view.foregroundColor(Color.accentColor)
-							}
-						}.padding(.horizontal).contentShape(Rectangle()).onTapGesture {
-							editMode = modeData.mode
-						   }
-					}
-				}
-				#if os(macOS)
-				.frame(width: geo.size.width)
-				#endif
-			}.frame(width: geo.size.width)
-		}
-		
-	}
-	#else
-	func getFilterControls() -> some View {
-			ScrollView([.horizontal]) {
-				HStack(alignment: .top) {
-					ForEach(imageEditModesData, id: \.mode.rawValue) { modeData in
-						VStack {
-							Text(modeData.mode.rawValue.capitalized).font(.system(.callout)).fixedSize().if(modeData.mode == editMode) { view in
-								view.foregroundColor(Color.accentColor)
-							}
-							Image(systemName: modeData.imageName).font(.system(.title)).onTapGesture {
+	func getFilterControls(proxy: GeometryProxy) -> some View {
+			VStack {
+				ScrollView([.horizontal]) {
+					HStack(alignment: .top) {
+						ForEach(imageEditModesData, id: \.mode.rawValue) { modeData in
+							VStack {
+								Text(modeData.mode.rawValue.capitalized).font(.system(.callout)).fixedSize().if(modeData.mode == editMode) { view in
+									view.foregroundColor(Color.accentColor)
+								}
+								Image(systemName: modeData.imageName).font(.system(.title)).if(modeData.mode == editMode) { view in
+									view.foregroundColor(Color.accentColor)
+								}
+							}.padding(.horizontal).contentShape(Rectangle()).onTapGesture {
 								editMode = modeData.mode
-							}.if(modeData.mode == editMode) { view in
-								view.foregroundColor(Color.accentColor)
 							}
-						}.padding(.horizontal)
+						}
+					}.if(proxy.size.width > 1000) { view in
+						view.frame(width: proxy.size.width)
 					}
 				}
+				getFilterControl().frame(maxWidth: 600)
 		}
 		
 	}
-	#endif
 	
 	func getFilterControl() -> some View {
 		Group{
