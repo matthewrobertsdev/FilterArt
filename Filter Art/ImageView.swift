@@ -70,7 +70,7 @@ struct ImageView: View {
 					InfoSeperator()
 					GeometryReader { proxy in
 						getEditor(proxy: proxy).frame(maxWidth: .infinity)
-					}.frame(height: 175)
+					}.frame(height: 225)
 				}.sheet(isPresented: $modalStateViewModel.showingUnmodifiedImage) {
 					VStack(alignment: .leading, spacing: 0) {
 						HStack {
@@ -143,7 +143,7 @@ struct ImageView: View {
 						ScrollView {
 							getEditor(proxy: proxy).frame(maxWidth: .infinity)
 						}
-					}.frame(height: 200)
+					}.frame(height: 235)
 				}
 				.sheet(isPresented: $modalStateViewModel.showingShareSheet) {
 					ShareSheet(imageData: getFilteredImage(forSharing: true))
@@ -508,7 +508,6 @@ struct ImageView: View {
 #endif
 	func getFilterControls(proxy: GeometryProxy) -> some View {
 		Group {
-			if editMode == nil {
 				VStack {
 					ScrollView([.horizontal]) {
 						HStack(alignment: .top) {
@@ -522,17 +521,19 @@ struct ImageView: View {
 											Text("")
 										}.toggleStyle(.switch).tint(Color.accentColor)
 									} else {
-										Image(systemName: modeData.imageName).font(.system(.title)).if(true) { view in
+										Image(systemName: modeData.imageName).font(.system(.title)).if(modeData.mode == editMode) { view in
 											view.foregroundColor(Color.accentColor)
 										}
 									}
 								}.padding(.horizontal).contentShape(Rectangle()).onTapGesture {
 									storeSnapshot()
 									withAnimation {
-										editMode = modeData.mode
+										if modeData.mode != .invert {
+											editMode = modeData.mode
+										}
 									}
 								}
-							}.padding(.vertical)
+							}.padding(.vertical, 5)
 						}
 						#if os(iOS)
 						.if(proxy.size.width > 1000) { view in
@@ -543,8 +544,22 @@ struct ImageView: View {
 						#endif
 					}
 				}
-			} else {
 				getFilterControl().frame(maxWidth: 600)
+			InfoSeperator()
+			HStack(spacing: 50) {
+				Button {
+					withAnimation {
+						restoreSnapshot()
+					}
+				} label: {
+					Text("Undo")
+				}
+				Button {
+					withAnimation {
+					}
+				} label: {
+					Text("Redo")
+				}
 			}
 		}
 		
@@ -594,50 +609,43 @@ struct ImageView: View {
 			else {
 				switch editMode {
 				case .hue:
-					Toggle("Use Hue Rotation", isOn: $useHueRotation.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
-					HueRotationControl(hueRotation: $hueRotation).disabled(!useHueRotation)
+					HueRotationControl(useHueRotation: $useHueRotation, hueRotation: $hueRotation)
 				case .contrast:
-					Toggle("Use Contrast", isOn: $useContrast.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
+					HStack {
+						Toggle("", isOn: $useContrast.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50)
 						ContrastControl(contrast: $contrast).disabled(!useContrast)
+					}
 				case .invert:
-					Toggle("Invert Colors", isOn: $invertColors.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
+					EmptyView()
 				case .colorMultiply:
-					Toggle("Use Color Multiply", isOn: $useColorMultiply.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
-					ColorMultiplyControl(colorMultiplyColor: $colorMultiplyColor).disabled(!useColorMultiply)
+					HStack {
+						Toggle("", isOn: $useColorMultiply.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50)
+						ColorMultiplyControl(colorMultiplyColor: $colorMultiplyColor).disabled(!useColorMultiply)
+					}
 				case .saturation:
-					Toggle("Use Saturation", isOn: $useSaturation.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
-					SaturationControl(saturation: $saturation).disabled(!useSaturation)
+					HStack {
+						Toggle("", isOn: $useSaturation.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50)
+						SaturationControl(saturation: $saturation).disabled(!useSaturation)
+					}
 				case .grayscale:
-					Toggle("Use Grayscale", isOn: $useGrayscale.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
-					GrayscaleControl(grayscale: $grayscale).disabled(!useGrayscale)
+					HStack {
+						Toggle("", isOn: $useGrayscale.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50)
+						GrayscaleControl(grayscale: $grayscale).disabled(!useGrayscale)
+					}
 				case .opacity:
-					Toggle("Use Opacity", isOn: $useOpacity.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
-					OpacityControl(opacity: $opacity).disabled(!useOpacity)
+					HStack {
+						Toggle("", isOn: $useOpacity.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50)
+						OpacityControl(opacity: $opacity).disabled(!useOpacity)
+					}
 				case .blur:
-					Toggle("Use Blur", isOn: $useBlur.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
-					BlurControl(blur: $blur).disabled(!useBlur)
+					HStack {
+						Toggle("", isOn: $useBlur.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50)
+						BlurControl(blur: $blur).disabled(!useBlur)
+					}
 				case .none:
 					EmptyView()
 				}
 			}
-			HStack {
-				Button {
-					withAnimation {
-						restoreSnapshot()
-						editMode = nil
-					}
-				} label: {
-					Text("Cancel")
-				}.buttonStyle(.bordered)
-				Button {
-					withAnimation {
-						editMode = nil
-					}
-				} label: {
-					Text("Done")
-				}.buttonStyle(.borderedProminent)
-			}
-
 		}
 	}
 		
