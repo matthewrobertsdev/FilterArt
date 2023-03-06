@@ -70,7 +70,7 @@ struct ImageView: View {
 					InfoSeperator()
 					GeometryReader { proxy in
 						getEditor(proxy: proxy).frame(maxWidth: .infinity)
-					}.frame(height: 225)
+					}.frame(height: 250)
 				}.sheet(isPresented: $modalStateViewModel.showingUnmodifiedImage) {
 					VStack(alignment: .leading, spacing: 0) {
 						HStack {
@@ -561,6 +561,9 @@ struct ImageView: View {
 					Text("Redo")
 				}
 			}
+			#if os(macOS)
+			.padding(.top)
+			#endif
 		}
 		
 	}
