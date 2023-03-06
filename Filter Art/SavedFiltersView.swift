@@ -70,7 +70,13 @@ struct SavedFiltersView: View {
 
 							}
 							Spacer()
-							getFilteredImage(filter: filter).frame(width: isEditing ? 175 : 250, height: 175).transition(.scale).transition(.move(edge: .leading))
+							getFilteredImage(filter: filter)
+							#if os(macOS)
+								.frame(width: isEditing ? 175 : 250, height: 175)
+							#else
+								.frame(width: isEditing ? 175 : 250, height: 175)
+							#endif
+								.transition(.scale).transition(.move(edge: .leading))
 							Spacer()
 						}
 					HStack {
@@ -109,6 +115,8 @@ struct SavedFiltersView: View {
 		}.listStyle(.sidebar)
 		#if os(iOS)
 			.onChange(of: selectedSavedFilter) { newValue in
+				NotificationCenter.default.post(name: .endEditing,
+																object: nil, userInfo: nil)
 			asignSavedFilterComponentsToAppStorage()
 			showing = false
 		}
@@ -154,6 +162,8 @@ struct SavedFiltersView: View {
 				Text("Rename")
 			}.disabled(selectedSavedFilter == nil)
 			Button {
+				NotificationCenter.default.post(name: .endEditing,
+																object: nil, userInfo: nil)
 				asignSavedFilterComponentsToAppStorage()
 				showing = false
 			} label: {

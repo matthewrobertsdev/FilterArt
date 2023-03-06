@@ -230,6 +230,10 @@ struct ImageView: View {
 					 showSavePanel()
 				 }
 		#endif
+		.onReceive(NotificationCenter.default.publisher(for: .endEditing))
+{ notification in
+			editMode = nil
+		}
 #if os(iOS)
 		.navigationBarTitleDisplayMode(.inline)
 #else
@@ -264,17 +268,6 @@ struct ImageView: View {
 						Text("Photo").controlSize(.large)
 					}.photosPicker(isPresented: $showingPhotoPicker, selection:  $selectedItem, matching: .images).onChange(of: selectedItem) { newItem in
 						loading = true
-						/*
-						 Task {
-						 if let data = try? await newItem?.loadTransferable(type: Data.self) {
-						 imageDataStore.imageData = data
-						 useOriginalImage = false
-						 loading = false
-						 } else {
-						 loading = false
-						 }
-						 }
-						 */
 						newItem?.loadTransferable(type: Data.self, completionHandler: { result in
 							switch result  {
 							case .success(let data):
@@ -307,14 +300,7 @@ struct ImageView: View {
 					}).frame(width: 100)
 					Menu(content: {
 						Button("Choose Photo") {
-							//waitingForDrop = true
-							//#if os(macOS)
-							
 							showOpenPanel()
-							 
-							//#else
-							//showingImagePicker = true
-						 
 						}
 
 						Button("Default Photo") {
@@ -328,13 +314,11 @@ struct ImageView: View {
 						Button {
 							modalStateViewModel.showingNameAlert = true
 						} label: {
-							//Label("Add Saved Filter", systemImage: "plus")
 							Text("Add Saved Filter")
 						}
 						Button {
 							modalStateViewModel.showingFilters = true
 						} label: {
-							//Label("Apply Filter...", systemImage: "camera.filters")
 							Text("All Filters")
 						}
 					} label: {
@@ -344,21 +328,6 @@ struct ImageView: View {
 				}.padding(.bottom)
 #endif
 				#if os(iOS)
-				/*
-				HStack(spacing: 20){
-					Button {
-						let imageSaver = ImageSaver(showingSuccessAlert: $showingImageSaveSuccesAlert, showingErrorAlert: $showingImageSaveFailureAlert)
-						imageSaver.writeToPhotoAlbum(image: getFilteredImage())
-					} label: {
-						Text("Save Image")
-					}
-					Button {
-						showingShareSheet = true
-					} label: {
-						Text("Share Image")
-					}
-				}
-				 */
 				HStack(spacing: 50) {
 					Menu {
 						Button {
@@ -548,8 +517,14 @@ struct ImageView: View {
 									Text(modeData.mode.rawValue.capitalized).font(.system(.callout)).fixedSize().if(modeData.mode == editMode) { view in
 										view.foregroundColor(Color.accentColor)
 									}
-									Image(systemName: modeData.imageName).font(.system(.title)).if(true) { view in
-										view.foregroundColor(Color.accentColor)
+									if modeData.mode == .invert {
+										Toggle(isOn: $invertColors) {
+											Text("")
+										}.toggleStyle(.switch).tint(Color.accentColor)
+									} else {
+										Image(systemName: modeData.imageName).font(.system(.title)).if(true) { view in
+											view.foregroundColor(Color.accentColor)
+										}
 									}
 								}.padding(.horizontal).contentShape(Rectangle()).onTapGesture {
 									storeSnapshot()
@@ -558,9 +533,14 @@ struct ImageView: View {
 									}
 								}
 							}.padding(.vertical)
-						}.if(proxy.size.width > 1000) { view in
+						}
+						#if os(iOS)
+						.if(proxy.size.width > 1000) { view in
 							view.frame(width: proxy.size.width)
 						}
+						#else
+						.frame(width: proxy.size.width)
+						#endif
 					}
 				}
 			} else {
@@ -626,7 +606,7 @@ struct ImageView: View {
 					ColorMultiplyControl(colorMultiplyColor: $colorMultiplyColor).disabled(!useColorMultiply)
 				case .saturation:
 					Toggle("Use Saturation", isOn: $useSaturation.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
-					SaturationControl(saturation: $saturation).disabled(!useHueRotation)
+					SaturationControl(saturation: $saturation).disabled(!useSaturation)
 				case .grayscale:
 					Toggle("Use Grayscale", isOn: $useGrayscale.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 300)
 					GrayscaleControl(grayscale: $grayscale).disabled(!useGrayscale)

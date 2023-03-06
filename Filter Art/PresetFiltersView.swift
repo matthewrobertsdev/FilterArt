@@ -52,7 +52,12 @@ struct PresetFiltersView: View {
 				VStack {
 					HStack {
 						Spacer()
-						getFilteredImage(filter: filterModel).frame(width: 250, height: 175)
+						getFilteredImage(filter: filterModel)
+#if os(macOS)
+								.frame(width: 250, height: 175)
+							#else
+								.frame(width: 250, height: 175)
+							#endif
 						Spacer()
 					}
 					HStack {
@@ -116,6 +121,8 @@ struct PresetFiltersView: View {
 		}.listStyle(.sidebar)
 #if os(iOS)
 			.onChange(of: selectedPreset) { newValue in
+				NotificationCenter.default.post(name: .endEditing,
+																object: nil, userInfo: nil)
 				asignPresetFilterComponentsToAppStorage()
 				showing = false
 			}
@@ -128,6 +135,8 @@ struct PresetFiltersView: View {
 					Text("Cancel")
 				}
 				Button {
+					NotificationCenter.default.post(name: .endEditing,
+																	object: nil, userInfo: nil)
 					asignPresetFilterComponentsToAppStorage()
 					showing = false
 				} label: {

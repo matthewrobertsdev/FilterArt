@@ -48,7 +48,13 @@ struct FavoriteFiltersView: View {
 				VStack(alignment: .center) {
 						HStack {
 							Spacer()
-							getFilteredImage(filter: filter).frame(width: 250, height: 175).transition(.scale).transition(.move(edge: .leading))
+							getFilteredImage(filter: filter)
+#if os(macOS)
+								.frame(width: 250, height: 175)
+							#else
+								.frame(width: 250, height: 175)
+							#endif
+								.transition(.scale).transition(.move(edge: .leading))
 							Spacer()
 						}
 					HStack {
@@ -76,6 +82,8 @@ struct FavoriteFiltersView: View {
 		}.listStyle(.sidebar)
 		#if os(iOS)
 			.onChange(of: selectedFavoriteFilter) { newValue in
+				NotificationCenter.default.post(name: .endEditing,
+																object: nil, userInfo: nil)
 			asignSavedFilterComponentsToAppStorage()
 			showing = false
 		}
@@ -88,6 +96,8 @@ struct FavoriteFiltersView: View {
 				Text("Cancel")
 			}
 			Button {
+				NotificationCenter.default.post(name: .endEditing,
+																object: nil, userInfo: nil)
 				asignSavedFilterComponentsToAppStorage()
 				showing = false
 			} label: {

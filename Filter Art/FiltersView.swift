@@ -31,7 +31,7 @@ struct FiltersView: View {
 			}
 		}).safeAreaInset(edge: .top, content: {
 			VStack(spacing:0){
-				Text("Stored Filters").font(.largeTitle).padding()
+				Text("Stored Filters").font(.title2).padding(5)
 				Picker(selection: $filterType) {
 					ForEach(FilterType.allCases, id: \.rawValue) { filterType in
 						Text(filterType.rawValue)
@@ -44,7 +44,7 @@ struct FiltersView: View {
 				.regularMaterial,
 				   in: Rectangle()
 			   )
-		   }).frame(width: 350).frame(width: 350, height: 615, alignment: .topLeading).padding().onChange(of: filterType) { _ in
+		   }).frame(width: 325, height: 500, alignment: .topLeading).padding().onChange(of: filterType) { _ in
 			   searchString = ""
 		   }
 				#else

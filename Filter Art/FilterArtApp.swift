@@ -21,7 +21,7 @@ struct FilterArtApp: App {
             ContentView()
 				.environment(\.managedObjectContext, persistenceController.container.viewContext).environmentObject(modalStateViewModel)
 #if os(macOS)
-				.frame(minWidth: 700, minHeight: 750)
+				.frame(minWidth: 700, minHeight: 600)
 				.onAppear {
 					NSWindow.allowsAutomaticWindowTabbing = false
 				}
@@ -34,7 +34,7 @@ struct FilterArtApp: App {
 																	object: nil, userInfo: nil)
 					modalStateViewModel.showingImagePicker = true
 				} label: {
-					Label("Choose Image", systemImage: "photo")
+					Label("Choose Photo", systemImage: "photo")
 				}.keyboardShortcut(KeyboardShortcut("1", modifiers: .command)).disabled(modalStateViewModel.isModal())
 				Divider()
 				Button {
@@ -57,6 +57,7 @@ struct FilterArtApp: App {
 				} label: {
 					Text("Unmodified Image")
 				}.keyboardShortcut(KeyboardShortcut("3", modifiers: .command)).disabled(modalStateViewModel.isModal())
+				Divider()
 			}
 			CommandMenu("Photo") {
 				Button {
@@ -133,4 +134,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 extension Notification.Name {
 	static let showSavePanel = Notification.Name("showSavePanel")
 	static let showOpenPanel = Notification.Name("showOpenPanel")
+	static let endEditing = Notification.Name("endEditing")
 }
