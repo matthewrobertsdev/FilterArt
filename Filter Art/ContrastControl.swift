@@ -9,14 +9,20 @@ import SwiftUI
 
 struct ContrastControl: View {
 	@Binding private var contrast: Double
-	init(contrast: Binding<Double>) {
+	var saveForUndo: () -> Void
+	init(contrast: Binding<Double>, saveForUndo: @escaping () -> Void) {
 		self._contrast = contrast
+		self.saveForUndo = saveForUndo
 	}
 	var body: some View {
 		HStack {
 			Text("\(-2)")
 			Spacer()
-			Slider(value: $contrast, in: -2...2)
+			Slider(value: $contrast, in: -2...2) { editing in
+				if !editing {
+					saveForUndo()
+				}
+			}
 			Spacer()
 			Text("\(2)")
 		}

@@ -9,10 +9,14 @@ import SwiftUI
 
 struct ColorMultiplyControl: View {
 	@Binding var colorMultiplyColor: Color
+	
+	init(colorMultiplyColor: Binding<Color>) {
+		self._colorMultiplyColor = colorMultiplyColor
+	}
 	var body: some View {
 		Group {
 			ColorPicker(selection: $colorMultiplyColor) {
-				Text("Choose color to multiply by:")
+				Text("")
 			}
 		}
 	}

@@ -12,6 +12,8 @@
 		9F264297297051C5009309B4 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F264296297051C5009309B4 /* ImagePicker.swift */; };
 		9F3221BC2975897D0034FDCB /* WindowAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3221BB2975897D0034FDCB /* WindowAccessor.swift */; };
 		9F3221BE29758DC50034FDCB /* BlurControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3221BD29758DC50034FDCB /* BlurControl.swift */; };
+		9F381AA029B75C5000B3E7AA /* FilterStateHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F381A9F29B75C5000B3E7AA /* FilterStateHistory.swift */; };
+		9F381AA129B75C5000B3E7AA /* FilterStateHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F381A9F29B75C5000B3E7AA /* FilterStateHistory.swift */; };
 		9F86876F298A2BA200856D96 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F86876E298A2BA200856D96 /* ContentView.swift */; };
 		9F868770298A2BA200856D96 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F86876E298A2BA200856D96 /* ContentView.swift */; };
 		9F89DA66296FB65200D46184 /* FilterArtApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DA65296FB65200D46184 /* FilterArtApp.swift */; };
@@ -113,6 +115,7 @@
 		9F264296297051C5009309B4 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		9F3221BB2975897D0034FDCB /* WindowAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAccessor.swift; sourceTree = "<group>"; };
 		9F3221BD29758DC50034FDCB /* BlurControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurControl.swift; sourceTree = "<group>"; };
+		9F381A9F29B75C5000B3E7AA /* FilterStateHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterStateHistory.swift; sourceTree = "<group>"; };
 		9F86876E298A2BA200856D96 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9F89DA62296FB65200D46184 /* Filter Art iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Filter Art iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F89DA65296FB65200D46184 /* FilterArtApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterArtApp.swift; sourceTree = "<group>"; };
@@ -248,6 +251,7 @@
 				9F1258BA2988C81B00A08636 /* ModalStateViewModel.swift */,
 				9F89DA67296FB65200D46184 /* Persistence.swift */,
 				9F89DA95296FB6CB00D46184 /* ImageView.swift */,
+				9F381A9F29B75C5000B3E7AA /* FilterStateHistory.swift */,
 				9F3221BB2975897D0034FDCB /* WindowAccessor.swift */,
 				9FF33FA629734A4E005620AD /* ImageSaver.swift */,
 				9F264296297051C5009309B4 /* ImagePicker.swift */,
@@ -599,6 +603,7 @@
 				9FFCC6D92971137B007C1CC4 /* ShareSheet.swift in Sources */,
 				9F89DA66296FB65200D46184 /* FilterArtApp.swift in Sources */,
 				9F86876F298A2BA200856D96 /* ContentView.swift in Sources */,
+				9F381AA029B75C5000B3E7AA /* FilterStateHistory.swift in Sources */,
 				9FF33FA829734A54005620AD /* ImageSaver.swift in Sources */,
 				9FFCC6DF297116AB007C1CC4 /* ShareViewController.swift in Sources */,
 				9F89DA98296FB6F900D46184 /* InfoSeparator.swift in Sources */,
@@ -665,6 +670,7 @@
 				9FCF2F362986DEEA00C5868C /* FavoriteFiltersView.swift in Sources */,
 				9FE517C9297266F7003F3CA7 /* ColorComponents.swift in Sources */,
 				9FE517CA297266F7003F3CA7 /* ImagePicker.swift in Sources */,
+				9F381AA129B75C5000B3E7AA /* FilterStateHistory.swift in Sources */,
 				9F1258BB2988C81B00A08636 /* ModalStateViewModel.swift in Sources */,
 				9FE517D7297266F7003F3CA7 /* ShareSheet.swift in Sources */,
 				9FE517C8297266F7003F3CA7 /* HueRotationControl.swift in Sources */,
@@ -843,7 +849,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Filter Art/Filter_Art.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -887,7 +893,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Filter Art/Filter_Art.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1101,7 +1107,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1133,7 +1139,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;

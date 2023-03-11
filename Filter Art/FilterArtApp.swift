@@ -11,6 +11,7 @@ import SwiftUI
 struct FilterArtApp: App {
 	private let baseUrl = "https://matthewrobertsdev.github.io/celeritasapps/#/"
 	@StateObject private var modalStateViewModel = ModalStateViewModel()
+	@StateObject var filterStateHistory = FilterStateHistory()
 	@AppStorage("imageUseOriginalImage") private var useOriginalImage: Bool = true
 	#if os(macOS)
 	@NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -19,7 +20,7 @@ struct FilterArtApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-				.environment(\.managedObjectContext, persistenceController.container.viewContext).environmentObject(modalStateViewModel)
+				.environment(\.managedObjectContext, persistenceController.container.viewContext).environmentObject(modalStateViewModel).environmentObject(filterStateHistory)
 #if os(macOS)
 				.frame(minWidth: 700, minHeight: 600)
 				.onAppear {
@@ -27,6 +28,18 @@ struct FilterArtApp: App {
 				}
 #endif
         }.commands {
+			CommandGroup(replacing: .undoRedo) {
+				Button {
+					NotificationCenter.default.post(name: .undo, object: nil)
+				} label: {
+					Text("Undo")
+				}.keyboardShortcut(KeyboardShortcut("Z", modifiers: .command)).disabled(!filterStateHistory.canUndo ||  modalStateViewModel.isModal())
+				Button {
+					NotificationCenter.default.post(name: .redo, object: nil)
+				} label: {
+					Text("Redo")
+				}.keyboardShortcut(KeyboardShortcut("Z", modifiers: [.command, .shift])).disabled(!filterStateHistory.canRedo ||  modalStateViewModel.isModal())
+			}
 			CommandGroup(replacing: CommandGroupPlacement.newItem) {
 #if os(macOS)
 				Button {
@@ -135,4 +148,6 @@ extension Notification.Name {
 	static let showSavePanel = Notification.Name("showSavePanel")
 	static let showOpenPanel = Notification.Name("showOpenPanel")
 	static let endEditing = Notification.Name("endEditing")
+	static let undo = Notification.Name("undo")
+	static let redo = Notification.Name("redo")
 }

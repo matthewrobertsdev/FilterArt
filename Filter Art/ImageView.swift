@@ -13,10 +13,11 @@ import AppKit
 import Photos
 import PhotosUI
 
-
 struct ImageView: View {
+	@Environment(\.colorScheme) private var colorScheme
 	@Environment(\.managedObjectContext) var managedObjectContext
 	@Environment(\.displayScale) var displayScale
+	@EnvironmentObject var filterStateHistory: FilterStateHistory
 	@EnvironmentObject var modalStateViewModel: ModalStateViewModel
 	@StateObject private var imageDataStore = ImageDataStore()
 	@AppStorage("imageInvertColors") private var invertColors: Bool = false
@@ -26,6 +27,7 @@ struct ImageView: View {
 	@AppStorage("imageUseContrast") private var useContrast: Bool = false
 	@AppStorage("imageUseColorMultiply") private var useColorMultiply: Bool = false
 	@AppStorage("imageColorMultiplyColor") private var colorMultiplyColor: Color = Color.blue
+	@State private var previousColor: Color = Color.blue
 	@AppStorage("imageUseSaturation") private var useSaturation: Bool = false
 	@AppStorage("imageSaturation") private var saturation: Double = 1
 	@AppStorage("imageUseGrayscale") private var useGrayscale: Bool = false
@@ -34,21 +36,6 @@ struct ImageView: View {
 	@AppStorage("imageOpacity") private var opacity: Double = 1
 	@AppStorage("imageUseBlur") private var useBlur: Bool = false
 	@AppStorage("imageBlur") private var blur: Double = 0
-	@State private var invertColorsSnaphhot: Bool = false
-	@State private var hueRotationSnaphhot: Double = 0
-	@State private var useHueRotationSnapshot: Bool = false
-	@State private var contrastSnapshot: Double = 1
-	@State private var useContrastSnapshot: Bool = false
-	@State private var useColorMultiplySnapshot: Bool = false
-	@State private var colorMultiplyColorSnapshot: Color = Color.blue
-	@State private var useSaturationSnapshot: Bool = false
-	@State private var saturationSnapshot: Double = 1
-	@State private var useGrayscaleSnapshot: Bool = false
-	@State private var grayscaleSnapshot: Double = 0
-	@State private var useOpacitySnapshot: Bool = false
-	@State private var opacitySnapshot: Double = 1
-	@State private var useBlurSnapshot: Bool = false
-	@State private var blurSnapshot: Double = 0
 	@State private var image: Data = Data()
 	@AppStorage("imageUseOriginalImage") private var useOriginalImage: Bool = true
 	@State var showingImageSaveFailureAlert = false
@@ -57,6 +44,7 @@ struct ImageView: View {
 	@State private var selectedItem: PhotosPickerItem? = nil
 	@State private var editMode: ImageEditMode? = nil
 	@State private var showingPhotoPicker: Bool = false
+	@State private var lastColorEditDate: Date = Date.now
 	#if os(macOS)
 	@State private var window: NSWindow?
 	#endif
@@ -122,6 +110,9 @@ struct ImageView: View {
 							}
 						}
 					}
+						print("abcd")
+					storeSnapshot()
+						previousColor=colorMultiplyColor
 					}.sheet(isPresented: $modalStateViewModel.showingFilters) {
 						FiltersView(showing: $modalStateViewModel.showingFilters).environmentObject(imageDataStore)
 				   }.onChange(of: imageDataStore.imageData) { imageData in
@@ -206,6 +197,8 @@ struct ImageView: View {
 							}
 						}
 					}
+						storeSnapshot()
+						previousColor=colorMultiplyColor
 				}.onChange(of: imageDataStore.imageData) { imageData in
 					DispatchQueue.main.async {
 						ImageDataStore.save(imageData: imageDataStore.imageData) { result in
@@ -229,11 +222,18 @@ struct ImageView: View {
 		{ notification in
 					 showSavePanel()
 				 }
-		#endif
 		.onReceive(NotificationCenter.default.publisher(for: .endEditing))
 { notification in
-			editMode = nil
+	NSColorPanel.shared.close()
 		}
+		#endif
+.onReceive(NotificationCenter.default.publisher(for: .undo))
+{ notification in
+	handleUndo()
+}.onReceive(NotificationCenter.default.publisher(for: .redo))
+		{ notification in
+			handleRedo()
+  }
 #if os(iOS)
 		.navigationBarTitleDisplayMode(.inline)
 #else
@@ -246,16 +246,6 @@ struct ImageView: View {
 			VStack(spacing: 10) {
 				#if os(iOS)
 				HStack(spacing: 50) {
-					Menu(content: {
-						Button("Modified Image") {
-							modalStateViewModel.showingPreviewModal = true
-						}
-						Button("Unmodfied Image") {
-							modalStateViewModel.showingUnmodifiedImage = true
-						}
-					}, label: {
-						Text("View").controlSize(.large)
-					})
 					Menu {
 						Button("Choose Photo") {
 							showingPhotoPicker = true
@@ -283,21 +273,24 @@ struct ImageView: View {
 							loading = false
 						})
 					}
+					Menu {
+						Button {
+							modalStateViewModel.showingNameAlert = true
+						} label: {
+							Text("Add Saved Filter")
+						}
+						Button {
+							modalStateViewModel.showingFilters = true
+						} label: {
+							Text("All Filters")
+						}
+					} label: {
+						Text("Filters...").controlSize(.large)
+					}
 				}
-					
 
 				#else
 				HStack(spacing: 20) {
-					Menu(content: {
-						Button("Modified Image") {
-							modalStateViewModel.showingPreviewModal = true
-						}
-						Button("Unmodfied Image") {
-							modalStateViewModel.showingUnmodifiedImage = true
-						}
-					}, label: {
-						Text("View")
-					}).frame(width: 100)
 					Menu(content: {
 						Button("Choose Photo") {
 							showOpenPanel()
@@ -325,6 +318,16 @@ struct ImageView: View {
 						Text("Filters...")
 					}.frame(width: 100)
 						getSavePanelButton()
+					Menu(content: {
+						Button("Modified Image") {
+							modalStateViewModel.showingPreviewModal = true
+						}
+						Button("Unmodfied Image") {
+							modalStateViewModel.showingUnmodifiedImage = true
+						}
+					}, label: {
+						Text("View")
+					}).frame(width: 100)
 				}.padding(.bottom)
 #endif
 				#if os(iOS)
@@ -344,20 +347,16 @@ struct ImageView: View {
 					} label: {
 						Text("Share/Export").controlSize(.large)
 					}
-					Menu {
-						Button {
-							modalStateViewModel.showingNameAlert = true
-						} label: {
-							Text("Add Saved Filter")
+					Menu(content: {
+						Button("Modified Image") {
+							modalStateViewModel.showingPreviewModal = true
 						}
-						Button {
-							modalStateViewModel.showingFilters = true
-						} label: {
-							Text("All Filters")
+						Button("Unmodfied Image") {
+							modalStateViewModel.showingUnmodifiedImage = true
 						}
-					} label: {
-						Text("Filters...").controlSize(.large)
-					}
+					}, label: {
+						Text("View").controlSize(.large)
+					})
 				}
 				#endif
 				InfoSeperator()
@@ -512,7 +511,7 @@ struct ImageView: View {
 					ScrollView([.horizontal]) {
 						HStack(alignment: .top) {
 							ForEach(imageEditModesData, id: \.mode.rawValue) { modeData in
-								VStack(spacing: 10) {
+								VStack(spacing: 5) {
 									Text(modeData.mode.rawValue.capitalized).font(.system(.callout)).fixedSize().if(modeData.mode == editMode) { view in
 										view.foregroundColor(Color.accentColor)
 									}
@@ -525,14 +524,18 @@ struct ImageView: View {
 											view.foregroundColor(Color.accentColor)
 										}
 									}
-								}.padding(.horizontal).contentShape(Rectangle()).onTapGesture {
-									storeSnapshot()
-									withAnimation {
+								}.padding(.horizontal).padding(.vertical, 2.5).contentShape(Rectangle()).if(modeData.mode == editMode) { view in
+									view.background(Color.accentColor.opacity(colorScheme == .dark ? 0.10 : 0.20)).cornerRadius(10)
+									  }.onTapGesture {
 										if modeData.mode != .invert {
+											
 											editMode = modeData.mode
 										}
-									}
-								}
+									  }.onChange(of: editMode) { newValue in
+#if os(macOS)
+NSColorPanel.shared.close()
+#endif
+									  }
 							}.padding(.vertical, 5)
 						}
 						#if os(iOS)
@@ -548,18 +551,15 @@ struct ImageView: View {
 			InfoSeperator()
 			HStack(spacing: 50) {
 				Button {
-					withAnimation {
-						restoreSnapshot()
-					}
+					handleUndo()
 				} label: {
 					Text("Undo")
-				}
+				}.disabled(!filterStateHistory.canUndo)
 				Button {
-					withAnimation {
-					}
+					handleRedo()
 				} label: {
 					Text("Redo")
-				}
+				}.disabled(!filterStateHistory.canRedo)
 			}
 			#if os(macOS)
 			.padding(.top)
@@ -569,39 +569,29 @@ struct ImageView: View {
 	}
 	
 	func storeSnapshot() {
-		invertColorsSnaphhot = invertColors
-		hueRotationSnaphhot = hueRotation
-		useHueRotationSnapshot = useHueRotation
-		contrastSnapshot = contrast
-		useContrastSnapshot = useContrast
-		useColorMultiplySnapshot = useColorMultiply
-		colorMultiplyColorSnapshot = colorMultiplyColor
-		useSaturationSnapshot = useSaturation
-		saturationSnapshot = saturation
-		useGrayscaleSnapshot = useGrayscale
-		grayscaleSnapshot = grayscale
-		useOpacitySnapshot = useOpacity
-		opacitySnapshot = opacity
-		useBlurSnapshot = useBlur
-		blurSnapshot = blur
+		filterStateHistory.forUndo.append(FilterModel(blur: blur, colorMultiplyO: colorMultiplyColor.components.opacity, colorMultiplyB: colorMultiplyColor.components.blue, colorMultiplyG: colorMultiplyColor.components.green, colorMultiplyR: colorMultiplyColor.components.red, contrast: contrast, grayscale: grayscale, hueRotation: hueRotation, id: UUID().uuidString, invertColors: invertColors, opacity: opacity, name: "App State Filter", saturation: saturation, timestamp: Date(), useBlur: useBlur, useColorMultiply: useColorMultiply, useContrast: useContrast, useGrayscale: useGrayscale, useHueRotation: useHueRotation, useOpacity: useOpacity, useSaturation: useSaturation))
+		filterStateHistory.forRedo = [FilterModel]()
 	}
 	
-	func restoreSnapshot() {
-		invertColors = invertColorsSnaphhot
-		hueRotation = hueRotationSnaphhot
-		useHueRotation = useHueRotationSnapshot
-		contrast = contrastSnapshot
-		useContrast = useContrastSnapshot
-		useColorMultiply = useColorMultiplySnapshot
-		colorMultiplyColor = colorMultiplyColorSnapshot
-		useSaturation = useSaturationSnapshot
-		saturation = saturationSnapshot
-		useGrayscale = useGrayscaleSnapshot
-		grayscale = grayscaleSnapshot
-		useOpacity = useOpacitySnapshot
-		opacity = opacitySnapshot
-		useBlur = useBlurSnapshot
-		blur = blurSnapshot
+	func restoreSnapshot(stateToRestore: FilterModel?) {
+		print("abcd restore")
+		if let stateToRestore = stateToRestore {
+				invertColors = stateToRestore.invertColors
+				hueRotation = stateToRestore.hueRotation
+				useHueRotation = stateToRestore.useHueRotation
+				contrast = stateToRestore.contrast
+				useContrast = stateToRestore.useContrast
+				useColorMultiply = stateToRestore.useColorMultiply
+				colorMultiplyColor = Color(red: stateToRestore.colorMultiplyR, green: stateToRestore.colorMultiplyG, blue: stateToRestore.colorMultiplyB, opacity: stateToRestore.colorMultiplyO)
+				useSaturation = stateToRestore.useSaturation
+				saturation = stateToRestore.saturation
+				useGrayscale = stateToRestore.useGrayscale
+				grayscale = stateToRestore.grayscale
+				useOpacity = stateToRestore.useOpacity
+				opacity = stateToRestore.opacity
+				useBlur = stateToRestore.useOpacity
+				blur = stateToRestore.blur
+			}
 	}
 	
 	func getFilterControl() -> some View {
@@ -612,37 +602,56 @@ struct ImageView: View {
 			else {
 				switch editMode {
 				case .hue:
-					HueRotationControl(useHueRotation: $useHueRotation, hueRotation: $hueRotation)
+					HStack {
+						Toggle("", isOn: $useHueRotation.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small)
+						HueRotationControl(hueRotation: $hueRotation, saveForUndo: {
+							storeSnapshot()
+						}).disabled(!useHueRotation)
+					}
 				case .contrast:
 					HStack {
-						Toggle("", isOn: $useContrast.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50)
-						ContrastControl(contrast: $contrast).disabled(!useContrast)
+						Toggle("", isOn: $useContrast.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small)
+						ContrastControl(contrast: $contrast, saveForUndo: {
+							storeSnapshot()
+						}).disabled(!useContrast)
 					}
 				case .invert:
 					EmptyView()
 				case .colorMultiply:
 					HStack {
-						Toggle("", isOn: $useColorMultiply.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50)
-						ColorMultiplyControl(colorMultiplyColor: $colorMultiplyColor).disabled(!useColorMultiply)
+						Toggle("", isOn: $useColorMultiply.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small)
+						ColorMultiplyControl(colorMultiplyColor: $colorMultiplyColor).disabled(!useColorMultiply).onChange(of: colorMultiplyColor) { newValue in
+							if !filterStateHistory.isModifying && lastColorEditDate < Date.now - 1 {
+								lastColorEditDate = Date.now
+								print("abcd store")
+								storeSnapshot()
+							} else {
+								let lastIndex = filterStateHistory.forUndo.count - 1
+								filterStateHistory.forUndo[lastIndex].colorMultiplyR = colorMultiplyColor.components.red
+								filterStateHistory.forUndo[lastIndex].colorMultiplyG = colorMultiplyColor.components.green
+								filterStateHistory.forUndo[lastIndex].colorMultiplyB = colorMultiplyColor.components.blue
+								filterStateHistory.forUndo[lastIndex].colorMultiplyO = colorMultiplyColor.components.opacity
+							}
+						}.frame(width: 100)
 					}
 				case .saturation:
 					HStack {
-						Toggle("", isOn: $useSaturation.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50)
+						Toggle("", isOn: $useSaturation.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small)
 						SaturationControl(saturation: $saturation).disabled(!useSaturation)
 					}
 				case .grayscale:
 					HStack {
-						Toggle("", isOn: $useGrayscale.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50)
+						Toggle("", isOn: $useGrayscale.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small)
 						GrayscaleControl(grayscale: $grayscale).disabled(!useGrayscale)
 					}
 				case .opacity:
 					HStack {
-						Toggle("", isOn: $useOpacity.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50)
+						Toggle("", isOn: $useOpacity.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small)
 						OpacityControl(opacity: $opacity).disabled(!useOpacity)
 					}
 				case .blur:
 					HStack {
-						Toggle("", isOn: $useBlur.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50)
+						Toggle("", isOn: $useBlur.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small)
 						BlurControl(blur: $blur).disabled(!useBlur)
 					}
 				case .none:
@@ -885,6 +894,24 @@ struct ImageView: View {
 	}
 	#endif
 	
+	func handleUndo() {
+		withAnimation {
+			restoreSnapshot(stateToRestore: filterStateHistory.undo())
+		}
+		Task {
+			try? await Task.sleep(nanoseconds: 1000_000_000)
+			filterStateHistory.isModifying = false
+		}
+	}
+	func handleRedo() {
+		withAnimation {
+			restoreSnapshot(stateToRestore: filterStateHistory.redo())
+		}
+		Task {
+			try? await Task.sleep(nanoseconds: 1000_000_000)
+			filterStateHistory.isModifying = false
+		}
+	}
 }
 
 struct ImageView_Previews: PreviewProvider {

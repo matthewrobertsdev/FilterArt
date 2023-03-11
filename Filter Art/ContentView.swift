@@ -10,8 +10,9 @@ import SwiftUI
 struct ContentView: View {
 	@Environment(\.managedObjectContext) private var viewContext
 	@EnvironmentObject var modalStateViewModel: ModalStateViewModel
+	@EnvironmentObject var filterStateHistory: FilterStateHistory
     var body: some View {
-		ImageView().navigationTitle(Text("Filter Art")).environmentObject(modalStateViewModel)
+		ImageView().navigationTitle(Text("Filter Art")).environmentObject(modalStateViewModel).environmentObject(filterStateHistory)
 		/*
 		#if os(macOS)
 			.toolbar {

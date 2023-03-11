@@ -8,18 +8,21 @@
 import SwiftUI
 
 struct HueRotationControl: View {
-	@Binding private var useHueRotation: Bool
 	@Binding private var hueRotation: Double
-	init(useHueRotation: Binding<Bool>, hueRotation: Binding<Double>) {
-		self._useHueRotation = useHueRotation
+	var saveForUndo: () -> Void
+	init(hueRotation: Binding<Double>, saveForUndo: @escaping () -> Void) {
 		self._hueRotation = hueRotation
+		self.saveForUndo = saveForUndo
 	}
     var body: some View {
 		HStack {
-			Toggle("", isOn: $useHueRotation.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50)
 			Text("\(0)")
 			Spacer()
-			Slider(value: $hueRotation, in: 0...360).disabled(!useHueRotation)
+			Slider(value: $hueRotation, in: 0...360) { editing in
+				if !editing {
+					saveForUndo()
+				}
+			}
 			Spacer()
 			Text("\(360)")
 		}
