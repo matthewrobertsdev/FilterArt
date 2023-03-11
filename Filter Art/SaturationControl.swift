@@ -9,14 +9,20 @@ import SwiftUI
 
 struct SaturationControl: View {
 	@Binding private var saturation: Double
-	init(saturation: Binding<Double>) {
+	var saveForUndo: () -> Void
+	init(saturation: Binding<Double>, saveForUndo: @escaping () -> Void) {
 		self._saturation = saturation
+		self.saveForUndo = saveForUndo
 	}
 	var body: some View {
 		HStack {
 			Text("\(0)")
 			Spacer()
-			Slider(value: $saturation, in: 0...50)
+			Slider(value: $saturation, in: 0...50){ editing in
+				if !editing {
+					saveForUndo()
+				}
+			}
 			Spacer()
 			Text("\(50)")
 		}

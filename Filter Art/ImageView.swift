@@ -27,7 +27,6 @@ struct ImageView: View {
 	@AppStorage("imageUseContrast") private var useContrast: Bool = false
 	@AppStorage("imageUseColorMultiply") private var useColorMultiply: Bool = false
 	@AppStorage("imageColorMultiplyColor") private var colorMultiplyColor: Color = Color.blue
-	@State private var previousColor: Color = Color.blue
 	@AppStorage("imageUseSaturation") private var useSaturation: Bool = false
 	@AppStorage("imageSaturation") private var saturation: Double = 1
 	@AppStorage("imageUseGrayscale") private var useGrayscale: Bool = false
@@ -112,7 +111,6 @@ struct ImageView: View {
 					}
 						print("abcd")
 					storeSnapshot()
-						previousColor=colorMultiplyColor
 					}.sheet(isPresented: $modalStateViewModel.showingFilters) {
 						FiltersView(showing: $modalStateViewModel.showingFilters).environmentObject(imageDataStore)
 				   }.onChange(of: imageDataStore.imageData) { imageData in
@@ -198,7 +196,6 @@ struct ImageView: View {
 						}
 					}
 						storeSnapshot()
-						previousColor=colorMultiplyColor
 				}.onChange(of: imageDataStore.imageData) { imageData in
 					DispatchQueue.main.async {
 						ImageDataStore.save(imageData: imageDataStore.imageData) { result in
@@ -518,7 +515,11 @@ struct ImageView: View {
 									if modeData.mode == .invert {
 										Toggle(isOn: $invertColors) {
 											Text("")
-										}.toggleStyle(.switch).tint(Color.accentColor)
+										}.toggleStyle(.switch).tint(Color.accentColor).onChange(of: invertColors) { newValue in
+											if !filterStateHistory.isModifying {
+												storeSnapshot()
+											}
+										}
 									} else {
 										Image(systemName: modeData.imageName).font(.system(.title)).if(modeData.mode == editMode) { view in
 											view.foregroundColor(Color.accentColor)
@@ -603,14 +604,22 @@ NSColorPanel.shared.close()
 				switch editMode {
 				case .hue:
 					HStack {
-						Toggle("", isOn: $useHueRotation.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small)
+						Toggle("", isOn: $useHueRotation.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useHueRotation) { newValue in
+							if !filterStateHistory.isModifying {
+								storeSnapshot()
+							}
+						}
 						HueRotationControl(hueRotation: $hueRotation, saveForUndo: {
 							storeSnapshot()
 						}).disabled(!useHueRotation)
 					}
 				case .contrast:
 					HStack {
-						Toggle("", isOn: $useContrast.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small)
+						Toggle("", isOn: $useContrast.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useContrast) { newValue in
+							if !filterStateHistory.isModifying {
+								storeSnapshot()
+							}
+						}
 						ContrastControl(contrast: $contrast, saveForUndo: {
 							storeSnapshot()
 						}).disabled(!useContrast)
@@ -619,7 +628,11 @@ NSColorPanel.shared.close()
 					EmptyView()
 				case .colorMultiply:
 					HStack {
-						Toggle("", isOn: $useColorMultiply.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small)
+						Toggle("", isOn: $useColorMultiply.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useColorMultiply) { newValue in
+							if !filterStateHistory.isModifying {
+								storeSnapshot()
+							}
+						}
 						ColorMultiplyControl(colorMultiplyColor: $colorMultiplyColor).disabled(!useColorMultiply).onChange(of: colorMultiplyColor) { newValue in
 							if !filterStateHistory.isModifying && lastColorEditDate < Date.now - 1 {
 								lastColorEditDate = Date.now
@@ -636,55 +649,54 @@ NSColorPanel.shared.close()
 					}
 				case .saturation:
 					HStack {
-						Toggle("", isOn: $useSaturation.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small)
-						SaturationControl(saturation: $saturation).disabled(!useSaturation)
+						Toggle("", isOn: $useSaturation.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useSaturation) { newValue in
+							if !filterStateHistory.isModifying {
+								storeSnapshot()
+							}
+						}
+						SaturationControl(saturation: $saturation, saveForUndo: {
+							storeSnapshot()
+						}).disabled(!useSaturation)
 					}
 				case .grayscale:
 					HStack {
-						Toggle("", isOn: $useGrayscale.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small)
-						GrayscaleControl(grayscale: $grayscale).disabled(!useGrayscale)
+						Toggle("", isOn: $useGrayscale.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useGrayscale) { newValue in
+							if !filterStateHistory.isModifying {
+								storeSnapshot()
+							}
+						}
+						GrayscaleControl(grayscale: $grayscale, saveForUndo: {
+							storeSnapshot()
+						}).disabled(!useGrayscale)
 					}
 				case .opacity:
 					HStack {
-						Toggle("", isOn: $useOpacity.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small)
-						OpacityControl(opacity: $opacity).disabled(!useOpacity)
+						Toggle("", isOn: $useOpacity.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useOpacity) { newValue in
+							if !filterStateHistory.isModifying {
+								storeSnapshot()
+							}
+						}
+						OpacityControl(opacity: $opacity, saveForUndo: {
+							storeSnapshot()
+						}).disabled(!useOpacity)
 					}
 				case .blur:
 					HStack {
-						Toggle("", isOn: $useBlur.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small)
-						BlurControl(blur: $blur).disabled(!useBlur)
+						Toggle("", isOn: $useBlur.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useBlur) { newValue in
+							if !filterStateHistory.isModifying {
+								storeSnapshot()
+							}
+						}
+						BlurControl(blur: $blur, saveForUndo: {
+							storeSnapshot()
+						}).disabled(!useBlur)
 					}
 				case .none:
 					EmptyView()
 				}
 			}
 		}
-	}
-		
-
-	func getStyleControls() -> some View {
-		Group {
-				Group {
-					Toggle("Use Grayscale", isOn: $useGrayscale.animation()).toggleStyle(.switch).tint(Color.accentColor)
-					if useGrayscale {
-						GrayscaleControl(grayscale: $grayscale)
-					}
-				}
-				Group {
-					Toggle("Use Opacity", isOn: $useOpacity.animation()).toggleStyle(.switch).tint(Color.accentColor)
-					if useOpacity {
-						OpacityControl(opacity: $opacity)
-					}
-				}
-				Group {
-					Toggle("Use Blur", isOn: $useBlur.animation()).toggleStyle(.switch).tint(Color.accentColor)
-					if useBlur {
-						BlurControl(blur: $blur)
-					}
-				}
-		}
-	}
-	
+	}	
 	
 	#if os(macOS)
 	func getSavePanelButton() -> some View {

@@ -9,14 +9,20 @@ import SwiftUI
 
 struct GrayscaleControl: View {
 	@Binding private var grayscale: Double
-	init(grayscale: Binding<Double>) {
+	var saveForUndo: () -> Void
+	init(grayscale: Binding<Double>, saveForUndo: @escaping () -> Void) {
 		self._grayscale = grayscale
+		self.saveForUndo = saveForUndo
 	}
     var body: some View {
 		HStack {
 			Text("\(0)")
 			Spacer()
-			Slider(value: $grayscale, in: 0...1)
+			Slider(value: $grayscale, in: 0...1){ editing in
+				if !editing {
+					saveForUndo()
+				}
+			}
 			Spacer()
 			Text("\(1)")
 		}

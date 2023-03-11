@@ -9,14 +9,20 @@ import SwiftUI
 
 struct OpacityControl: View {
 	@Binding private var opacity: Double
-	init(opacity: Binding<Double>) {
+	var saveForUndo: () -> Void
+	init(opacity: Binding<Double>, saveForUndo: @escaping () -> Void) {
 		self._opacity = opacity
+		self.saveForUndo = saveForUndo
 	}
 	var body: some View {
 		HStack {
 			Text("\(0)")
 			Spacer()
-			Slider(value: $opacity, in: 0...1)
+			Slider(value: $opacity, in: 0...1){ editing in
+				if !editing {
+					saveForUndo()
+				}
+			}
 			Spacer()
 			Text("\(1)")
 		}
