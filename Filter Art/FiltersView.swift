@@ -15,6 +15,7 @@ struct FiltersView: View {
 	@Environment(\.managedObjectContext) var managedObjectContext
 	@FocusState private var searchFieldInFocus: Bool
 	@EnvironmentObject var imageDataStore: ImageDataStore
+	@EnvironmentObject var filterStateHistory: FilterStateHistory
 	@Binding var showing: Bool
 	@AppStorage("filterType") var filterType = FilterType.presets.rawValue
 	@State var selectedPreset: FilterModel? = nil
@@ -24,10 +25,13 @@ struct FiltersView: View {
 		VStack(alignment: .center, content: {
 			if filterType  == FilterType.presets.rawValue {
 				PresetFiltersView(showing: $showing, searchString: $searchString)
+					.environmentObject(filterStateHistory)
 			} else if filterType == FilterType.saved.rawValue {
 				SavedFiltersView(showing: $showing, searchString: searchString)
+					.environmentObject(filterStateHistory)
 			} else {
 				FavoriteFiltersView(showing: $showing, searchString: searchString)
+					.environmentObject(filterStateHistory)
 			}
 		}).safeAreaInset(edge: .top, content: {
 			VStack(spacing:0){

@@ -20,20 +20,22 @@ struct ImageView: View {
 	@EnvironmentObject var filterStateHistory: FilterStateHistory
 	@EnvironmentObject var modalStateViewModel: ModalStateViewModel
 	@StateObject private var imageDataStore = ImageDataStore()
-	@AppStorage("imageInvertColors") private var invertColors: Bool = false
+	@AppStorage("imageInvertColors") private var invertColors: Bool = true
 	@AppStorage("imageHueRotation") private var hueRotation: Double = 0
-	@AppStorage("imageUseHueRotation") private var useHueRotation: Bool = false
+	@AppStorage("imageUseHueRotation") private var useHueRotation: Bool = true
 	@AppStorage("imageContrast") private var contrast: Double = 1
-	@AppStorage("imageUseContrast") private var useContrast: Bool = false
-	@AppStorage("imageUseColorMultiply") private var useColorMultiply: Bool = false
-	@AppStorage("imageColorMultiplyColor") private var colorMultiplyColor: Color = Color.blue
-	@AppStorage("imageUseSaturation") private var useSaturation: Bool = false
+	@AppStorage("imageUseContrast") private var useContrast: Bool = true
+	@AppStorage("imageUseColorMultiply") private var useColorMultiply: Bool = true
+	@AppStorage("imageColorMultiplyColor") private var colorMultiplyColor: Color = Color.white
+	@AppStorage("imageUseSaturation") private var useSaturation: Bool = true
 	@AppStorage("imageSaturation") private var saturation: Double = 1
-	@AppStorage("imageUseGrayscale") private var useGrayscale: Bool = false
+	@AppStorage("imageUseBrightness") private var useBrightness: Bool = true
+	@AppStorage("imageBrightness") private var brightness: Double = 0
+	@AppStorage("imageUseGrayscale") private var useGrayscale: Bool = true
 	@AppStorage("imageGrayscale") private var grayscale: Double = 0
-	@AppStorage("imageUseOpacity") private var useOpacity: Bool = false
+	@AppStorage("imageUseOpacity") private var useOpacity: Bool = true
 	@AppStorage("imageOpacity") private var opacity: Double = 1
-	@AppStorage("imageUseBlur") private var useBlur: Bool = false
+	@AppStorage("imageUseBlur") private var useBlur: Bool = true
 	@AppStorage("imageBlur") private var blur: Double = 0
 	@State private var image: Data = Data()
 	@AppStorage("imageUseOriginalImage") private var useOriginalImage: Bool = true
@@ -113,6 +115,7 @@ struct ImageView: View {
 					storeSnapshot()
 					}.sheet(isPresented: $modalStateViewModel.showingFilters) {
 						FiltersView(showing: $modalStateViewModel.showingFilters).environmentObject(imageDataStore)
+							.environmentObject(filterStateHistory)
 				   }.onChange(of: imageDataStore.imageData) { imageData in
 					ImageDataStore.save(imageData: imageDataStore.imageData) { result in
 						
@@ -174,6 +177,7 @@ struct ImageView: View {
 						}
 					}.sheet(isPresented: $modalStateViewModel.showingFilters) {
 						FiltersView(showing: $modalStateViewModel.showingFilters).environmentObject(imageDataStore)
+							.environmentObject(filterStateHistory)
 					}.sheet(isPresented: $modalStateViewModel.showingImagePicker) {
 						ImagePicker(imageData: $imageDataStore.imageData, useOriginalImage: $useOriginalImage, loading: $loading)
 					}.alert("Success!", isPresented: $modalStateViewModel.showingImageSaveSuccesAlert, actions: {
@@ -226,6 +230,7 @@ struct ImageView: View {
 		#endif
 .onReceive(NotificationCenter.default.publisher(for: .undo))
 { notification in
+	print("abcd")
 	handleUndo()
 }.onReceive(NotificationCenter.default.publisher(for: .redo))
 		{ notification in
@@ -385,16 +390,18 @@ struct ImageView: View {
 
 				}
 			} else {
-				getImage().resizable().aspectRatio(contentMode: .fit).if(invertColors, transform: { view in
-				   view.colorInvert()
-						}).if(useHueRotation, transform: { view in
+				getImage().resizable().aspectRatio(contentMode: .fit).if(useHueRotation, transform: { view in
 							view.hueRotation(.degrees(hueRotation))
 						}).if(useContrast, transform: { view in
 							view.contrast(contrast)
+						}).if(invertColors, transform: { view in
+							view.colorInvert()
 						}).if(useColorMultiply, transform: { view in
 							view.colorMultiply(colorMultiplyColor)
 						}).if(useSaturation, transform: { view in
 							view.saturation(saturation)
+						   }).if(useBrightness, transform: { view in
+							   view.brightness(brightness)
 						   }).if(useGrayscale, transform: { view in
 							view.grayscale(grayscale)
 						   }).if(useOpacity, transform: { view in
@@ -433,17 +440,19 @@ struct ImageView: View {
 				
 				HStack {
 					Spacer()
-					getImage().resizable().aspectRatio(contentMode: .fit).if(invertColors, transform: { view in
-						view.colorInvert()
-					}).if(useHueRotation, transform: { view in
+					getImage().resizable().aspectRatio(contentMode: .fit).if(useHueRotation, transform: { view in
 							view.hueRotation(.degrees(hueRotation))
 						}).if(useContrast, transform: { view in
 							view.contrast(contrast)
-						})
+						}).if(invertColors, transform: { view in
+							view.colorInvert()
+					 })
 							.if(useColorMultiply, transform: { view in
 								view.colorMultiply(colorMultiplyColor)
 							}).if(useSaturation, transform: { view in
 								view.saturation(saturation)
+						 }).if(useBrightness, transform: { view in
+							 view.brightness(brightness)
 						 }).if(useGrayscale, transform: { view in
 								view.grayscale(grayscale)
 							}).if(useOpacity, transform: { view in
@@ -459,17 +468,19 @@ struct ImageView: View {
 #else
 		VStack(alignment: .center) {
 			HStack(alignment: .center) {
-				getImage().resizable().aspectRatio(contentMode: .fit).frame(height: 525).clipped().if(invertColors, transform: { view in
-						view.colorInvert()
-					}).if(useHueRotation, transform: { view in
+				getImage().resizable().aspectRatio(contentMode: .fit).frame(height: 525).clipped().if(useHueRotation, transform: { view in
 						view.hueRotation(.degrees(hueRotation))
 					}).if(useContrast, transform: { view in
 						view.contrast(contrast)
+					}).if(invertColors, transform: { view in
+						view.colorInvert()
 					}).if(useColorMultiply, transform: { view in
 						view.colorMultiply(colorMultiplyColor)
 					}).if(useSaturation, transform: { view in
 						view.saturation(saturation)
-					   }).if(useGrayscale, transform: { view in
+					   }).if(useBrightness, transform: { view in
+						   view.brightness(brightness)
+						  }).if(useGrayscale, transform: { view in
 						view.grayscale(grayscale)
 					   }).if(useOpacity, transform: { view in
 						view.opacity(opacity)
@@ -519,14 +530,18 @@ struct ImageView: View {
 											if !filterStateHistory.isModifying {
 												storeSnapshot()
 											}
-										}
+										}.frame(width: 50)
 									} else {
 										Image(systemName: modeData.imageName).font(.system(.title)).if(modeData.mode == editMode) { view in
 											view.foregroundColor(Color.accentColor)
 										}
 									}
 								}.padding(.horizontal).padding(.vertical, 2.5).contentShape(Rectangle()).if(modeData.mode == editMode) { view in
+									#if os(macOS)
 									view.background(Color.accentColor.opacity(colorScheme == .dark ? 0.10 : 0.20)).cornerRadius(10)
+									#else
+									view.background(Color.accentColor.opacity(0.25)).cornerRadius(10)
+									#endif
 									  }.onTapGesture {
 										if modeData.mode != .invert {
 											
@@ -540,7 +555,7 @@ NSColorPanel.shared.close()
 							}.padding(.vertical, 5)
 						}
 						#if os(iOS)
-						.if(proxy.size.width > 1000) { view in
+						.if(proxy.size.width > 1100) { view in
 							view.frame(width: proxy.size.width)
 						}
 						#else
@@ -658,6 +673,17 @@ NSColorPanel.shared.close()
 							storeSnapshot()
 						}).disabled(!useSaturation)
 					}
+				case .brightness:
+					HStack {
+						Toggle("", isOn: $useBrightness.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useBrightness) { newValue in
+							if !filterStateHistory.isModifying {
+								storeSnapshot()
+							}
+						}
+						BrightnessControl(brightness: $brightness, saveForUndo: {
+							storeSnapshot()
+						}).disabled(!useBrightness)
+					}
 				case .grayscale:
 					HStack {
 						Toggle("", isOn: $useGrayscale.animation()).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useGrayscale) { newValue in
@@ -739,17 +765,19 @@ NSColorPanel.shared.close()
 		let renderer = ImageRenderer(content: Image(uiImage: getImageForSharing()).resizable().aspectRatio(contentMode: .fit).if(forSharing, transform: { view in
 			view.frame(width: desiredWidth, height: desiredHeight)
 		})
-			.if(invertColors, transform: { view in
-			view.colorInvert()
-			  }).if(useHueRotation, transform: { view in
+			.if(useHueRotation, transform: { view in
 				  view.hueRotation(.degrees(hueRotation))
 			  }).if(useContrast, transform: { view in
 				  view.contrast(contrast)
-			  }).if(useColorMultiply, transform: { view in
+			  }).if(invertColors, transform: { view in
+				  view.colorInvert()
+				 }).if(useColorMultiply, transform: { view in
 				  view.colorMultiply(colorMultiplyColor)
 			  }).if(useSaturation, transform: { view in
 				  view.saturation(saturation)
-				 }).if(useGrayscale, transform: { view in
+				 }).if(useBrightness, transform: { view in
+					 view.brightness(brightness)
+					   }).if(useGrayscale, transform: { view in
 				  view.grayscale(grayscale)
 				 }).if(useOpacity, transform: { view in
 					 view.opacity(opacity)
@@ -791,17 +819,19 @@ NSColorPanel.shared.close()
 		}
 		let renderer = ImageRenderer(content: getImage().resizable().aspectRatio(contentMode: .fit).if(forSharing, transform: { view in
 			view.frame(width: desiredWidth, height: desiredHeight)
-		}).if(invertColors, transform: { view in
-			view.colorInvert()
-			  }).if(useHueRotation, transform: { view in
+		}).if(useHueRotation, transform: { view in
 				  view.hueRotation(.degrees(hueRotation))
 			  }).if(useContrast, transform: { view in
 				  view.contrast(contrast)
-			  }).if(useColorMultiply, transform: { view in
+			  }).if(invertColors, transform: { view in
+				  view.colorInvert()
+				 }).if(useColorMultiply, transform: { view in
 				  view.colorMultiply(colorMultiplyColor)
 			  }).if(useSaturation, transform: { view in
 				  view.saturation(saturation)
-				 }).if(useGrayscale, transform: { view in
+				 }).if(useBrightness, transform: { view in
+					 view.brightness(brightness)
+					   }).if(useGrayscale, transform: { view in
 				  view.grayscale(grayscale)
 				 }).if(useOpacity, transform: { view in
 					 view.opacity(opacity)
@@ -959,6 +989,7 @@ enum ImageEditMode: String, CaseIterable {
 	case invert
 	case colorMultiply = "Color Multiply"
 	case saturation
+	case brightness
 	case grayscale
 	case opacity
 	case blur
@@ -974,6 +1005,7 @@ let imageEditModesData = [ImageEditModeData(mode: .hue, imageName: "paintbrush")
 					  ImageEditModeData(mode: .invert, imageName: "lightswitch.off"),
 					  ImageEditModeData(mode: .colorMultiply, imageName: "paintpalette"),
 					  ImageEditModeData(mode: .saturation, imageName: "sun.max"),
+						  ImageEditModeData(mode: .brightness, imageName: "lightbulb"),
 					  ImageEditModeData(mode: .grayscale, imageName: "circle.dotted"),
 					  ImageEditModeData(mode: .opacity, imageName: "circle"),
 					  ImageEditModeData(mode: .blur, imageName: "camera.filters")]

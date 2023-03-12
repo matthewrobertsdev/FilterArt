@@ -22,7 +22,7 @@ struct FilterArtApp: App {
             ContentView()
 				.environment(\.managedObjectContext, persistenceController.container.viewContext).environmentObject(modalStateViewModel).environmentObject(filterStateHistory)
 #if os(macOS)
-				.frame(minWidth: 700, minHeight: 600)
+				.frame(minWidth: 800, minHeight: 600)
 				.onAppear {
 					NSWindow.allowsAutomaticWindowTabbing = false
 				}
@@ -31,6 +31,7 @@ struct FilterArtApp: App {
 			CommandGroup(replacing: .undoRedo) {
 				Button {
 					NotificationCenter.default.post(name: .undo, object: nil)
+					print("abcd should undo")
 				} label: {
 					Text("Undo")
 				}.keyboardShortcut(KeyboardShortcut("Z", modifiers: .command)).disabled(!filterStateHistory.canUndo ||  modalStateViewModel.isModal())

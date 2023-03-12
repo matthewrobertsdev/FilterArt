@@ -47,6 +47,7 @@
 		9FCF2F362986DEEA00C5868C /* FavoriteFiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCF2F342986DEEA00C5868C /* FavoriteFiltersView.swift */; };
 		9FDB1BCD297EC1CC00911545 /* NameAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDB1BCC297EC1CC00911545 /* NameAlert.swift */; };
 		9FDB1BCE297EC81C00911545 /* NameAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDB1BCC297EC1CC00911545 /* NameAlert.swift */; };
+		9FDE919D29BD7E47003199DD /* BrightnessControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDE919C29BD7E47003199DD /* BrightnessControl.swift */; };
 		9FE5175329725EA1003F3CA7 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9FE5175229725EA1003F3CA7 /* Launch Screen.storyboard */; };
 		9FE517A62972668F003F3CA7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FE517A52972668F003F3CA7 /* Preview Assets.xcassets */; };
 		9FE517C7297266F7003F3CA7 /* OpacityControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FC012D02972563300309D6D /* OpacityControl.swift */; };
@@ -144,6 +145,7 @@
 		9FC012D02972563300309D6D /* OpacityControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpacityControl.swift; sourceTree = "<group>"; };
 		9FCF2F342986DEEA00C5868C /* FavoriteFiltersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteFiltersView.swift; sourceTree = "<group>"; };
 		9FDB1BCC297EC1CC00911545 /* NameAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameAlert.swift; sourceTree = "<group>"; };
+		9FDE919C29BD7E47003199DD /* BrightnessControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessControl.swift; sourceTree = "<group>"; };
 		9FE5175229725EA1003F3CA7 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		9FE5176829726321003F3CA7 /* Fillter ArtTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Fillter ArtTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FE5177229726321003F3CA7 /* Fillter ArtUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Fillter ArtUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -248,6 +250,7 @@
 			isa = PBXGroup;
 			children = (
 				9F89DA65296FB65200D46184 /* FilterArtApp.swift */,
+				9FDE919C29BD7E47003199DD /* BrightnessControl.swift */,
 				9F1258BA2988C81B00A08636 /* ModalStateViewModel.swift */,
 				9F89DA67296FB65200D46184 /* Persistence.swift */,
 				9F89DA95296FB6CB00D46184 /* ImageView.swift */,
@@ -660,6 +663,7 @@
 			files = (
 				9F8B1E192976602C004C792B /* FiltersView.swift in Sources */,
 				9FB89EB72986286B00C9DF75 /* PresetFiltersView.swift in Sources */,
+				9FDE919D29BD7E47003199DD /* BrightnessControl.swift in Sources */,
 				9F868770298A2BA200856D96 /* ContentView.swift in Sources */,
 				9FE517D1297266F7003F3CA7 /* ImageView.swift in Sources */,
 				9FE517D0297266F7003F3CA7 /* Persistence.swift in Sources */,

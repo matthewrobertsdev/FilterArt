@@ -27,6 +27,7 @@ struct FavoriteFiltersView: View {
 	@AppStorage("imageBlur") private var blur: Double = 0
 	@AppStorage("imageUseOriginalImage") private var useOriginalImage: Bool = true
 	@EnvironmentObject var imageDataStore: ImageDataStore
+	@EnvironmentObject var filterStateHistory: FilterStateHistory
 	@Binding var showing: Bool
 	@State var selectedFavoriteFilter: Filter? = nil
 	
@@ -85,6 +86,7 @@ struct FavoriteFiltersView: View {
 				NotificationCenter.default.post(name: .endEditing,
 																object: nil, userInfo: nil)
 			asignSavedFilterComponentsToAppStorage()
+				storeSnapshot()
 			showing = false
 		}
 		#endif
@@ -99,6 +101,7 @@ struct FavoriteFiltersView: View {
 				NotificationCenter.default.post(name: .endEditing,
 																object: nil, userInfo: nil)
 				asignSavedFilterComponentsToAppStorage()
+				storeSnapshot()
 				showing = false
 			} label: {
 				Text("Apply Filter")
@@ -196,6 +199,11 @@ struct FavoriteFiltersView: View {
 		descriptionString += "useBlur: \(filter.useBlur), "
 		descriptionString += "blur: \(filter.blur), "
 		print(descriptionString)
+	}
+	
+	func storeSnapshot() {
+		filterStateHistory.forUndo.append(FilterModel(blur: blur, colorMultiplyO: colorMultiplyColor.components.opacity, colorMultiplyB: colorMultiplyColor.components.blue, colorMultiplyG: colorMultiplyColor.components.green, colorMultiplyR: colorMultiplyColor.components.red, contrast: contrast, grayscale: grayscale, hueRotation: hueRotation, id: UUID().uuidString, invertColors: invertColors, opacity: opacity, name: "App State Filter", saturation: saturation, timestamp: Date(), useBlur: useBlur, useColorMultiply: useColorMultiply, useContrast: useContrast, useGrayscale: useGrayscale, useHueRotation: useHueRotation, useOpacity: useOpacity, useSaturation: useSaturation))
+		filterStateHistory.forRedo = [FilterModel]()
 	}
 	
 }
