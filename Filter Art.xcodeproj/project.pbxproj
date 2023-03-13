@@ -14,6 +14,7 @@
 		9F3221BE29758DC50034FDCB /* BlurControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3221BD29758DC50034FDCB /* BlurControl.swift */; };
 		9F381AA029B75C5000B3E7AA /* FilterStateHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F381A9F29B75C5000B3E7AA /* FilterStateHistory.swift */; };
 		9F381AA129B75C5000B3E7AA /* FilterStateHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F381A9F29B75C5000B3E7AA /* FilterStateHistory.swift */; };
+		9F4AE4A029BED66200E5F4C4 /* BrightnessControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDE919C29BD7E47003199DD /* BrightnessControl.swift */; };
 		9F86876F298A2BA200856D96 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F86876E298A2BA200856D96 /* ContentView.swift */; };
 		9F868770298A2BA200856D96 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F86876E298A2BA200856D96 /* ContentView.swift */; };
 		9F89DA66296FB65200D46184 /* FilterArtApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DA65296FB65200D46184 /* FilterArtApp.swift */; };
@@ -117,6 +118,7 @@
 		9F3221BB2975897D0034FDCB /* WindowAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAccessor.swift; sourceTree = "<group>"; };
 		9F3221BD29758DC50034FDCB /* BlurControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurControl.swift; sourceTree = "<group>"; };
 		9F381A9F29B75C5000B3E7AA /* FilterStateHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterStateHistory.swift; sourceTree = "<group>"; };
+		9F4AE49F29BECD8100E5F4C4 /* Filter_Art_v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Filter_Art_v2.xcdatamodel; sourceTree = "<group>"; };
 		9F86876E298A2BA200856D96 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9F89DA62296FB65200D46184 /* Filter Art iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Filter Art iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F89DA65296FB65200D46184 /* FilterArtApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterArtApp.swift; sourceTree = "<group>"; };
@@ -596,6 +598,7 @@
 			files = (
 				9FC012D12972563300309D6D /* OpacityControl.swift in Sources */,
 				9FB89EB62986286B00C9DF75 /* PresetFiltersView.swift in Sources */,
+				9F4AE4A029BED66200E5F4C4 /* BrightnessControl.swift in Sources */,
 				9F89DA96296FB6CB00D46184 /* ImageView.swift in Sources */,
 				9F89DAA0296FB8A600D46184 /* ContrastControl.swift in Sources */,
 				9F89DAA6296FB8C000D46184 /* GrayscaleControl.swift in Sources */,
@@ -1334,9 +1337,10 @@
 		9F89DA69296FB65200D46184 /* FilterArt.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				9F4AE49F29BECD8100E5F4C4 /* Filter_Art_v2.xcdatamodel */,
 				9F89DA6A296FB65200D46184 /* Filter_Art.xcdatamodel */,
 			);
-			currentVersion = 9F89DA6A296FB65200D46184 /* Filter_Art.xcdatamodel */;
+			currentVersion = 9F4AE49F29BECD8100E5F4C4 /* Filter_Art_v2.xcdatamodel */;
 			path = FilterArt.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

@@ -19,6 +19,8 @@ struct NameAlert: View {
 	@AppStorage("imageColorMultiplyColor") private var colorMultiplyColor: Color = Color.blue
 	@AppStorage("imageUseSaturation") private var useSaturation: Bool = false
 	@AppStorage("imageSaturation") private var saturation: Double = 1
+	@AppStorage("imageUseBrightness") private var useBrightness: Bool = true
+	@AppStorage("imageBrightness") private var brightness: Double = 0
 	@AppStorage("imageUseGrayscale") private var useGrayscale: Bool = false
 	@AppStorage("imageGrayscale") private var grayscale: Double = 0
 	@AppStorage("imageUseOpacity") private var useOpacity: Bool = false
@@ -34,6 +36,7 @@ struct NameAlert: View {
 				DispatchQueue.main.async {
 					let savedFilter = Filter(context: managedObjectContext)
 					savedFilter.blur = blur
+					savedFilter.brightness = brightness
 					savedFilter.colorMultiplyB = colorMultiplyColor.components.blue
 					savedFilter.colorMultiplyG = colorMultiplyColor.components.green
 					savedFilter.colorMultiplyO = colorMultiplyColor.components.opacity
@@ -51,6 +54,7 @@ struct NameAlert: View {
 					savedFilter.saturation = saturation
 					savedFilter.saveDate = Date()
 					savedFilter.useBlur = useBlur
+					savedFilter.useBrightness = useBrightness
 					savedFilter.useColorMultiply = useColorMultiply
 					savedFilter.useContrast = useContrast
 					savedFilter.useGrayscale = useGrayscale

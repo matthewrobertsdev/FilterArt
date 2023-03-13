@@ -19,6 +19,8 @@ struct SavedFiltersView: View {
 	@AppStorage("imageColorMultiplyColor") private var colorMultiplyColor: Color = Color.blue
 	@AppStorage("imageUseSaturation") private var useSaturation: Bool = false
 	@AppStorage("imageSaturation") private var saturation: Double = 1
+	@AppStorage("imageUseBrightness") private var useBrightness: Bool = true
+	@AppStorage("imageBrightness") private var brightness: Double = 0
 	@AppStorage("imageUseGrayscale") private var useGrayscale: Bool = false
 	@AppStorage("imageGrayscale") private var grayscale: Double = 0
 	@AppStorage("imageUseOpacity") private var useOpacity: Bool = false
@@ -142,7 +144,7 @@ struct SavedFiltersView: View {
 		}.alert("Rename Your Filter", isPresented: $showingRenameAlert, actions: {
 			RenameAlert(selectedSavedFilter: $filterToRename).environment(\.managedObjectContext, managedObjectContext)
 		}, message: {
-			Text("Eenter a new name for your filter:")
+			Text("Enter a new name for your filter:")
 		})
 		#if os(macOS)
 		.toolbar(content: {
@@ -215,6 +217,8 @@ struct SavedFiltersView: View {
 			view.colorMultiply(Color(.sRGB, red: filter.colorMultiplyR, green: filter.colorMultiplyG, blue: filter.colorMultiplyB, opacity: filter.colorMultiplyO))
 		}).if(filter.useSaturation, transform: { view in
 			view.saturation(filter.saturation)
+		}).if(useBrightness, transform: { view in
+			view.brightness(filter.brightness)
 		}).if(filter.useGrayscale, transform: { view in
 			view.grayscale(filter.grayscale)
 		}).if(filter.useOpacity, transform: { view in
@@ -247,6 +251,8 @@ struct SavedFiltersView: View {
 			colorMultiplyColor = Color(.sRGB, red: filter.colorMultiplyR, green: filter.colorMultiplyG, blue: filter.colorMultiplyB, opacity: filter.colorMultiplyO)
 			useSaturation = filter.useSaturation
 			saturation = filter.saturation
+			useBrightness = filter.useBrightness
+			brightness = filter.brightness
 			useGrayscale = filter.useGrayscale
 			grayscale = filter.grayscale
 			useOpacity = filter.useOpacity
@@ -278,7 +284,7 @@ struct SavedFiltersView: View {
 	}
 	
 	func storeSnapshot() {
-		filterStateHistory.forUndo.append(FilterModel(blur: blur, colorMultiplyO: colorMultiplyColor.components.opacity, colorMultiplyB: colorMultiplyColor.components.blue, colorMultiplyG: colorMultiplyColor.components.green, colorMultiplyR: colorMultiplyColor.components.red, contrast: contrast, grayscale: grayscale, hueRotation: hueRotation, id: UUID().uuidString, invertColors: invertColors, opacity: opacity, name: "App State Filter", saturation: saturation, timestamp: Date(), useBlur: useBlur, useColorMultiply: useColorMultiply, useContrast: useContrast, useGrayscale: useGrayscale, useHueRotation: useHueRotation, useOpacity: useOpacity, useSaturation: useSaturation))
+		filterStateHistory.forUndo.append(FilterModel(blur: blur, brightness: brightness, colorMultiplyO: colorMultiplyColor.components.opacity, colorMultiplyB: colorMultiplyColor.components.blue, colorMultiplyG: colorMultiplyColor.components.green, colorMultiplyR: colorMultiplyColor.components.red, contrast: contrast, grayscale: grayscale, hueRotation: hueRotation, id: UUID().uuidString, invertColors: invertColors, opacity: opacity, name: "App State Filter", saturation: saturation, timestamp: Date(), useBlur: useBlur, useBrightness: useBrightness, useColorMultiply: useColorMultiply, useContrast: useContrast, useGrayscale: useGrayscale, useHueRotation: useHueRotation, useOpacity: useOpacity, useSaturation: useSaturation))
 		filterStateHistory.forRedo = [FilterModel]()
 	}
 

@@ -13,7 +13,7 @@ struct WindowAccessor: NSViewRepresentable {
 	func makeNSView(context: Context) -> NSView {
 		let view = NSView()
 		DispatchQueue.main.async {
-			self.window = view.window   // << right after inserted in window
+			self.window = view.window
 		}
 		return view
 	}
