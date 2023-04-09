@@ -22,7 +22,7 @@ struct FilterArtApp: App {
             ContentView()
 				.environment(\.managedObjectContext, persistenceController.container.viewContext).environmentObject(modalStateViewModel).environmentObject(filterStateHistory)
 #if os(macOS)
-				.frame(minWidth: 800, minHeight: 600)
+				.frame(minWidth: 850, minHeight: 600)
 				.onAppear {
 					NSWindow.allowsAutomaticWindowTabbing = false
 				}

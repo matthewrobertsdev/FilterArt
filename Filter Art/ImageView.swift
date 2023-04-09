@@ -16,11 +16,10 @@ import PhotosUI
 struct ImageView: View {
 	@Environment(\.colorScheme) private var colorScheme
 	@Environment(\.managedObjectContext) var managedObjectContext
-	@Environment(\.displayScale) var displayScale
 	@EnvironmentObject var filterStateHistory: FilterStateHistory
 	@EnvironmentObject var modalStateViewModel: ModalStateViewModel
 	@StateObject private var imageDataStore = ImageDataStore()
-	@AppStorage("imageInvertColors") private var invertColors: Bool = true
+	@AppStorage("imageInvertColors") private var invertColors: Bool = false
 	@AppStorage("imageHueRotation") private var hueRotation: Double = 0
 	@AppStorage("imageUseHueRotation") private var useHueRotation: Bool = true
 	@AppStorage("imageContrast") private var contrast: Double = 1
@@ -59,7 +58,7 @@ struct ImageView: View {
 					InfoSeperator()
 					GeometryReader { proxy in
 						getEditor(proxy: proxy).frame(maxWidth: .infinity)
-					}.frame(height: 250)
+					}.frame(height: 200/*165*/)
 				}.sheet(isPresented: $modalStateViewModel.showingUnmodifiedImage) {
 					VStack(alignment: .leading, spacing: 0) {
 						HStack {
@@ -247,12 +246,37 @@ struct ImageView: View {
 		//GroupBox {
 			VStack(spacing: 10) {
 				#if os(iOS)
-				HStack(spacing: 50) {
+				HStack(spacing: 30) {
+					PhotosPicker(selection:  $selectedItem, matching: .images)  {
+						Label("Choose Image", systemImage: "photo").labelStyle(.titleOnly)
+					}.onChange(of: selectedItem) { newItem in
+						loading = true
+						newItem?.loadTransferable(type: Data.self, completionHandler: { result in
+							switch result  {
+							case .success(let data):
+								if let data = data {
+									DispatchQueue.main.async {
+										imageDataStore.imageData = data
+										useOriginalImage = false
+									}
+								}
+							case .failure( _):
+								break
+							}
+							loading = false
+						})
+					}
+					Button {
+						modalStateViewModel.showingFilters = true
+					} label: {
+						Label("Filters...", systemImage: "camera.filters").labelStyle(.titleOnly)
+					}.controlSize(.regular)
+					/*
 					Menu {
 						Button("Choose Photo") {
 							showingPhotoPicker = true
 						}
-						Button("Default Photo") {
+						Button("Use Default Photo") {
 							useOriginalImage = true
 							imageDataStore.imageData = Data()
 						}
@@ -289,9 +313,51 @@ struct ImageView: View {
 					} label: {
 						Text("Filters...").controlSize(.large)
 					}
+					 */
 				}
 
 				#else
+				HStack {
+					Button {
+						NotificationCenter.default.post(name: .showOpenPanel,
+																		object: nil, userInfo: nil)
+					} label: {
+						Label("Choose Image", systemImage: "photo").labelStyle(.titleOnly)
+					}.buttonStyle(.bordered).controlSize(.regular)
+					Button {
+						modalStateViewModel.showingFilters = true
+					} label: {
+						Label("Filters...", systemImage: "camera.filters").labelStyle(.titleOnly)
+					}.buttonStyle(.bordered).controlSize(.regular)
+					Button {
+						modalStateViewModel.showingNameAlert = true
+					} label: {
+						Label("Save Filter", systemImage: "plus").labelStyle(.titleOnly)
+					}.buttonStyle(.bordered).controlSize(.regular)
+					ShareLink(item: Image(nsImage: getFilteredImage(forSharing: true)), preview: SharePreview(Text("Filtered Image"), image: Image(nsImage: getFilteredImage(forSharing: true)), icon: Image(nsImage: getFilteredImage(forSharing: true)))).labelStyle(.iconOnly).buttonStyle(.bordered).controlSize(.regular)
+					Menu {
+						Button {
+							NotificationCenter.default.post(name: .showSavePanel,
+																			object: nil, userInfo: nil)
+						} label: {
+							Text("Export Image...").labelStyle(.titleOnly)
+						}
+						Button {
+							useOriginalImage = true
+						} label: {
+							Text("Use Default Image").labelStyle(.titleOnly)
+						}
+						Button {
+							modalStateViewModel.showingUnmodifiedImage = true
+						} label: {
+							Text("View Original Image").labelStyle(.titleOnly)
+						}
+					} label: {
+						Label("More...", systemImage: "ellipsis.circle").labelStyle(.titleOnly)
+					}.frame(width: 80).controlSize(.regular)
+
+				}
+				/*
 				HStack(spacing: 20) {
 					Menu(content: {
 						Button("Choose Photo") {
@@ -331,9 +397,46 @@ struct ImageView: View {
 						Text("View")
 					}).frame(width: 100)
 				}.padding(.bottom)
+				 */
 #endif
 				#if os(iOS)
-				HStack(spacing: 50) {
+				HStack(spacing: 30) {
+					Button {
+						modalStateViewModel.showingNameAlert = true
+					} label: {
+						Label("Save Filter", systemImage: "plus").labelStyle(.titleOnly)
+					}.controlSize(.regular)
+					Button {
+						modalStateViewModel.showingShareSheet = true
+					} label: {
+						Label("Share Image", systemImage: "square.and.arrow.up")
+					}.labelStyle(.iconOnly)
+					/*
+					ShareLink(item: Image(uiImage: getFilteredImage(forSharing: true)), preview: SharePreview(Text("Filtered Image"), image: Image(uiImage: getFilteredImage(forSharing: true)), icon: Image(uiImage: getFilteredImage(forSharing: true)))).labelStyle(.iconOnly).controlSize(.regular)
+					 */
+					Menu {
+						/*
+						Button {
+							let imageSaver = ImageSaver(showingSuccessAlert: $modalStateViewModel.showingImageSaveSuccesAlert, showingErrorAlert: $showingImageSaveFailureAlert)
+							imageSaver.writeToPhotoAlbum(image: getFilteredImage())
+						} label: {
+							Text("Export to Photos").labelStyle(.titleOnly)
+						}
+						 */
+						Button {
+							useOriginalImage = true
+						} label: {
+							Text("Use Default Image").labelStyle(.titleOnly)
+						}
+						Button {
+							modalStateViewModel.showingUnmodifiedImage = true
+						} label: {
+							Text("View Original Image").labelStyle(.titleOnly)
+						}
+					} label: {
+						Label("More...", systemImage: "ellipsis.circle").labelStyle(.titleOnly)
+					}.frame(width: 80).controlSize(.regular)
+					/*
 					Menu {
 						Button {
 							let imageSaver = ImageSaver(showingSuccessAlert: $modalStateViewModel.showingImageSaveSuccesAlert, showingErrorAlert: $showingImageSaveFailureAlert)
@@ -359,16 +462,14 @@ struct ImageView: View {
 					}, label: {
 						Text("View").controlSize(.large)
 					})
+					 */
 				}
-				#endif
 				InfoSeperator()
+				#endif
 				VStack {
 					getFilterControls(proxy: proxy)
 				}
 			}
-			#if os(macOS)
-			.padding(.vertical)
-			#endif
 	}
 	
 	func getDisplay() -> some View {
@@ -390,25 +491,49 @@ struct ImageView: View {
 
 				}
 			} else {
-				getImage().resizable().aspectRatio(contentMode: .fit).if(useHueRotation, transform: { view in
-							view.hueRotation(.degrees(hueRotation))
-						}).if(useContrast, transform: { view in
-							view.contrast(contrast)
-						}).if(invertColors, transform: { view in
-							view.colorInvert()
-						}).if(useColorMultiply, transform: { view in
-							view.colorMultiply(colorMultiplyColor)
-						}).if(useSaturation, transform: { view in
-							view.saturation(saturation)
-						   }).if(useBrightness, transform: { view in
-							   view.brightness(brightness)
-						   }).if(useGrayscale, transform: { view in
-							view.grayscale(grayscale)
-						   }).if(useOpacity, transform: { view in
-							   view.opacity(opacity)
-						   }).if(useBlur) { view in
-					view.blur(radius: blur)
+				Group {
+					getImage().resizable().aspectRatio(contentMode: .fit).if(useHueRotation, transform: { view in
+						view.hueRotation(.degrees(hueRotation))
+					}).if(useContrast, transform: { view in
+						view.contrast(contrast)
+					}).if(invertColors, transform: { view in
+						view.colorInvert()
+					}).if(useColorMultiply, transform: { view in
+						view.colorMultiply(colorMultiplyColor)
+					}).if(useSaturation, transform: { view in
+						view.saturation(saturation)
+					}).if(useBrightness, transform: { view in
+						view.brightness(brightness)
+					}).if(useGrayscale, transform: { view in
+						view.grayscale(grayscale)
+					}).if(useOpacity, transform: { view in
+						view.opacity(opacity)
+					}).if(useBlur) { view in
+						view.blur(radius: blur)
+					}
 				}
+				#if os(macOS)
+				.onDrag {
+					let dateFormatter = DateFormatter()
+					dateFormatter.dateFormat = "M-d-y h.mm a"
+					let dateString = dateFormatter.string(from: Date())
+					let filename = "Image \(dateString).png"
+					let url = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(filename)
+					guard let tiffRepresentation = getFilteredImage(forSharing: true).tiffRepresentation else {
+						return NSItemProvider(item: url as NSSecureCoding?, typeIdentifier: UTType.fileURL.identifier)
+					}
+					let bitmapImage = NSBitmapImageRep(data: tiffRepresentation)
+					guard let bitmapRepresentation = bitmapImage?.representation(using: .png, properties: [:]) else {
+						return NSItemProvider(item: url as NSSecureCoding?, typeIdentifier: UTType.fileURL.identifier)
+					}
+					
+					try? bitmapRepresentation.write(to: url)
+
+					let provider = NSItemProvider(item: url as NSSecureCoding?, typeIdentifier: UTType.fileURL.identifier)
+					provider.suggestedName = filename
+					return provider
+				}
+				#endif
 			}
 		}
 		/*
@@ -784,8 +909,6 @@ NSColorPanel.shared.close()
 					}).if(useBlur) { view in
 						view.blur(radius: blur)
 				 })
-
-			//renderer.scale = displayScale
 			if let uiImage = renderer.uiImage {
 				return uiImage
 			}
@@ -838,8 +961,6 @@ NSColorPanel.shared.close()
 					}).if(useBlur) { view in
 						view.blur(radius: blur)
 				 })
-
-			//renderer.scale = displayScale
 		if let nsImage = renderer.nsImage {
 			return  nsImage
 		}
