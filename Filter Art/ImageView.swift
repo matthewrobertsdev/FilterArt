@@ -40,7 +40,6 @@ struct ImageView: View {
 	@AppStorage("imageUseOriginalImage") private var useOriginalImage: Bool = true
 	@State var showingImageSaveFailureAlert = false
 	@State var loading = false
-	@State var waitingForDrop = false
 	@State private var selectedItem: PhotosPickerItem? = nil
 	@State private var editMode: ImageEditMode? = nil
 	@State private var showingPhotoPicker: Bool = false
@@ -53,12 +52,15 @@ struct ImageView: View {
 	var body: some View {
 			Group {
 #if os(macOS)
-				VStack(spacing: 10) {
-					getDisplay()
-					InfoSeperator()
-					GeometryReader { proxy in
-						getEditor(proxy: proxy).frame(maxWidth: .infinity)
-					}.frame(height: 200/*165*/)
+				ZStack {
+					VStack(spacing: 10) {
+						getDisplay()
+						InfoSeperator()
+						GeometryReader { proxy in
+							getEditor(proxy: proxy).frame(maxWidth: .infinity)
+						}.frame(height: 200/*165*/)
+					}
+					ImageDropReceiver().environmentObject(imageDataStore)
 				}.sheet(isPresented: $modalStateViewModel.showingUnmodifiedImage) {
 					VStack(alignment: .leading, spacing: 0) {
 						HStack {
@@ -318,6 +320,16 @@ struct ImageView: View {
 
 				#else
 				HStack {
+					/*
+					Button {
+						/*NotificationCenter.default.post(name: .showOpenPanel,
+																		object: nil, userInfo: nil)
+						 */
+						imageDataStore.waitingForDrop.toggle()
+					} label: {
+						Label("Drop in Image", systemImage: "photo").labelStyle(.titleOnly)
+					}.buttonStyle(.bordered).controlSize(.regular).disabled(imageDataStore.waitingForDrop)
+					*/
 					Button {
 						NotificationCenter.default.post(name: .showOpenPanel,
 																		object: nil, userInfo: nil)
@@ -479,12 +491,12 @@ struct ImageView: View {
 					Text("Loading Image...")
 					ProgressView().controlSize(.large)
 				}
-			} else if waitingForDrop {
+			} else if imageDataStore.waitingForDrop {
 				VStack(spacing: 20) {
-					Text("Drop image file here:").font(.largeTitle).padding()
-					Image(systemName: "square.and.arrow.down").resizable().aspectRatio(contentMode: .fit).foregroundColor(Color.accentColor).padding()
+					Text("Drop Image Here:").font(.largeTitle).padding()
+					Image(systemName: "square.and.arrow.down").resizable().aspectRatio(contentMode: .fit).frame(maxWidth: 500, maxHeight: 500).foregroundColor(Color.accentColor).padding()
 					Button {
-						waitingForDrop = false
+						imageDataStore.waitingForDrop = false
 					} label: {
 						Text("Cancel Drag and Drop")
 					}.buttonStyle(.borderedProminent).keyboardShortcut(.defaultAction).controlSize(.large).padding()

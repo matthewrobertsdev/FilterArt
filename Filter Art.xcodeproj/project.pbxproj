@@ -43,6 +43,8 @@
 		9F9708C12984E0CD00D6ABC9 /* SavedFiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F9708BF2984E0CD00D6ABC9 /* SavedFiltersView.swift */; };
 		9FB89EB62986286B00C9DF75 /* PresetFiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB89EB52986286B00C9DF75 /* PresetFiltersView.swift */; };
 		9FB89EB72986286B00C9DF75 /* PresetFiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB89EB52986286B00C9DF75 /* PresetFiltersView.swift */; };
+		9FB8CFF129E3714700F5D600 /* ImageDropReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB8CFEF29E3714700F5D600 /* ImageDropReceiver.swift */; };
+		9FB8CFF529E376AB00F5D600 /* NSImageDropReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB8CFF229E3736100F5D600 /* NSImageDropReceiver.swift */; };
 		9FC012D12972563300309D6D /* OpacityControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FC012D02972563300309D6D /* OpacityControl.swift */; };
 		9FCF2F352986DEEA00C5868C /* FavoriteFiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCF2F342986DEEA00C5868C /* FavoriteFiltersView.swift */; };
 		9FCF2F362986DEEA00C5868C /* FavoriteFiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCF2F342986DEEA00C5868C /* FavoriteFiltersView.swift */; };
@@ -144,6 +146,8 @@
 		9F8FAB69297DEC6600E5F453 /* RenameAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameAlert.swift; sourceTree = "<group>"; };
 		9F9708BF2984E0CD00D6ABC9 /* SavedFiltersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedFiltersView.swift; sourceTree = "<group>"; };
 		9FB89EB52986286B00C9DF75 /* PresetFiltersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetFiltersView.swift; sourceTree = "<group>"; };
+		9FB8CFEF29E3714700F5D600 /* ImageDropReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDropReceiver.swift; sourceTree = "<group>"; };
+		9FB8CFF229E3736100F5D600 /* NSImageDropReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSImageDropReceiver.swift; sourceTree = "<group>"; };
 		9FC012D02972563300309D6D /* OpacityControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpacityControl.swift; sourceTree = "<group>"; };
 		9FCF2F342986DEEA00C5868C /* FavoriteFiltersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteFiltersView.swift; sourceTree = "<group>"; };
 		9FDB1BCC297EC1CC00911545 /* NameAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameAlert.swift; sourceTree = "<group>"; };
@@ -251,6 +255,8 @@
 		9F89DA64296FB65200D46184 /* Filter Art */ = {
 			isa = PBXGroup;
 			children = (
+				9FB8CFEF29E3714700F5D600 /* ImageDropReceiver.swift */,
+				9FB8CFF229E3736100F5D600 /* NSImageDropReceiver.swift */,
 				9F89DA65296FB65200D46184 /* FilterArtApp.swift */,
 				9FDE919C29BD7E47003199DD /* BrightnessControl.swift */,
 				9F1258BA2988C81B00A08636 /* ModalStateViewModel.swift */,
@@ -666,6 +672,7 @@
 			files = (
 				9F8B1E192976602C004C792B /* FiltersView.swift in Sources */,
 				9FB89EB72986286B00C9DF75 /* PresetFiltersView.swift in Sources */,
+				9FB8CFF529E376AB00F5D600 /* NSImageDropReceiver.swift in Sources */,
 				9FDE919D29BD7E47003199DD /* BrightnessControl.swift in Sources */,
 				9F868770298A2BA200856D96 /* ContentView.swift in Sources */,
 				9FE517D1297266F7003F3CA7 /* ImageView.swift in Sources */,
@@ -691,6 +698,7 @@
 				9FE517DB2972674D003F3CA7 /* FilterArt.xcdatamodeld in Sources */,
 				9F3221BC2975897D0034FDCB /* WindowAccessor.swift in Sources */,
 				9F3221BE29758DC50034FDCB /* BlurControl.swift in Sources */,
+				9FB8CFF129E3714700F5D600 /* ImageDropReceiver.swift in Sources */,
 				9FE517CE297266F7003F3CA7 /* ShareViewController.swift in Sources */,
 				9FE517C7297266F7003F3CA7 /* OpacityControl.swift in Sources */,
 				9FE517D5297266F7003F3CA7 /* SaturationControl.swift in Sources */,

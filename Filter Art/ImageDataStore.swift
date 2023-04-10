@@ -9,6 +9,7 @@ import Foundation
 
 class ImageDataStore: ObservableObject {
 	@Published var imageData: Data = Data()
+	@Published var waitingForDrop = false
 	
 	private static func fileURL() throws -> URL {
 		try FileManager.default.url(for: .documentDirectory,
