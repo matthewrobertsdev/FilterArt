@@ -707,7 +707,7 @@ struct ImageView: View {
 					storeSnapshot()
 				} label: {
 					Text("Reset All")
-				}
+				}.disabled(shouldDisableResetAll())
 				Button {
 					handleUndo()
 				} label: {
@@ -724,6 +724,24 @@ struct ImageView: View {
 #endif
 		}
 		
+	}
+	
+	func shouldDisableResetAll() -> Bool {
+		return blur == originalFilter.blur && brightness == originalFilter.brightness
+		&& abs(colorMultiplyColor.components.red - originalFilter.colorMultiplyR) < 0.02
+		&& abs(colorMultiplyColor.components.blue - originalFilter.colorMultiplyB) < 0.02
+		&& abs(colorMultiplyColor.components.green - originalFilter.colorMultiplyG) < 0.02
+		&& abs(colorMultiplyColor.components.opacity - originalFilter.colorMultiplyO) < 0.02
+		&& contrast == originalFilter.contrast && grayscale == originalFilter.grayscale
+		&& hueRotation == originalFilter.hueRotation && invertColors == originalFilter.invertColors
+		&& opacity == originalFilter.opacity && saturation == originalFilter.saturation
+		&& useBlur == originalFilter.useBlur && useBrightness == originalFilter.useBrightness
+		&& useColorMultiply == originalFilter.useColorMultiply
+		&& useContrast == originalFilter.useContrast
+		&& useGrayscale == originalFilter.useGrayscale
+		&& useHueRotation == originalFilter.useHueRotation
+		&& useOpacity == originalFilter.useOpacity
+		&& useSaturation == originalFilter.useSaturation
 	}
 	
 	func storeSnapshot() {
