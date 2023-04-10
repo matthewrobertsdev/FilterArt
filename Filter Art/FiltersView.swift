@@ -34,8 +34,8 @@ struct FiltersView: View {
 					.environmentObject(filterStateHistory)
 			}
 		}).safeAreaInset(edge: .top, content: {
-			VStack(spacing:0){
-				Text("Stored Filters").font(.title2).padding(5)
+			VStack(spacing:10){
+				Text("Stored Filters").font(.title2).padding(5).padding(.top, 10)
 				Picker(selection: $filterType) {
 					ForEach(FilterType.allCases, id: \.rawValue) { filterType in
 						Text(filterType.rawValue)
@@ -43,7 +43,7 @@ struct FiltersView: View {
 				} label: {
 					Text("Filters Picker")
 				}.pickerStyle(.segmented).labelsHidden()
-				TextField("", text: $searchString, prompt: Text("Search \(filterType.lowercased())...")).focused($searchFieldInFocus)
+				TextField("", text: $searchString, prompt: Text("Search \(filterType.lowercased())…")).focused($searchFieldInFocus)
 			}.background(
 				.regularMaterial,
 				   in: Rectangle()
@@ -97,7 +97,7 @@ struct FiltersView_Previews: PreviewProvider {
  */
 
 enum FilterType: String, CaseIterable {
+	case presets = "Presets"
 	case saved = "Saved"
 	case favorites = "Favorites"
-	case presets = "Presets"
 }

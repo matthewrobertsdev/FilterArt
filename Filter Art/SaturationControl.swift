@@ -16,9 +16,9 @@ struct SaturationControl: View {
 	}
 	var body: some View {
 		HStack {
-			Text("\(0)")
+			Text("\(1)")
 			Spacer()
-			Slider(value: $saturation, in: 0...50){ editing in
+			Slider(value: $saturation, in: 1...50){ editing in
 				if !editing {
 					saveForUndo()
 				}

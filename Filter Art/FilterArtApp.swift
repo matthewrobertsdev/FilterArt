@@ -47,7 +47,7 @@ struct FilterArtApp: App {
 																	object: nil, userInfo: nil)
 					modalStateViewModel.showingOpenPanel = true
 				} label: {
-					Label("Choose Photo", systemImage: "photo")
+					Label("Choose Image", systemImage: "photo")
 				}.keyboardShortcut(KeyboardShortcut("1", modifiers: .command)).disabled(modalStateViewModel.isModal())
 				Divider()
 				Button {
@@ -61,15 +61,10 @@ struct FilterArtApp: App {
 			}
 			CommandGroup(before: .sidebar) {
 				Button {
-					modalStateViewModel.showingPreviewModal = true
-				} label: {
-					Text("Modified Image")
-				}.keyboardShortcut(KeyboardShortcut("2", modifiers: .command)).disabled(modalStateViewModel.isModal())
-				Button {
 					modalStateViewModel.showingUnmodifiedImage = true
 				} label: {
 					Text("Unmodified Image")
-				}.keyboardShortcut(KeyboardShortcut("3", modifiers: .command)).disabled(modalStateViewModel.isModal())
+				}.keyboardShortcut(KeyboardShortcut("2", modifiers: .command)).disabled(modalStateViewModel.isModal())
 				Divider()
 			}
 			CommandMenu("Photo") {
@@ -99,13 +94,13 @@ NotificationCenter.default.post(name: .showSavePanel,
 					modalStateViewModel.showingNameAlert = true
 				} label: {
 					Label("Add Saved Filter", systemImage: "plus")
-				}.keyboardShortcut(KeyboardShortcut("4", modifiers: .command)).disabled(modalStateViewModel.isModal())
+				}.keyboardShortcut(KeyboardShortcut("3", modifiers: .command)).disabled(modalStateViewModel.isModal())
 				Divider()
 				Button {
 					modalStateViewModel.showingFilters = true
 				} label: {
-					Label("Filters...", systemImage: "camera.filters")
-				}.keyboardShortcut(KeyboardShortcut("5", modifiers: .command)).disabled(modalStateViewModel.isModal())
+					Label("Filters…", systemImage: "camera.filters")
+				}.keyboardShortcut(KeyboardShortcut("4", modifiers: .command)).disabled(modalStateViewModel.isModal())
 			}
 			CommandGroup(replacing: CommandGroupPlacement.help) {
 				if let contactUrl = URL(string: "\(baseUrl)faq/filterart") {

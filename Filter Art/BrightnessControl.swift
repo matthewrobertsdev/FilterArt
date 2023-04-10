@@ -18,9 +18,9 @@ struct BrightnessControl: View {
 	}
 	var body: some View {
 		HStack {
-			Text("\(0)")
+			Text("\(-2)")
 			Spacer()
-			Slider(value: $brightness, in: 0...2){ editing in
+			Slider(value: $brightness, in: -2...2){ editing in
 				if !editing {
 					saveForUndo()
 				}
