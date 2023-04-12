@@ -874,7 +874,6 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Filter Art";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Matt Roberts. All rights reserved.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We want to save your filtered image.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -919,7 +918,6 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Filter Art";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Matt Roberts. All rights reserved.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We want to save your filtered image.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
