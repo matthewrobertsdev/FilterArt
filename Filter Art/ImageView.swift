@@ -53,8 +53,10 @@ struct ImageView: View {
 		Group {
 #if os(macOS)
 			ZStack {
-				VStack(spacing: 10) {
+				VStack(spacing: 5) {
+					Spacer(minLength: 0)
 					getDisplay()
+					Spacer(minLength: 0)
 					InfoSeperator()
 					GeometryReader { proxy in
 						getEditor(proxy: proxy).frame(maxWidth: .infinity)
@@ -127,8 +129,10 @@ struct ImageView: View {
 			})
 #else
 			VStack(spacing: 5) {
-				VStack(spacing: 10) {
+				VStack(spacing: 5) {
+					Spacer(minLength: 0)
 					getDisplay()
+					Spacer(minLength: 0)
 					InfoSeperator()
 				}
 				GeometryReader { proxy in
@@ -256,9 +260,12 @@ struct ImageView: View {
 						switch result  {
 						case .success(let data):
 							if let data = data {
-								DispatchQueue.main.async {
-									imageDataStore.imageData = data
-									useOriginalImage = false
+								let newImage = resizeUIImage(image: UIImage(data: data) ?? UIImage())
+								if let newData = newImage.pngData() {
+									DispatchQueue.main.async {
+										imageDataStore.imageData = newData
+										useOriginalImage = false
+									}
 								}
 							}
 						case .failure( _):
@@ -443,6 +450,11 @@ struct ImageView: View {
 						modalStateViewModel.showingUnmodifiedImage = true
 					} label: {
 						Text("View Original Image").labelStyle(.titleOnly)
+					}
+					Button {
+						modalStateViewModel.showingPreviewModal = true
+					} label: {
+						Text("View Modified Image").labelStyle(.titleOnly)
 					}
 				} label: {
 					Label("More…", systemImage: "ellipsis.circle").labelStyle(.titleOnly)
@@ -725,6 +737,34 @@ struct ImageView: View {
 		}
 		
 	}
+	#if os(iOS)
+	func resizeUIImage(image: UIImage) -> UIImage {
+		var originalWidth = 1000.0
+		var originalHeight = 1000.0
+		var desiredWidth = 1000.0
+		var desiredHeight = 1000.0
+			originalWidth = image.size.width
+			originalHeight = image.size.height
+			if originalWidth >= originalHeight && originalWidth >= 1000.0 {
+				let scaleFactor = 1000.0/originalWidth
+				desiredWidth =  originalWidth * scaleFactor
+				desiredHeight = originalHeight * scaleFactor
+			} else if originalHeight >= originalWidth && originalHeight >= 1000.0 {
+				let scaleFactor = 1000.0/originalHeight
+				desiredWidth =  originalWidth * scaleFactor
+				desiredHeight = originalHeight * scaleFactor
+			} else {
+				desiredWidth = originalWidth
+				desiredHeight = originalHeight
+			}
+			let newSize = CGSize(width: desiredWidth, height: desiredHeight)
+			UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0);
+						image.draw(in: CGRectMake(0, 0, newSize.width, newSize.height))
+			let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
+				UIGraphicsEndImageContext()
+			return newImage
+	}
+	#endif
 	
 	func shouldDisableResetAll() -> Bool {
 		return blur == originalFilter.blur && brightness == originalFilter.brightness
