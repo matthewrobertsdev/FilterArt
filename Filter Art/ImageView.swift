@@ -60,7 +60,7 @@ struct ImageView: View {
 					InfoSeperator()
 					GeometryReader { proxy in
 						getEditor(proxy: proxy).frame(maxWidth: .infinity)
-					}.frame(height: 200/*165*/)
+					}.frame(height: 215/*165*/)
 				}
 				ImageDropReceiver().environmentObject(imageDataStore)
 			}.sheet(isPresented: $modalStateViewModel.showingUnmodifiedImage) {
@@ -260,13 +260,13 @@ struct ImageView: View {
 						switch result  {
 						case .success(let data):
 							if let data = data {
-								let newImage = resizeUIImage(image: UIImage(data: data) ?? UIImage())
-								if let newData = newImage.pngData() {
+								//let newImage = resizeUIImage(image: UIImage(data: data) ?? UIImage())
+								//if let newData = newImage.pngData() {
 									DispatchQueue.main.async {
-										imageDataStore.imageData = newData
+										imageDataStore.imageData = data
 										useOriginalImage = false
 									}
-								}
+								//}
 							}
 						case .failure( _):
 							break
@@ -374,7 +374,7 @@ struct ImageView: View {
 					Label("More…", systemImage: "ellipsis.circle").labelStyle(.titleOnly)
 				}.frame(width: 80).controlSize(.regular)
 				
-			}
+			}.padding(.top)
 			/*
 			 HStack(spacing: 20) {
 			 Menu(content: {
@@ -716,7 +716,9 @@ struct ImageView: View {
 			HStack(spacing: 30) {
 				Button {
 					resetAll()
-					storeSnapshot()
+					if !filterStateHistory.isModifying {
+						storeSnapshot()
+					}
 				} label: {
 					Text("Reset All")
 				}.disabled(shouldDisableResetAll())
