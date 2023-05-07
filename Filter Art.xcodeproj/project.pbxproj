@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9F0CFFEA2971340D003064DE /* SharingPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0CFFE92971340D003064DE /* SharingPicker.swift */; };
 		9F1258BB2988C81B00A08636 /* ModalStateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1258BA2988C81B00A08636 /* ModalStateViewModel.swift */; };
 		9F264297297051C5009309B4 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F264296297051C5009309B4 /* ImagePicker.swift */; };
 		9F3221BC2975897D0034FDCB /* WindowAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3221BB2975897D0034FDCB /* WindowAccessor.swift */; };
@@ -15,6 +14,9 @@
 		9F381AA029B75C5000B3E7AA /* FilterStateHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F381A9F29B75C5000B3E7AA /* FilterStateHistory.swift */; };
 		9F381AA129B75C5000B3E7AA /* FilterStateHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F381A9F29B75C5000B3E7AA /* FilterStateHistory.swift */; };
 		9F4AE4A029BED66200E5F4C4 /* BrightnessControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDE919C29BD7E47003199DD /* BrightnessControl.swift */; };
+		9F751CC62A0739B100C675C5 /* MenuCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F751CC52A0739B100C675C5 /* MenuCommands.swift */; };
+		9F751CC72A073A9400C675C5 /* MenuCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F751CC52A0739B100C675C5 /* MenuCommands.swift */; };
+		9F751CD02A073EE100C675C5 /* SliderFilterControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F751CCF2A073EE100C675C5 /* SliderFilterControl.swift */; };
 		9F86876F298A2BA200856D96 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F86876E298A2BA200856D96 /* ContentView.swift */; };
 		9F868770298A2BA200856D96 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F86876E298A2BA200856D96 /* ContentView.swift */; };
 		9F89DA66296FB65200D46184 /* FilterArtApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DA65296FB65200D46184 /* FilterArtApp.swift */; };
@@ -37,6 +39,7 @@
 		9F8B1E1A29766999004C792B /* BlurControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3221BD29758DC50034FDCB /* BlurControl.swift */; };
 		9F8B1E1F29766E27004C792B /* FilterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8B1E1E29766E27004C792B /* FilterModel.swift */; };
 		9F8B1E2029766E27004C792B /* FilterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8B1E1E29766E27004C792B /* FilterModel.swift */; };
+		9F8E1DA72A07414B0030F0B5 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F8E1DA52A0740D10030F0B5 /* Launch Screen.storyboard */; };
 		9F8FAB6A297DEC6600E5F453 /* RenameAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8FAB69297DEC6600E5F453 /* RenameAlert.swift */; };
 		9F8FAB6B297DEC6600E5F453 /* RenameAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8FAB69297DEC6600E5F453 /* RenameAlert.swift */; };
 		9F9708C02984E0CD00D6ABC9 /* SavedFiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F9708BF2984E0CD00D6ABC9 /* SavedFiltersView.swift */; };
@@ -51,16 +54,12 @@
 		9FDB1BCD297EC1CC00911545 /* NameAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDB1BCC297EC1CC00911545 /* NameAlert.swift */; };
 		9FDB1BCE297EC81C00911545 /* NameAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDB1BCC297EC1CC00911545 /* NameAlert.swift */; };
 		9FDE919D29BD7E47003199DD /* BrightnessControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDE919C29BD7E47003199DD /* BrightnessControl.swift */; };
-		9FE5175329725EA1003F3CA7 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9FE5175229725EA1003F3CA7 /* Launch Screen.storyboard */; };
 		9FE517A62972668F003F3CA7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FE517A52972668F003F3CA7 /* Preview Assets.xcassets */; };
 		9FE517C7297266F7003F3CA7 /* OpacityControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FC012D02972563300309D6D /* OpacityControl.swift */; };
 		9FE517C8297266F7003F3CA7 /* HueRotationControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DA9D296FB89300D46184 /* HueRotationControl.swift */; };
 		9FE517C9297266F7003F3CA7 /* ColorComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DAA7296FB90600D46184 /* ColorComponents.swift */; };
-		9FE517CA297266F7003F3CA7 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F264296297051C5009309B4 /* ImagePicker.swift */; };
 		9FE517CB297266F7003F3CA7 /* SharingPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0CFFE92971340D003064DE /* SharingPicker.swift */; };
-		9FE517CC297266F7003F3CA7 /* ShareSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCC6E0297116B6007C1CC4 /* ShareSheetView.swift */; };
 		9FE517CD297266F7003F3CA7 /* ColorMultiplyControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DAA1296FB8B200D46184 /* ColorMultiplyControl.swift */; };
-		9FE517CE297266F7003F3CA7 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCC6DE297116AB007C1CC4 /* ShareViewController.swift */; };
 		9FE517D0297266F7003F3CA7 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DA67296FB65200D46184 /* Persistence.swift */; };
 		9FE517D1297266F7003F3CA7 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DA95296FB6CB00D46184 /* ImageView.swift */; };
 		9FE517D2297266F7003F3CA7 /* ImageDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DA99296FB73E00D46184 /* ImageDataStore.swift */; };
@@ -68,7 +67,6 @@
 		9FE517D4297266F7003F3CA7 /* ConditionalViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DA9B296FB85300D46184 /* ConditionalViewModifier.swift */; };
 		9FE517D5297266F7003F3CA7 /* SaturationControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DAA3296FB8B800D46184 /* SaturationControl.swift */; };
 		9FE517D6297266F7003F3CA7 /* ContrastControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DA9F296FB8A600D46184 /* ContrastControl.swift */; };
-		9FE517D7297266F7003F3CA7 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCC6D82971137A007C1CC4 /* ShareSheet.swift */; };
 		9FE517D8297266F7003F3CA7 /* ColorStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DAA9296FB90C00D46184 /* ColorStorage.swift */; };
 		9FE517DA29726706003F3CA7 /* InfoSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DA97296FB6F900D46184 /* InfoSeparator.swift */; };
 		9FE517DB2972674D003F3CA7 /* FilterArt.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DA69296FB65200D46184 /* FilterArt.xcdatamodeld */; };
@@ -78,8 +76,6 @@
 		9FF33FA829734A54005620AD /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FF33FA629734A4E005620AD /* ImageSaver.swift */; };
 		9FF4CE73298C9D0700E2A51A /* ModalStateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1258BA2988C81B00A08636 /* ModalStateViewModel.swift */; };
 		9FFCC6D92971137B007C1CC4 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCC6D82971137A007C1CC4 /* ShareSheet.swift */; };
-		9FFCC6DF297116AB007C1CC4 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCC6DE297116AB007C1CC4 /* ShareViewController.swift */; };
-		9FFCC6E1297116B6007C1CC4 /* ShareSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCC6E0297116B6007C1CC4 /* ShareSheetView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -121,6 +117,8 @@
 		9F3221BD29758DC50034FDCB /* BlurControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurControl.swift; sourceTree = "<group>"; };
 		9F381A9F29B75C5000B3E7AA /* FilterStateHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterStateHistory.swift; sourceTree = "<group>"; };
 		9F4AE49F29BECD8100E5F4C4 /* Filter_Art_v2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Filter_Art_v2.xcdatamodel; sourceTree = "<group>"; };
+		9F751CC52A0739B100C675C5 /* MenuCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCommands.swift; sourceTree = "<group>"; };
+		9F751CCF2A073EE100C675C5 /* SliderFilterControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderFilterControl.swift; sourceTree = "<group>"; };
 		9F86876E298A2BA200856D96 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9F89DA62296FB65200D46184 /* Filter Art iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Filter Art iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F89DA65296FB65200D46184 /* FilterArtApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterArtApp.swift; sourceTree = "<group>"; };
@@ -143,6 +141,7 @@
 		9F89DAA9296FB90C00D46184 /* ColorStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorStorage.swift; sourceTree = "<group>"; };
 		9F8B1E172976602C004C792B /* FiltersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersView.swift; sourceTree = "<group>"; };
 		9F8B1E1E29766E27004C792B /* FilterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterModel.swift; sourceTree = "<group>"; };
+		9F8E1DA52A0740D10030F0B5 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		9F8FAB69297DEC6600E5F453 /* RenameAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameAlert.swift; sourceTree = "<group>"; };
 		9F9708BF2984E0CD00D6ABC9 /* SavedFiltersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedFiltersView.swift; sourceTree = "<group>"; };
 		9FB89EB52986286B00C9DF75 /* PresetFiltersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetFiltersView.swift; sourceTree = "<group>"; };
@@ -152,7 +151,6 @@
 		9FCF2F342986DEEA00C5868C /* FavoriteFiltersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteFiltersView.swift; sourceTree = "<group>"; };
 		9FDB1BCC297EC1CC00911545 /* NameAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameAlert.swift; sourceTree = "<group>"; };
 		9FDE919C29BD7E47003199DD /* BrightnessControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessControl.swift; sourceTree = "<group>"; };
-		9FE5175229725EA1003F3CA7 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		9FE5176829726321003F3CA7 /* Fillter ArtTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Fillter ArtTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FE5177229726321003F3CA7 /* Fillter ArtUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Fillter ArtUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FE5179C2972668E003F3CA7 /* Filter Art.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Filter Art.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -163,8 +161,6 @@
 		9FEAA58929726C04002E6F80 /* Filter-Art--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Filter-Art--iOS--Info.plist"; sourceTree = "<group>"; };
 		9FF33FA629734A4E005620AD /* ImageSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSaver.swift; sourceTree = "<group>"; };
 		9FFCC6D82971137A007C1CC4 /* ShareSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
-		9FFCC6DE297116AB007C1CC4 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
-		9FFCC6E0297116B6007C1CC4 /* ShareSheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSheetView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -227,6 +223,90 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9F751CC92A073BEC00C675C5 /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+				9FB8CFEF29E3714700F5D600 /* ImageDropReceiver.swift */,
+				9FB8CFF229E3736100F5D600 /* NSImageDropReceiver.swift */,
+				9F3221BB2975897D0034FDCB /* WindowAccessor.swift */,
+				9F0CFFE92971340D003064DE /* SharingPicker.swift */,
+			);
+			path = macOS;
+			sourceTree = "<group>";
+		};
+		9F751CCA2A073C6200C675C5 /* Controls */ = {
+			isa = PBXGroup;
+			children = (
+				9FDE919C29BD7E47003199DD /* BrightnessControl.swift */,
+				9F89DA9F296FB8A600D46184 /* ContrastControl.swift */,
+				9F89DAA1296FB8B200D46184 /* ColorMultiplyControl.swift */,
+				9F89DAA3296FB8B800D46184 /* SaturationControl.swift */,
+				9F3221BD29758DC50034FDCB /* BlurControl.swift */,
+				9F89DAA5296FB8C000D46184 /* GrayscaleControl.swift */,
+				9FC012D02972563300309D6D /* OpacityControl.swift */,
+				9F89DA9D296FB89300D46184 /* HueRotationControl.swift */,
+				9F751CCF2A073EE100C675C5 /* SliderFilterControl.swift */,
+			);
+			path = Controls;
+			sourceTree = "<group>";
+		};
+		9F751CCB2A073C9B00C675C5 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				9F1258BA2988C81B00A08636 /* ModalStateViewModel.swift */,
+				9F381A9F29B75C5000B3E7AA /* FilterStateHistory.swift */,
+				9F89DA69296FB65200D46184 /* FilterArt.xcdatamodeld */,
+				9F89DA67296FB65200D46184 /* Persistence.swift */,
+				9F89DA99296FB73E00D46184 /* ImageDataStore.swift */,
+				9F8B1E1E29766E27004C792B /* FilterModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		9F751CCC2A073CA800C675C5 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				9F751CCA2A073C6200C675C5 /* Controls */,
+				9F89DA95296FB6CB00D46184 /* ImageView.swift */,
+				9F89DA97296FB6F900D46184 /* InfoSeparator.swift */,
+				9F8B1E172976602C004C792B /* FiltersView.swift */,
+				9F9708BF2984E0CD00D6ABC9 /* SavedFiltersView.swift */,
+				9FCF2F342986DEEA00C5868C /* FavoriteFiltersView.swift */,
+				9FB89EB52986286B00C9DF75 /* PresetFiltersView.swift */,
+				9F8FAB69297DEC6600E5F453 /* RenameAlert.swift */,
+				9FDB1BCC297EC1CC00911545 /* NameAlert.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		9F751CCD2A073CED00C675C5 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				9FF33FA629734A4E005620AD /* ImageSaver.swift */,
+				9F264296297051C5009309B4 /* ImagePicker.swift */,
+				9FFCC6D82971137A007C1CC4 /* ShareSheet.swift */,
+				9F8E1DA52A0740D10030F0B5 /* Launch Screen.storyboard */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		9F751CCE2A073D7F00C675C5 /* ViewModifiers */ = {
+			isa = PBXGroup;
+			children = (
+				9F89DA9B296FB85300D46184 /* ConditionalViewModifier.swift */,
+			);
+			path = ViewModifiers;
+			sourceTree = "<group>";
+		};
+		9F751CD32A07406300C675C5 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				9F89DAA7296FB90600D46184 /* ColorComponents.swift */,
+				9F89DAA9296FB90C00D46184 /* ColorStorage.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		9F89DA59296FB65200D46184 = {
 			isa = PBXGroup;
 			children = (
@@ -255,46 +335,18 @@
 		9F89DA64296FB65200D46184 /* Filter Art */ = {
 			isa = PBXGroup;
 			children = (
-				9FB8CFEF29E3714700F5D600 /* ImageDropReceiver.swift */,
-				9FB8CFF229E3736100F5D600 /* NSImageDropReceiver.swift */,
 				9F89DA65296FB65200D46184 /* FilterArtApp.swift */,
-				9FDE919C29BD7E47003199DD /* BrightnessControl.swift */,
-				9F1258BA2988C81B00A08636 /* ModalStateViewModel.swift */,
-				9F89DA67296FB65200D46184 /* Persistence.swift */,
-				9F89DA95296FB6CB00D46184 /* ImageView.swift */,
-				9F381A9F29B75C5000B3E7AA /* FilterStateHistory.swift */,
-				9F3221BB2975897D0034FDCB /* WindowAccessor.swift */,
-				9FF33FA629734A4E005620AD /* ImageSaver.swift */,
-				9F264296297051C5009309B4 /* ImagePicker.swift */,
-				9F89DA9F296FB8A600D46184 /* ContrastControl.swift */,
+				9F751CC52A0739B100C675C5 /* MenuCommands.swift */,
 				9F86876E298A2BA200856D96 /* ContentView.swift */,
-				9F89DAA1296FB8B200D46184 /* ColorMultiplyControl.swift */,
-				9F89DA9B296FB85300D46184 /* ConditionalViewModifier.swift */,
-				9F89DAA3296FB8B800D46184 /* SaturationControl.swift */,
-				9F3221BD29758DC50034FDCB /* BlurControl.swift */,
-				9F89DA99296FB73E00D46184 /* ImageDataStore.swift */,
-				9F89DAA5296FB8C000D46184 /* GrayscaleControl.swift */,
-				9FC012D02972563300309D6D /* OpacityControl.swift */,
-				9FFCC6D82971137A007C1CC4 /* ShareSheet.swift */,
-				9FFCC6DE297116AB007C1CC4 /* ShareViewController.swift */,
-				9FFCC6E0297116B6007C1CC4 /* ShareSheetView.swift */,
-				9F0CFFE92971340D003064DE /* SharingPicker.swift */,
-				9F89DA9D296FB89300D46184 /* HueRotationControl.swift */,
-				9F89DAA7296FB90600D46184 /* ColorComponents.swift */,
-				9F89DAA9296FB90C00D46184 /* ColorStorage.swift */,
+				9F751CCB2A073C9B00C675C5 /* Model */,
+				9F751CCC2A073CA800C675C5 /* View */,
+				9F751CC92A073BEC00C675C5 /* macOS */,
+				9F751CCD2A073CED00C675C5 /* iOS */,
+				9F751CCE2A073D7F00C675C5 /* ViewModifiers */,
+				9F751CD32A07406300C675C5 /* Utilities */,
 				9FE517E12972684A003F3CA7 /* Assets.xcassets */,
-				9FE5175229725EA1003F3CA7 /* Launch Screen.storyboard */,
 				9F89DA70296FB65300D46184 /* Filter_Art.entitlements */,
-				9F89DA69296FB65200D46184 /* FilterArt.xcdatamodeld */,
 				9F89DA71296FB65300D46184 /* Preview Content */,
-				9F89DA97296FB6F900D46184 /* InfoSeparator.swift */,
-				9F8B1E172976602C004C792B /* FiltersView.swift */,
-				9F9708BF2984E0CD00D6ABC9 /* SavedFiltersView.swift */,
-				9FCF2F342986DEEA00C5868C /* FavoriteFiltersView.swift */,
-				9FB89EB52986286B00C9DF75 /* PresetFiltersView.swift */,
-				9F8FAB69297DEC6600E5F453 /* RenameAlert.swift */,
-				9FDB1BCC297EC1CC00911545 /* NameAlert.swift */,
-				9F8B1E1E29766E27004C792B /* FilterModel.swift */,
 			);
 			path = "Filter Art";
 			sourceTree = "<group>";
@@ -538,7 +590,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9FE5175329725EA1003F3CA7 /* Launch Screen.storyboard in Resources */,
+				9F8E1DA72A07414B0030F0B5 /* Launch Screen.storyboard in Resources */,
 				9FE517E22972684A003F3CA7 /* Assets.xcassets in Resources */,
 				9F89DA73296FB65300D46184 /* Preview Assets.xcassets in Resources */,
 			);
@@ -617,17 +669,15 @@
 				9F86876F298A2BA200856D96 /* ContentView.swift in Sources */,
 				9F381AA029B75C5000B3E7AA /* FilterStateHistory.swift in Sources */,
 				9FF33FA829734A54005620AD /* ImageSaver.swift in Sources */,
-				9FFCC6DF297116AB007C1CC4 /* ShareViewController.swift in Sources */,
 				9F89DA98296FB6F900D46184 /* InfoSeparator.swift in Sources */,
-				9F0CFFEA2971340D003064DE /* SharingPicker.swift in Sources */,
 				9FDB1BCE297EC81C00911545 /* NameAlert.swift in Sources */,
 				9F9708C02984E0CD00D6ABC9 /* SavedFiltersView.swift in Sources */,
 				9F89DAAA296FB90C00D46184 /* ColorStorage.swift in Sources */,
-				9FFCC6E1297116B6007C1CC4 /* ShareSheetView.swift in Sources */,
 				9F89DAA8296FB90600D46184 /* ColorComponents.swift in Sources */,
 				9F89DA68296FB65200D46184 /* Persistence.swift in Sources */,
 				9F89DA9C296FB85300D46184 /* ConditionalViewModifier.swift in Sources */,
 				9F89DA9E296FB89300D46184 /* HueRotationControl.swift in Sources */,
+				9F751CC72A073A9400C675C5 /* MenuCommands.swift in Sources */,
 				9F89DAA4296FB8B800D46184 /* SaturationControl.swift in Sources */,
 				9FF4CE73298C9D0700E2A51A /* ModalStateViewModel.swift in Sources */,
 				9F264297297051C5009309B4 /* ImagePicker.swift in Sources */,
@@ -678,18 +728,18 @@
 				9FE517D1297266F7003F3CA7 /* ImageView.swift in Sources */,
 				9FE517D0297266F7003F3CA7 /* Persistence.swift in Sources */,
 				9FE517D3297266F7003F3CA7 /* GrayscaleControl.swift in Sources */,
+				9F751CD02A073EE100C675C5 /* SliderFilterControl.swift in Sources */,
 				9F8FAB6B297DEC6600E5F453 /* RenameAlert.swift in Sources */,
 				9FE517D8297266F7003F3CA7 /* ColorStorage.swift in Sources */,
 				9FE517D4297266F7003F3CA7 /* ConditionalViewModifier.swift in Sources */,
 				9FCF2F362986DEEA00C5868C /* FavoriteFiltersView.swift in Sources */,
 				9FE517C9297266F7003F3CA7 /* ColorComponents.swift in Sources */,
-				9FE517CA297266F7003F3CA7 /* ImagePicker.swift in Sources */,
 				9F381AA129B75C5000B3E7AA /* FilterStateHistory.swift in Sources */,
 				9F1258BB2988C81B00A08636 /* ModalStateViewModel.swift in Sources */,
-				9FE517D7297266F7003F3CA7 /* ShareSheet.swift in Sources */,
 				9FE517C8297266F7003F3CA7 /* HueRotationControl.swift in Sources */,
 				9FE517DC297267D4003F3CA7 /* FilterArtApp.swift in Sources */,
 				9FE517CB297266F7003F3CA7 /* SharingPicker.swift in Sources */,
+				9F751CC62A0739B100C675C5 /* MenuCommands.swift in Sources */,
 				9FDB1BCD297EC1CC00911545 /* NameAlert.swift in Sources */,
 				9F9708C12984E0CD00D6ABC9 /* SavedFiltersView.swift in Sources */,
 				9FE517DA29726706003F3CA7 /* InfoSeparator.swift in Sources */,
@@ -699,11 +749,9 @@
 				9F3221BC2975897D0034FDCB /* WindowAccessor.swift in Sources */,
 				9F3221BE29758DC50034FDCB /* BlurControl.swift in Sources */,
 				9FB8CFF129E3714700F5D600 /* ImageDropReceiver.swift in Sources */,
-				9FE517CE297266F7003F3CA7 /* ShareViewController.swift in Sources */,
 				9FE517C7297266F7003F3CA7 /* OpacityControl.swift in Sources */,
 				9FE517D5297266F7003F3CA7 /* SaturationControl.swift in Sources */,
 				9FE517D2297266F7003F3CA7 /* ImageDataStore.swift in Sources */,
-				9FE517CC297266F7003F3CA7 /* ShareSheetView.swift in Sources */,
 				9F8B1E2029766E27004C792B /* FilterModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
