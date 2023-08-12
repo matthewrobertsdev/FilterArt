@@ -18,6 +18,7 @@ struct RenameAlert: View {
 				DispatchQueue.main.async {
 					if let filter = selectedSavedFilter {
 						filter.name = renameString
+						renameString = ""
 						do {
 							try managedObjectContext.save()
 						} catch {
@@ -32,7 +33,7 @@ struct RenameAlert: View {
 			.disabled(renameString == "")
 			#endif
 			Button {
-				
+				renameString = ""
 			} label: {
 				Text("Cancel")
 			}

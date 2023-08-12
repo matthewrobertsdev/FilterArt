@@ -15,7 +15,7 @@ struct BlurControl: View {
 		self.saveForUndo = saveForUndo
 	}
 	let min = 0
-	let max = 0
+	let max = 10
 	var body: some View {
 		SliderFilterControl(value: $blur, saveForUndo: saveForUndo, min: min, max: max)
 	}

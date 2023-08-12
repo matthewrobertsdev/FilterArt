@@ -28,10 +28,10 @@ struct NameAlert: View {
 	@AppStorage("imageUseBlur") private var useBlur: Bool = false
 	@AppStorage("imageBlur") private var blur: Double = 0
 	@Environment(\.managedObjectContext) var managedObjectContext
-	@State var renameString: String = ""
+	@State var nameString: String = ""
     var body: some View {
 		Group {
-			TextField("Name Text Field", text: $renameString, prompt: Text("Filter Name"))
+			TextField("Name Text Field", text: $nameString, prompt: Text("Filter Name"))
 			Button {
 				DispatchQueue.main.async {
 					let savedFilter = Filter(context: managedObjectContext)
@@ -49,7 +49,7 @@ struct NameAlert: View {
 					savedFilter.invertColors = invertColors
 					savedFilter.isFavorite = false
 					savedFilter.isPreset = false
-					savedFilter.name = renameString
+					savedFilter.name = nameString
 					savedFilter.opacity = opacity
 					savedFilter.saturation = saturation
 					savedFilter.saveDate = Date()
@@ -61,6 +61,7 @@ struct NameAlert: View {
 					savedFilter.useHueRotation = useHueRotation
 					savedFilter.useOpacity = useOpacity
 					savedFilter.useSaturation = useSaturation
+					nameString = ""
 					do {
 						try managedObjectContext.save()
 					} catch {
@@ -71,10 +72,10 @@ struct NameAlert: View {
 				Text("Save")
 			}.keyboardShortcut(.defaultAction)
 			#if os(macOS)
-			.disabled(renameString == "")
+			.disabled(nameString == "")
 			#endif
 			Button {
-				
+				nameString = ""
 			} label: {
 				Text("Cancel")
 			}

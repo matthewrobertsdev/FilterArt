@@ -51,6 +51,7 @@
 		9FC012D12972563300309D6D /* OpacityControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FC012D02972563300309D6D /* OpacityControl.swift */; };
 		9FCF2F352986DEEA00C5868C /* FavoriteFiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCF2F342986DEEA00C5868C /* FavoriteFiltersView.swift */; };
 		9FCF2F362986DEEA00C5868C /* FavoriteFiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCF2F342986DEEA00C5868C /* FavoriteFiltersView.swift */; };
+		9FD28CC32A083AAB00AC92C1 /* SliderFilterControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F751CCF2A073EE100C675C5 /* SliderFilterControl.swift */; };
 		9FDB1BCD297EC1CC00911545 /* NameAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDB1BCC297EC1CC00911545 /* NameAlert.swift */; };
 		9FDB1BCE297EC81C00911545 /* NameAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDB1BCC297EC1CC00911545 /* NameAlert.swift */; };
 		9FDE919D29BD7E47003199DD /* BrightnessControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FDE919C29BD7E47003199DD /* BrightnessControl.swift */; };
@@ -684,6 +685,7 @@
 				9F89DAA2296FB8B200D46184 /* ColorMultiplyControl.swift in Sources */,
 				9F89DA9A296FB73E00D46184 /* ImageDataStore.swift in Sources */,
 				9F8B1E182976602C004C792B /* FiltersView.swift in Sources */,
+				9FD28CC32A083AAB00AC92C1 /* SliderFilterControl.swift in Sources */,
 				9F8B1E1F29766E27004C792B /* FilterModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -846,6 +848,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -898,6 +902,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -912,7 +918,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Filter Art/Filter_Art.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -936,7 +942,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -956,7 +962,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Filter Art/Filter_Art.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -980,7 +986,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -1170,7 +1176,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1184,7 +1190,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1202,7 +1208,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1216,7 +1222,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
