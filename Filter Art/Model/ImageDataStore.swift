@@ -28,6 +28,7 @@ class ImageDataStore: ObservableObject {
 	}
 	
 	static func load(completion: @escaping (Result<Data, Error>)->Void) {
+		print("01/22/2024 a1")
 		DispatchQueue.global(qos: .background).async {
 			do {
 				let fileURL = try fileURL()
@@ -37,12 +38,14 @@ class ImageDataStore: ObservableObject {
 					}
 					return
 				}
+				print("01/22/2024 a1")
 				DispatchQueue.main.async {
 					completion(.success(file.availableData
 									   ))
 				}
 			} catch {
 				DispatchQueue.main.async {
+					print("01/22/2024 a2")
 					completion(.failure(error))
 				}
 			}

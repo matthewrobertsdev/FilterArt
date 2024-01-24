@@ -27,7 +27,7 @@ typealias NativeColor = NSColor
 		}
 		
 		do {
-			let color = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? NativeColor ?? .blue
+			let color = try NSKeyedUnarchiver.unarchivedObject(ofClass: NativeColor.self, from: data) ?? .blue
 			self = Color(color)
 		} catch{
 			self = .blue

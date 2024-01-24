@@ -47,4 +47,5 @@ extension Notification.Name {
 	static let endEditing = Notification.Name("endEditing")
 	static let undo = Notification.Name("undo")
 	static let redo = Notification.Name("redo")
+	static let changedFilter = Notification.Name("changedFilter")
 }

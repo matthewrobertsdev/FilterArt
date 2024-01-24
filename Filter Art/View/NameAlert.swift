@@ -8,24 +8,22 @@
 import SwiftUI
 
 struct NameAlert: View {
-	@AppStorage("imagWidth") private var width: Double = 300
-	@AppStorage("imageHeight") private var height: Double = 160
 	@AppStorage("imageInvertColors") private var invertColors: Bool = false
 	@AppStorage("imageHueRotation") private var hueRotation: Double = 0
-	@AppStorage("imageUseHueRotation") private var useHueRotation: Bool = false
+	@AppStorage("imageUseHueRotation") private var useHueRotation: Bool = true
 	@AppStorage("imageContrast") private var contrast: Double = 1
-	@AppStorage("imageUseContrast") private var useContrast: Bool = false
-	@AppStorage("imageUseColorMultiply") private var useColorMultiply: Bool = false
-	@AppStorage("imageColorMultiplyColor") private var colorMultiplyColor: Color = Color.blue
-	@AppStorage("imageUseSaturation") private var useSaturation: Bool = false
+	@AppStorage("imageUseContrast") private var useContrast: Bool = true
+	@AppStorage("imageUseColorMultiply") private var useColorMultiply: Bool = true
+	@AppStorage("imageColorMultiplyColor") private var colorMultiplyColor: Color = Color.white
+	@AppStorage("imageUseSaturation") private var useSaturation: Bool = true
 	@AppStorage("imageSaturation") private var saturation: Double = 1
 	@AppStorage("imageUseBrightness") private var useBrightness: Bool = true
 	@AppStorage("imageBrightness") private var brightness: Double = 0
-	@AppStorage("imageUseGrayscale") private var useGrayscale: Bool = false
+	@AppStorage("imageUseGrayscale") private var useGrayscale: Bool = true
 	@AppStorage("imageGrayscale") private var grayscale: Double = 0
-	@AppStorage("imageUseOpacity") private var useOpacity: Bool = false
+	@AppStorage("imageUseOpacity") private var useOpacity: Bool = true
 	@AppStorage("imageOpacity") private var opacity: Double = 1
-	@AppStorage("imageUseBlur") private var useBlur: Bool = false
+	@AppStorage("imageUseBlur") private var useBlur: Bool = true
 	@AppStorage("imageBlur") private var blur: Double = 0
 	@Environment(\.managedObjectContext) var managedObjectContext
 	@State var nameString: String = ""

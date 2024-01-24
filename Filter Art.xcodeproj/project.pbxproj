@@ -74,6 +74,8 @@
 		9FE517DC297267D4003F3CA7 /* FilterArtApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F89DA65296FB65200D46184 /* FilterArtApp.swift */; };
 		9FE517E22972684A003F3CA7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FE517E12972684A003F3CA7 /* Assets.xcassets */; };
 		9FE517E32972684A003F3CA7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FE517E12972684A003F3CA7 /* Assets.xcassets */; };
+		9FEDFDFA2B5DC0CF00C33447 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FEDFDF92B5DC0CF00C33447 /* CloudKit.framework */; };
+		9FEDFDFC2B5DC0FF00C33447 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FEDFDFB2B5DC0FF00C33447 /* CloudKit.framework */; };
 		9FF33FA829734A54005620AD /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FF33FA629734A4E005620AD /* ImageSaver.swift */; };
 		9FF4CE73298C9D0700E2A51A /* ModalStateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F1258BA2988C81B00A08636 /* ModalStateViewModel.swift */; };
 		9FFCC6D92971137B007C1CC4 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCC6D82971137A007C1CC4 /* ShareSheet.swift */; };
@@ -160,6 +162,8 @@
 		9FE517B62972668F003F3CA7 /* Filter ArtUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Filter ArtUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9FE517E12972684A003F3CA7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9FEAA58929726C04002E6F80 /* Filter-Art--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Filter-Art--iOS--Info.plist"; sourceTree = "<group>"; };
+		9FEDFDF92B5DC0CF00C33447 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		9FEDFDFB2B5DC0FF00C33447 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS17.0.sdk/System/Library/Frameworks/CloudKit.framework; sourceTree = DEVELOPER_DIR; };
 		9FF33FA629734A4E005620AD /* ImageSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSaver.swift; sourceTree = "<group>"; };
 		9FFCC6D82971137A007C1CC4 /* ShareSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -169,6 +173,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FEDFDFC2B5DC0FF00C33447 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,6 +209,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FEDFDFA2B5DC0CF00C33447 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,6 +321,7 @@
 				9F89DA64296FB65200D46184 /* Filter Art */,
 				9FE5179D2972668E003F3CA7 /* Filter Art */,
 				9F89DA63296FB65200D46184 /* Products */,
+				9FEDFDF82B5DC0CF00C33447 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -376,6 +383,15 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		9FEDFDF82B5DC0CF00C33447 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9FEDFDFB2B5DC0FF00C33447 /* CloudKit.framework */,
+				9FEDFDF92B5DC0CF00C33447 /* CloudKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -392,6 +408,8 @@
 			dependencies = (
 			);
 			name = "Filter Art iOS";
+			packageProductDependencies = (
+			);
 			productName = "Filter Art";
 			productReference = 9F89DA62296FB65200D46184 /* Filter Art iOS.app */;
 			productType = "com.apple.product-type.application";
@@ -570,6 +588,8 @@
 				Base,
 			);
 			mainGroup = 9F89DA59296FB65200D46184;
+			packageReferences = (
+			);
 			productRefGroup = 9F89DA63296FB65200D46184 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -918,7 +938,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Filter Art/Filter_Art.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 28;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -927,7 +947,8 @@
 				INFOPLIST_FILE = "Filter-Art--iOS--Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Filter Art";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Matt Roberts. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023-2024 Matt Roberts. All rights reserved.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "So that you can save images to Photos";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -942,7 +963,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -962,7 +983,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Filter Art/Filter_Art.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 28;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -971,7 +992,8 @@
 				INFOPLIST_FILE = "Filter-Art--iOS--Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Filter Art";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Matt Roberts. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023-2024 Matt Roberts. All rights reserved.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "So that you can save images to Photos";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -986,7 +1008,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -1176,7 +1198,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 28;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1184,13 +1206,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Filter Art";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Matt Roberts. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023-2024 Matt Roberts. All rights reserved.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.0.1;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1208,7 +1230,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 28;
 				DEVELOPMENT_ASSET_PATHS = "\"Filter Art/Preview Content\"";
 				DEVELOPMENT_TEAM = 8ZAMGA7E3H;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1216,13 +1238,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Filter Art";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Matt Roberts. All rights reserved.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023-2024 Matt Roberts. All rights reserved.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.0.1;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apps.celeritas.FilterArt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;

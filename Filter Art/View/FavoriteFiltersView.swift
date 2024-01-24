@@ -51,7 +51,7 @@ struct FavoriteFiltersView: View {
 				VStack(alignment: .center) {
 						HStack {
 							Spacer()
-							getFilteredImage(filter: filter)
+							getFilteredImage(filter: filter).resizable().aspectRatio(contentMode: .fit)
 #if os(macOS)
 								.frame(width: 250, height: 175)
 							#else
@@ -89,7 +89,11 @@ struct FavoriteFiltersView: View {
 																object: nil, userInfo: nil)
 			asignSavedFilterComponentsToAppStorage()
 				storeSnapshot()
-			showing = false
+				DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+					NotificationCenter.default.post(name: .endEditing,
+																	object: nil, userInfo: nil)
+					showing = false
+				}
 		}
 		#endif
 		#if os(macOS)
@@ -124,27 +128,113 @@ struct FavoriteFiltersView: View {
 #endif
 	}
 	
-	func getFilteredImage(filter: Filter) -> some View {
-		return getImage().resizable().aspectRatio(contentMode: .fit).if(filter.invertColors, transform: { view in
-			view.colorInvert()
-		}).if(filter.useHueRotation, transform: { view in
-			view.hueRotation(.degrees(filter.hueRotation))
-		}).if(filter.useContrast, transform: { view in
-			view.contrast(filter.contrast)
-		}).if(filter.useColorMultiply, transform: { view in
-			view.colorMultiply(Color(.sRGB, red: filter.colorMultiplyR, green: filter.colorMultiplyG, blue: filter.colorMultiplyB, opacity: filter.colorMultiplyO))
-		}).if(filter.useSaturation, transform: { view in
-			view.saturation(filter.saturation)
-		}).if(useBrightness, transform: { view in
-			view.brightness(filter.brightness)
-		}).if(filter.useGrayscale, transform: { view in
-			view.grayscale(filter.grayscale)
-		}).if(filter.useOpacity, transform: { view in
-			view.opacity(filter.opacity)
-		}).if(filter.useBlur) { view in
-			view.blur(radius: filter.blur)
+#if os(iOS)
+	@MainActor func getFilteredImage(filter: Filter) -> Image {
+		print("01/22/2024 b")
+		var originalWidth = 1000.0
+		var originalHeight = 1000.0
+		var desiredWidth = 1000.0
+		var desiredHeight = 1000.0
+		if useOriginalImage {
+			desiredWidth = 750.0
+			desiredHeight = 1000.0
+		} else {
+			let uiImage = (UIImage(data: imageDataStore.imageData)  ?? UIImage())
+			originalWidth = uiImage.size.width
+			originalHeight = uiImage.size.height
+			if originalWidth >= originalHeight && originalWidth >= 1000.0 {
+				let scaleFactor = 1000.0/originalWidth
+				desiredWidth =  originalWidth * scaleFactor
+				desiredHeight = originalHeight * scaleFactor
+			} else if originalHeight >= originalWidth && originalHeight >= 1000.0 {
+				let scaleFactor = 1000.0/originalHeight
+				desiredWidth =  originalWidth * scaleFactor
+				desiredHeight = originalHeight * scaleFactor
+			} else {
+				desiredWidth = originalWidth
+				desiredHeight = originalHeight
+			}
 		}
+		let renderer = ImageRenderer(content: getImage().resizable().aspectRatio(contentMode: .fit)
+			.if(filter.useHueRotation, transform: { view in
+				view.hueRotation(.degrees(filter.hueRotation))
+			}).if(filter.useContrast, transform: { view in
+				view.contrast(filter.contrast)
+			}).if(filter.invertColors, transform: { view in
+				view.colorInvert()
+			}).if(filter.useColorMultiply, transform: { view in
+				view.colorMultiply(Color(.sRGB, red: filter.colorMultiplyR, green: filter.colorMultiplyG, blue: filter.colorMultiplyB, opacity: filter.colorMultiplyO))
+			}).if(filter.useSaturation, transform: { view in
+				view.saturation(filter.saturation)
+			}).if(filter.useBrightness, transform: { view in
+				view.brightness(filter.brightness)
+			}).if(filter.useGrayscale, transform: { view in
+				view.grayscale(filter.grayscale)
+			}).if(filter.useOpacity, transform: { view in
+				view.opacity(filter.opacity)
+			}).if(filter.useBlur) { view in
+				view.blur(radius: filter.blur)
+			})
+		
+		if let uiImage = renderer.uiImage {
+			print("01/22/2024 success")
+			return Image(uiImage: uiImage)
+		}
+		return Image(uiImage: UIImage(named: "FallColors") ?? UIImage())
 	}
+#else
+	@MainActor func getFilteredImage(forSharing: Bool = false) -> NSImage{
+		var originalWidth = 1000.0
+		var originalHeight = 1000.0
+		var desiredWidth = 1000.0
+		var desiredHeight = 1000.0
+		if useOriginalImage {
+			desiredWidth = 750.0
+			desiredHeight = 1000.0
+		} else {
+			let nsImage = (NSImage(data: imageDataStore.imageData)  ?? NSImage())
+			originalWidth = nsImage.size.width
+			originalHeight = nsImage.size.height
+			if originalWidth >= originalHeight && originalWidth >= 1000.0 {
+				let scaleFactor = 1000.0/originalWidth
+				desiredWidth =  originalWidth * scaleFactor
+				desiredHeight = originalHeight * scaleFactor
+			} else if originalHeight >= originalWidth && originalHeight >= 1000.0 {
+				let scaleFactor = 1000.0/originalHeight
+				desiredWidth =  originalWidth * scaleFactor
+				desiredHeight = originalHeight * scaleFactor
+			} else {
+				desiredWidth = originalWidth
+				desiredHeight = originalHeight
+			}
+		}
+		let renderer = ImageRenderer(content: getImage().resizable().aspectRatio(contentMode: .fit).if(forSharing, transform: { view in
+			view.frame(width: desiredWidth, height: desiredHeight)
+		}).if(useHueRotation, transform: { view in
+			view.hueRotation(.degrees(hueRotation))
+		}).if(useContrast, transform: { view in
+			view.contrast(contrast)
+		}).if(invertColors, transform: { view in
+			view.colorInvert()
+		}).if(useColorMultiply, transform: { view in
+			view.colorMultiply(colorMultiplyColor)
+		}).if(useSaturation, transform: { view in
+			view.saturation(saturation)
+		}).if(useBrightness, transform: { view in
+			view.brightness(brightness)
+		}).if(useGrayscale, transform: { view in
+			view.grayscale(grayscale)
+		}).if(useOpacity, transform: { view in
+			view.opacity(opacity)
+		}).if(useBlur) { view in
+			view.blur(radius: blur)
+		})
+		if let nsImage = renderer.nsImage {
+			return  nsImage
+		}
+		return NSImage(named: "FallColors") ?? NSImage()
+	}
+#endif
 	
 	func getImage() -> Image {
 		if useOriginalImage {

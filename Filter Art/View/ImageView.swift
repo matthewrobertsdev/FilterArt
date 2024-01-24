@@ -44,6 +44,9 @@ struct ImageView: View {
 	@State private var editMode: ImageEditMode? = nil
 	@State private var showingPhotoPicker: Bool = false
 	@State private var lastColorEditDate: Date = Date.now
+	@State private var showingErrorAlert: Bool = false
+	@State private var showingSuccessAlert: Bool = false
+	@State private var renderedImage = Image("FallColors")
 #if os(macOS)
 	@State private var window: NSWindow?
 #endif
@@ -193,11 +196,16 @@ struct ImageView: View {
 					ImageDataStore.load { result in
 						switch result {
 						case .failure:
+							print("01/22/2024 a2")
 							print("failed")
 						case .success(let imageData):
+							print("01/22/2024 a1")
 							imageDataStore.imageData = imageData
+							renderedImage = Image(uiImage: getFilteredImage())
 						}
 					}
+				} else {
+					renderedImage = Image(uiImage: getFilteredImage())
 				}
 				storeSnapshot()
 			}.onChange(of: imageDataStore.imageData) { imageData in
@@ -210,6 +218,38 @@ struct ImageView: View {
 				NameAlert().environment(\.managedObjectContext, managedObjectContext)
 			}, message: {
 				Text("Enter a name for your new filter:")
+			})
+			.alert("Success!", isPresented: $showingSuccessAlert, actions: {
+				Group {
+					Button {
+						showingSuccessAlert = false
+					} label: {
+						Text("Ok")
+					}.keyboardShortcut(.defaultAction)
+
+				}
+			}, message: {
+				Text("Saved to Photos.")
+			})
+			.alert("Oops! Failed to save to Photos.", isPresented: $showingErrorAlert, actions: {
+				Group {
+					Button {
+						showingErrorAlert = false
+					} label: {
+						Text("Cancel")
+					}
+					Button {
+						if let url = URL(string: UIApplication.openSettingsURLString) { if UIApplication.shared.canOpenURL(url) { UIApplication.shared.open(url, options: [:], completionHandler: nil)
+							}
+						}
+						showingErrorAlert = false
+					} label: {
+						Text("Settings...")
+					}
+
+				}
+			}, message: {
+				Text("Have you allowed Filter Art to save to Photos in the Settings app?")
 			})
 #endif
 		}
@@ -234,6 +274,11 @@ struct ImageView: View {
 		}.onReceive(NotificationCenter.default.publisher(for: .redo))
 		{ notification in
 			handleRedo()
+		}.onReceive(NotificationCenter.default.publisher(for: .endEditing))
+		{ notification in
+			DispatchQueue.main.asyncAfter(deadline: .now()) {
+				renderedImage = Image(uiImage: getFilteredImage())
+			}
 		}
 #if os(iOS)
 		.navigationBarTitleDisplayMode(.inline)
@@ -327,9 +372,10 @@ struct ImageView: View {
 				}.labelStyle(.iconOnly)
 				Menu {
 					Button {
-						useOriginalImage = true
+						let imageSaver = ImageSaver(showingSuccessAlert: $showingSuccessAlert, showingErrorAlert: $showingErrorAlert)
+						imageSaver.writeToPhotoAlbum(image: getFilteredImage())
 					} label: {
-						Text("Use Default Image").labelStyle(.titleOnly)
+						Text("Save to Photos").labelStyle(.titleOnly)
 					}
 					Button {
 						modalStateViewModel.showingUnmodifiedImage = true
@@ -340,6 +386,11 @@ struct ImageView: View {
 						modalStateViewModel.showingPreviewModal = true
 					} label: {
 						Text("View Modified Image").labelStyle(.titleOnly)
+					}
+					Button {
+						useOriginalImage = true
+					} label: {
+						Text("Use Default Image").labelStyle(.titleOnly)
 					}
 				} label: {
 					Label("More…", systemImage: "ellipsis.circle").labelStyle(.titleOnly)
@@ -373,6 +424,8 @@ struct ImageView: View {
 				}
 			} else {
 				Group {
+					renderedImage.resizable().aspectRatio(contentMode: .fit)
+					/*
 					getImage().resizable().aspectRatio(contentMode: .fit).if(useHueRotation, transform: { view in
 						view.hueRotation(.degrees(hueRotation))
 					}).if(useContrast, transform: { view in
@@ -392,6 +445,7 @@ struct ImageView: View {
 					}).if(useBlur) { view in
 						view.blur(radius: blur)
 					}
+					 */
 				}
 #if os(macOS)
 				.onDrag {
@@ -416,6 +470,42 @@ struct ImageView: View {
 				}
 #endif
 			}
+		}.onChange(of: useHueRotation) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: hueRotation) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: useContrast) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: contrast) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: invertColors) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: useColorMultiply) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: colorMultiplyColor) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: useSaturation) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: saturation) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: useBrightness) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: brightness) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: useGrayscale) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: grayscale) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: useOpacity) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: opacity) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: useBlur) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: blur) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
+		}.onChange(of: blur) { _ in
+			renderedImage = Image(uiImage: getFilteredImage())
 		}
 	}
 	
@@ -427,26 +517,7 @@ struct ImageView: View {
 				
 				HStack {
 					Spacer()
-					getImage().resizable().aspectRatio(contentMode: .fit).if(useHueRotation, transform: { view in
-						view.hueRotation(.degrees(hueRotation))
-					}).if(useContrast, transform: { view in
-						view.contrast(contrast)
-					}).if(invertColors, transform: { view in
-						view.colorInvert()
-					})
-						.if(useColorMultiply, transform: { view in
-							view.colorMultiply(colorMultiplyColor)
-						}).if(useSaturation, transform: { view in
-							view.saturation(saturation)
-						}).if(useBrightness, transform: { view in
-							view.brightness(brightness)
-						}).if(useGrayscale, transform: { view in
-							view.grayscale(grayscale)
-						}).if(useOpacity, transform: { view in
-							view.opacity(opacity)
-						}).if(useBlur) { view in
-						view.blur(radius: blur)
-					}
+					renderedImage.resizable().aspectRatio(contentMode: .fit)
 					Spacer()
 				}
 				Spacer()
@@ -798,6 +869,7 @@ struct ImageView: View {
 	
 #if os(iOS)
 	@MainActor func getFilteredImage(forSharing: Bool = false) -> UIImage {
+		print("01/22/2024 b")
 		var originalWidth = 1000.0
 		var originalHeight = 1000.0
 		var desiredWidth = 1000.0
@@ -844,7 +916,9 @@ struct ImageView: View {
 			}).if(useBlur) { view in
 				view.blur(radius: blur)
 			})
+		
 		if let uiImage = renderer.uiImage {
+			print("01/22/2024 success")
 			return uiImage
 		}
 		return UIImage(named: "FallColors") ?? UIImage()
@@ -1025,6 +1099,7 @@ enum SheetType {
 	case unmodifiedImage
 	case modifiedImage
 }
+/*
 #if os(macOS)
 extension NSImage: Transferable {
 	public static var transferRepresentation: some TransferRepresentation {
@@ -1034,6 +1109,7 @@ extension NSImage: Transferable {
 	}
 }
 #endif
+ */
 
 enum ImageEditMode: String, CaseIterable {
 	case hue
