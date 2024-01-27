@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MenuCommands: Commands {
-	@AppStorage("imageUseOriginalImage") private var useOriginalImage: Bool = true
+	@AppStorage(AppStorageKeys.imageUseOriginalImage.rawValue) private var useOriginalImage: Bool = true
 	@ObservedObject var modalStateViewModel: ModalStateViewModel
 	@ObservedObject  var filterStateHistory: FilterStateHistory
 	private let baseUrl = "https://matthewrobertsdev.github.io/celeritasapps/#/"

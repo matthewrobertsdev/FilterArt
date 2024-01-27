@@ -193,11 +193,8 @@ struct PresetFiltersView: View {
 	
 #if os(iOS)
 	@MainActor func getFilteredImage(filterModel: FilterModel) -> Image {
-		print("01/22/2024 b")
 		var originalWidth = 200.0
 		var originalHeight = 200.0
-		var desiredWidth = 1000.0
-		var desiredHeight = 1000.0
 		if useOriginalImage {
 			desiredWidth = 200.0
 			desiredHeight = 200.0

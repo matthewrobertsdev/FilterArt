@@ -354,35 +354,6 @@ struct SavedFiltersView: View {
 		filterStateHistory.forUndo.append(FilterModel(blur: blur, brightness: brightness, colorMultiplyO: colorMultiplyColor.components.opacity, colorMultiplyB: colorMultiplyColor.components.blue, colorMultiplyG: colorMultiplyColor.components.green, colorMultiplyR: colorMultiplyColor.components.red, contrast: contrast, grayscale: grayscale, hueRotation: hueRotation, id: UUID().uuidString, invertColors: invertColors, opacity: opacity, name: "App State Filter", saturation: saturation, timestamp: Date(), useBlur: useBlur, useBrightness: useBrightness, useColorMultiply: useColorMultiply, useContrast: useContrast, useGrayscale: useGrayscale, useHueRotation: useHueRotation, useOpacity: useOpacity, useSaturation: useSaturation))
 		filterStateHistory.forRedo = [FilterModel]()
 	}
-	
-#if os(iOS)
-func resizeUIImage(image: UIImage) -> UIImage {
-	var originalWidth = 200.0
-	var originalHeight = 200.0
-	var desiredWidth = 1000.0
-	var desiredHeight = 1000.0
-		originalWidth = image.size.width
-		originalHeight = image.size.height
-		if originalWidth >= originalHeight && originalWidth >= 200.0 {
-			let scaleFactor = 200.0/originalWidth
-			desiredWidth =  originalWidth * scaleFactor
-			desiredHeight = originalHeight * scaleFactor
-		} else if originalHeight >= originalWidth && originalHeight >= 200.0 {
-			let scaleFactor = 200.0/originalHeight
-			desiredWidth =  originalWidth * scaleFactor
-			desiredHeight = originalHeight * scaleFactor
-		} else {
-			desiredWidth = originalWidth
-			desiredHeight = originalHeight
-		}
-		let newSize = CGSize(width: desiredWidth, height: desiredHeight)
-		UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0);
-					image.draw(in: CGRectMake(0, 0, newSize.width, newSize.height))
-		let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
-			UIGraphicsEndImageContext()
-		return newImage
-}
-#endif
 
 }
 
