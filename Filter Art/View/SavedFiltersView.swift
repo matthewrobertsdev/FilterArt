@@ -37,8 +37,9 @@ struct SavedFiltersView: View {
 	@State var showingRenameAlert = false
 	@State var filterToDelete: Filter? = nil
 	@State var filterToRename: Filter? = nil
+	var image: Image = Image(uiImage: UIImage())
 	
-	init(showing: Binding<Bool>, searchString: String) {
+	init(showing: Binding<Bool>, searchString: String, thumbnailData: Data) {
 		_showing = showing
 		let searchStringPredicate = NSPredicate(format: "name CONTAINS[c] %@", searchString)
 		let isNotPresetPredicate = NSPredicate(format: "isPreset == %@", NSNumber(value: false))
@@ -48,6 +49,8 @@ struct SavedFiltersView: View {
 		} else {
 			_savedFilters = FetchRequest<Filter>(sortDescriptors: [SortDescriptor(\.saveDate)], predicate: compoundPredicate)
 		}
+		image = Image(uiImage: UIImage(data: thumbnailData) ?? UIImage())
+		
 	}
 	
 	var body: some View {
@@ -211,31 +214,7 @@ struct SavedFiltersView: View {
 #if os(iOS)
 	@MainActor func getFilteredImage(filter: Filter) -> Image {
 		print("01/22/2024 b")
-		var originalWidth = 1000.0
-		var originalHeight = 1000.0
-		var desiredWidth = 1000.0
-		var desiredHeight = 1000.0
-		if useOriginalImage {
-			desiredWidth = 750.0
-			desiredHeight = 1000.0
-		} else {
-			let uiImage = (UIImage(data: imageDataStore.imageData)  ?? UIImage())
-			originalWidth = uiImage.size.width
-			originalHeight = uiImage.size.height
-			if originalWidth >= originalHeight && originalWidth >= 1000.0 {
-				let scaleFactor = 1000.0/originalWidth
-				desiredWidth =  originalWidth * scaleFactor
-				desiredHeight = originalHeight * scaleFactor
-			} else if originalHeight >= originalWidth && originalHeight >= 1000.0 {
-				let scaleFactor = 1000.0/originalHeight
-				desiredWidth =  originalWidth * scaleFactor
-				desiredHeight = originalHeight * scaleFactor
-			} else {
-				desiredWidth = originalWidth
-				desiredHeight = originalHeight
-			}
-		}
-		let renderer = ImageRenderer(content: getImage().resizable().aspectRatio(contentMode: .fit)
+		let renderer = ImageRenderer(content: getImage().aspectRatio(contentMode: .fit)
 			.if(filter.useHueRotation, transform: { view in
 				view.hueRotation(.degrees(filter.hueRotation))
 			}).if(filter.useContrast, transform: { view in
@@ -318,12 +297,12 @@ struct SavedFiltersView: View {
 	
 	func getImage() -> Image {
 		if useOriginalImage {
-			return Image("FallColors")
+			return Image(uiImage: resizeUIImage(image: UIImage(named: "FallColors") ?? UIImage()))
 		} else {
 #if os(macOS)
 			return Image(nsImage: (NSImage(data: imageDataStore.imageData) ?? NSImage()))
 #else
-			return Image(uiImage: (UIImage(data: imageDataStore.imageData)  ?? UIImage()))
+			return image
 #endif
 		}
 	}
@@ -375,6 +354,35 @@ struct SavedFiltersView: View {
 		filterStateHistory.forUndo.append(FilterModel(blur: blur, brightness: brightness, colorMultiplyO: colorMultiplyColor.components.opacity, colorMultiplyB: colorMultiplyColor.components.blue, colorMultiplyG: colorMultiplyColor.components.green, colorMultiplyR: colorMultiplyColor.components.red, contrast: contrast, grayscale: grayscale, hueRotation: hueRotation, id: UUID().uuidString, invertColors: invertColors, opacity: opacity, name: "App State Filter", saturation: saturation, timestamp: Date(), useBlur: useBlur, useBrightness: useBrightness, useColorMultiply: useColorMultiply, useContrast: useContrast, useGrayscale: useGrayscale, useHueRotation: useHueRotation, useOpacity: useOpacity, useSaturation: useSaturation))
 		filterStateHistory.forRedo = [FilterModel]()
 	}
+	
+#if os(iOS)
+func resizeUIImage(image: UIImage) -> UIImage {
+	var originalWidth = 200.0
+	var originalHeight = 200.0
+	var desiredWidth = 1000.0
+	var desiredHeight = 1000.0
+		originalWidth = image.size.width
+		originalHeight = image.size.height
+		if originalWidth >= originalHeight && originalWidth >= 200.0 {
+			let scaleFactor = 200.0/originalWidth
+			desiredWidth =  originalWidth * scaleFactor
+			desiredHeight = originalHeight * scaleFactor
+		} else if originalHeight >= originalWidth && originalHeight >= 200.0 {
+			let scaleFactor = 200.0/originalHeight
+			desiredWidth =  originalWidth * scaleFactor
+			desiredHeight = originalHeight * scaleFactor
+		} else {
+			desiredWidth = originalWidth
+			desiredHeight = originalHeight
+		}
+		let newSize = CGSize(width: desiredWidth, height: desiredHeight)
+		UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0);
+					image.draw(in: CGRectMake(0, 0, newSize.width, newSize.height))
+		let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
+			UIGraphicsEndImageContext()
+		return newImage
+}
+#endif
 
 }
 

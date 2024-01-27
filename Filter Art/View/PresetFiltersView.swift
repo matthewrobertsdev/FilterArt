@@ -33,8 +33,9 @@ struct PresetFiltersView: View {
 	@Binding var showing: Bool
 	@State var selectedPreset: FilterModel? = nil
 	@Binding var searchString: String
+	var image: Image = Image(uiImage: UIImage())
 	
-	init(showing: Binding<Bool>, searchString: Binding<String>) {
+	init(showing: Binding<Bool>, searchString: Binding<String>, thumbnailData: Data) {
 		_showing = showing
 		_searchString = searchString
 		let searchStringPredicate = NSPredicate(format: "name CONTAINS[c] %@", _searchString.wrappedValue)
@@ -47,6 +48,7 @@ struct PresetFiltersView: View {
 		} else {
 			_presetFavoriteFiltersFetchRequest = FetchRequest<Filter>(sortDescriptors: [SortDescriptor(\.saveDate)], predicate: compoundPredicate)
 		}
+		image = Image(uiImage: UIImage(data: thumbnailData) ?? UIImage())
 	}
 	
 	var body: some View {
@@ -174,7 +176,7 @@ struct PresetFiltersView: View {
 #if os(macOS)
 			return Image(nsImage: (NSImage(data: imageDataStore.imageData) ?? NSImage()))
 #else
-			return Image(uiImage: (UIImage(data: imageDataStore.imageData)  ?? UIImage()))
+			return image
 #endif
 		}
 	}
@@ -192,23 +194,23 @@ struct PresetFiltersView: View {
 #if os(iOS)
 	@MainActor func getFilteredImage(filterModel: FilterModel) -> Image {
 		print("01/22/2024 b")
-		var originalWidth = 1000.0
-		var originalHeight = 1000.0
+		var originalWidth = 200.0
+		var originalHeight = 200.0
 		var desiredWidth = 1000.0
 		var desiredHeight = 1000.0
 		if useOriginalImage {
-			desiredWidth = 750.0
-			desiredHeight = 1000.0
+			desiredWidth = 200.0
+			desiredHeight = 200.0
 		} else {
 			let uiImage = (UIImage(data: imageDataStore.imageData)  ?? UIImage())
 			originalWidth = uiImage.size.width
 			originalHeight = uiImage.size.height
-			if originalWidth >= originalHeight && originalWidth >= 1000.0 {
-				let scaleFactor = 1000.0/originalWidth
+			if originalWidth >= originalHeight && originalWidth >= 200.0 {
+				let scaleFactor = 200.0/originalWidth
 				desiredWidth =  originalWidth * scaleFactor
 				desiredHeight = originalHeight * scaleFactor
-			} else if originalHeight >= originalWidth && originalHeight >= 1000.0 {
-				let scaleFactor = 1000.0/originalHeight
+			} else if originalHeight >= originalWidth && originalHeight >= 200.0 {
+				let scaleFactor = 200.0/originalHeight
 				desiredWidth =  originalWidth * scaleFactor
 				desiredHeight = originalHeight * scaleFactor
 			} else {

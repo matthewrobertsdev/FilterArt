@@ -46,7 +46,8 @@ struct ImageView: View {
 	@State private var lastColorEditDate: Date = Date.now
 	@State private var showingErrorAlert: Bool = false
 	@State private var showingSuccessAlert: Bool = false
-	@State private var renderedImage = Image("FallColors")
+	@State private var renderedImage = Image(uiImage: UIImage())
+	@State private var thumbnailImage = Image(uiImage: UIImage())
 #if os(macOS)
 	@State private var window: NSWindow?
 #endif
@@ -201,17 +202,24 @@ struct ImageView: View {
 						case .success(let imageData):
 							print("01/22/2024 a1")
 							imageDataStore.imageData = imageData
+							let filteredImage = resizeUIImage(image: UIImage(data: imageData) ?? UIImage())
+							imageDataStore.imageData = filteredImage.pngData() ?? Data()
+							thumbnailImage = Image(uiImage: resizeUIImageToThumbnail(image: UIImage(data: imageData) ?? UIImage()))
 							renderedImage = Image(uiImage: getFilteredImage())
 						}
 					}
 				} else {
 					renderedImage = Image(uiImage: getFilteredImage())
+					thumbnailImage = Image(uiImage: resizeUIImageToThumbnail(image: UIImage(named: "FallColors") ?? UIImage()))
 				}
 				storeSnapshot()
 			}.onChange(of: imageDataStore.imageData) { imageData in
 				DispatchQueue.main.async {
 					ImageDataStore.save(imageData: imageDataStore.imageData) { result in
-						
+						let filteredImage = resizeUIImage(image: UIImage(data: imageData) ?? UIImage())
+						imageDataStore.imageData = filteredImage.pngData() ?? Data()
+						thumbnailImage = Image(uiImage: resizeUIImageToThumbnail(image: UIImage(data: imageData) ?? UIImage()))
+						renderedImage = Image(uiImage: getFilteredImage())
 					}
 				}
 			}.alert("Name Your Filter", isPresented: $modalStateViewModel.showingNameAlert, actions: {
@@ -302,6 +310,10 @@ struct ImageView: View {
 									DispatchQueue.main.async {
 										imageDataStore.imageData = data
 										useOriginalImage = false
+										let filteredImage = resizeUIImage(image: UIImage(data: data) ?? UIImage())
+										imageDataStore.imageData = filteredImage.pngData() ?? Data()
+										thumbnailImage = Image(uiImage: resizeUIImageToThumbnail(image: UIImage(data: data) ?? UIImage()))
+										renderedImage = Image(uiImage: getFilteredImage())
 									}
 							}
 						case .failure( _):
@@ -1080,6 +1092,7 @@ struct ImageView: View {
 			filterStateHistory.isModifying = false
 		}
 	}
+	
 }
 
 struct ImageView_Previews: PreviewProvider {
@@ -1137,3 +1150,32 @@ let imageEditModesData = [ImageEditModeData(mode: .hue, imageName: "paintbrush")
 						  ImageEditModeData(mode: .grayscale, imageName: "circle.dotted"),
 						  ImageEditModeData(mode: .opacity, imageName: "circle"),
 						  ImageEditModeData(mode: .blur, imageName: "camera.filters")]
+
+#if os(iOS)
+func resizeUIImageToThumbnail(image: UIImage) -> UIImage {
+	var originalWidth = 200.0
+	var originalHeight = 200.0
+	var desiredWidth = 1000.0
+	var desiredHeight = 1000.0
+		originalWidth = image.size.width
+		originalHeight = image.size.height
+		if originalWidth >= originalHeight && originalWidth >= 200.0 {
+			let scaleFactor = 200.0/originalWidth
+			desiredWidth =  originalWidth * scaleFactor
+			desiredHeight = originalHeight * scaleFactor
+		} else if originalHeight >= originalWidth && originalHeight >= 200.0 {
+			let scaleFactor = 200.0/originalHeight
+			desiredWidth =  originalWidth * scaleFactor
+			desiredHeight = originalHeight * scaleFactor
+		} else {
+			desiredWidth = originalWidth
+			desiredHeight = originalHeight
+		}
+		let newSize = CGSize(width: desiredWidth, height: desiredHeight)
+		UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0);
+					image.draw(in: CGRectMake(0, 0, newSize.width, newSize.height))
+		let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
+			UIGraphicsEndImageContext()
+		return newImage
+}
+#endif

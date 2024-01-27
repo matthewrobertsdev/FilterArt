@@ -55,11 +55,11 @@ struct FiltersView: View {
 		NavigationStack {
 			VStack(alignment: .center, content: {
 				if filterType  == FilterType.presets.rawValue {
-					PresetFiltersView(showing: $showing, searchString: $searchString)
+					PresetFiltersView(showing: $showing, searchString: $searchString, thumbnailData: resizeUIImageToThumbnail(image: UIImage(data: imageDataStore.imageData) ?? UIImage()).pngData() ?? Data())
 				} else if filterType == FilterType.saved.rawValue {
-					SavedFiltersView(showing: $showing, searchString: searchString)
+					SavedFiltersView(showing: $showing, searchString: searchString, thumbnailData: resizeUIImageToThumbnail(image: UIImage(data: imageDataStore.imageData) ?? UIImage()).pngData() ?? Data())
 				} else {
-					FavoriteFiltersView(showing: $showing, searchString: searchString)
+					FavoriteFiltersView(showing: $showing, searchString: searchString, thumbnailData: resizeUIImageToThumbnail(image: UIImage(data: imageDataStore.imageData) ?? UIImage()).pngData() ?? Data())
 				}
 			}).safeAreaInset(edge: .top, content: {
 				VStack(spacing:0){
