@@ -55,11 +55,11 @@ struct ContentView: View {
 			ZStack {
 				VStack(spacing: 5) {
 					Spacer(minLength: 0)
-					MainImage(loading: $loading, renderedImage: $renderedImage)
+					MainImage(loading: $loading, renderedImage: $renderedImage).environmentObject(imageDataStore)
 					Spacer(minLength: 0)
 					InfoSeperator()
 					GeometryReader { proxy in
-						MainControls(loading: $loading, proxy: proxy, renderedImage: $renderedImage, thumbnailImage: $thumbnailImage, showingSuccessAlert: $showingSuccessAlert, showingErrorAlert: $showingErrorAlert).environmentObject(modalStateViewModel).frame(maxWidth: .infinity)
+						MainControls(loading: $loading, proxy: proxy, renderedImage: $renderedImage, thumbnailImage: $thumbnailImage, showingSuccessAlert: $showingSuccessAlert, showingErrorAlert: $showingErrorAlert).environmentObject(modalStateViewModel.environmentObject(imageDataStore)).frame(maxWidth: .infinity)
 					}.frame(height: 215)
 				}
 				ImageDropReceiver().environmentObject(imageDataStore)
@@ -95,13 +95,13 @@ struct ContentView: View {
 			VStack(spacing: 5) {
 				VStack(spacing: 5) {
 					Spacer(minLength: 0)
-					MainImage(loading: $loading, renderedImage: $renderedImage)
+					MainImage(loading: $loading, renderedImage: $renderedImage).environmentObject(imageDataStore)
 					Spacer(minLength: 0)
 					InfoSeperator()
 				}
 				GeometryReader { proxy in
 					ScrollView {
-						MainControls(loading: $loading, proxy: proxy, renderedImage: $renderedImage, thumbnailImage: $thumbnailImage, showingSuccessAlert: $showingSuccessAlert, showingErrorAlert: $showingErrorAlert).environmentObject(modalStateViewModel).frame(maxWidth: .infinity)
+						MainControls(loading: $loading, proxy: proxy, renderedImage: $renderedImage, thumbnailImage: $thumbnailImage, showingSuccessAlert: $showingSuccessAlert, showingErrorAlert: $showingErrorAlert).environmentObject(modalStateViewModel).environmentObject(imageDataStore).frame(maxWidth: .infinity)
 					}
 				}.frame(height: 235)
 			}

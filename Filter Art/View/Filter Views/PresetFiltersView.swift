@@ -195,6 +195,8 @@ struct PresetFiltersView: View {
 	@MainActor func getFilteredImage(filterModel: FilterModel) -> Image {
 		var originalWidth = 200.0
 		var originalHeight = 200.0
+		var desiredWidth = 200.0
+		var desiredHeight = 200.0
 		if useOriginalImage {
 			desiredWidth = 200.0
 			desiredHeight = 200.0
