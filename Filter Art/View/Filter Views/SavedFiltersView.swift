@@ -8,35 +8,22 @@
 import SwiftUI
 
 struct SavedFiltersView: View {
+	
 	@Environment(\.managedObjectContext) var managedObjectContext
+	
 	@FetchRequest(sortDescriptors: [SortDescriptor(\.saveDate)]) var savedFilters: FetchedResults<Filter>
-	@AppStorage("imageInvertColors") private var invertColors: Bool = false
-	@AppStorage("imageHueRotation") private var hueRotation: Double = 0
-	@AppStorage("imageUseHueRotation") private var useHueRotation: Bool = false
-	@AppStorage("imageContrast") private var contrast: Double = 1
-	@AppStorage("imageUseContrast") private var useContrast: Bool = false
-	@AppStorage("imageUseColorMultiply") private var useColorMultiply: Bool = false
-	@AppStorage("imageColorMultiplyColor") private var colorMultiplyColor: Color = Color.blue
-	@AppStorage("imageUseSaturation") private var useSaturation: Bool = false
-	@AppStorage("imageSaturation") private var saturation: Double = 1
-	@AppStorage("imageUseBrightness") private var useBrightness: Bool = true
-	@AppStorage("imageBrightness") private var brightness: Double = 0
-	@AppStorage("imageUseGrayscale") private var useGrayscale: Bool = false
-	@AppStorage("imageGrayscale") private var grayscale: Double = 0
-	@AppStorage("imageUseOpacity") private var useOpacity: Bool = false
-	@AppStorage("imageOpacity") private var opacity: Double = 1
-	@AppStorage("imageUseBlur") private var useBlur: Bool = false
-	@AppStorage("imageBlur") private var blur: Double = 0
-	@AppStorage("imageUseOriginalImage") private var useOriginalImage: Bool = true
-	@EnvironmentObject var imageDataStore: ImageDataStore
-	@EnvironmentObject var filterStateHistory: FilterStateHistory
+	
+	@EnvironmentObject var imageDataStore: ImageViewModel
+	
 	@Binding var showing: Bool
+	
 	@State var selectedSavedFilter: Filter? = nil
 	@State var isEditing = false
 	@State var showingDeleteDialog = false
 	@State var showingRenameAlert = false
 	@State var filterToDelete: Filter? = nil
 	@State var filterToRename: Filter? = nil
+	
 	var image: Image = Image(uiImage: UIImage())
 	
 	init(showing: Binding<Bool>, searchString: String, thumbnailData: Data) {
@@ -76,7 +63,7 @@ struct SavedFiltersView: View {
 
 							}
 							Spacer()
-							getFilteredImage(filter: filter).resizable().aspectRatio(contentMode: .fit)
+							imageDataStore.getFilteredImage(filter: filter).resizable().aspectRatio(contentMode: .fit)
 							#if os(macOS)
 								.frame(width: isEditing ? 175 : 250, height: 175)
 							#else
@@ -121,8 +108,8 @@ struct SavedFiltersView: View {
 		}.listStyle(.sidebar)
 		#if os(iOS)
 			.onChange(of: selectedSavedFilter) { newValue in
-			asignSavedFilterComponentsToAppStorage()
-				storeSnapshot()
+				imageDataStore.asignSavedFilterComponentsToAppStorage(selectedSavedFilter: selectedSavedFilter)
+				imageDataStore.storeSnapshot()
 				DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
 					NotificationCenter.default.post(name: .endEditing,
 																	object: nil, userInfo: nil)
@@ -174,7 +161,7 @@ struct SavedFiltersView: View {
 				NotificationCenter.default.post(name: .endEditing,
 																object: nil, userInfo: nil)
 				asignSavedFilterComponentsToAppStorage()
-				storeSnapshot()
+				imageViewModel.storeSnapshot()
 				showing = false
 			} label: {
 				Text("Apply Filter")
@@ -211,124 +198,6 @@ struct SavedFiltersView: View {
 #endif
 	}
 	
-#if os(iOS)
-	@MainActor func getFilteredImage(filter: Filter) -> Image {
-		print("01/22/2024 b")
-		let renderer = ImageRenderer(content: getImage().aspectRatio(contentMode: .fit)
-			.if(filter.useHueRotation, transform: { view in
-				view.hueRotation(.degrees(filter.hueRotation))
-			}).if(filter.useContrast, transform: { view in
-				view.contrast(filter.contrast)
-			}).if(filter.invertColors, transform: { view in
-				view.colorInvert()
-			}).if(filter.useColorMultiply, transform: { view in
-				view.colorMultiply(Color(.sRGB, red: filter.colorMultiplyR, green: filter.colorMultiplyG, blue: filter.colorMultiplyB, opacity: filter.colorMultiplyO))
-			}).if(filter.useSaturation, transform: { view in
-				view.saturation(filter.saturation)
-			}).if(filter.useBrightness, transform: { view in
-				view.brightness(filter.brightness)
-			}).if(filter.useGrayscale, transform: { view in
-				view.grayscale(filter.grayscale)
-			}).if(filter.useOpacity, transform: { view in
-				view.opacity(filter.opacity)
-			}).if(filter.useBlur) { view in
-				view.blur(radius: filter.blur)
-			})
-		
-		if let uiImage = renderer.uiImage {
-			print("01/22/2024 success")
-			return Image(uiImage: uiImage)
-		}
-		return Image(uiImage: UIImage(named: "FallColors") ?? UIImage())
-	}
-#else
-	@MainActor func getFilteredImage(forSharing: Bool = false) -> NSImage{
-		var originalWidth = 1000.0
-		var originalHeight = 1000.0
-		var desiredWidth = 1000.0
-		var desiredHeight = 1000.0
-		if useOriginalImage {
-			desiredWidth = 750.0
-			desiredHeight = 1000.0
-		} else {
-			let nsImage = (NSImage(data: imageDataStore.imageData)  ?? NSImage())
-			originalWidth = nsImage.size.width
-			originalHeight = nsImage.size.height
-			if originalWidth >= originalHeight && originalWidth >= 1000.0 {
-				let scaleFactor = 1000.0/originalWidth
-				desiredWidth =  originalWidth * scaleFactor
-				desiredHeight = originalHeight * scaleFactor
-			} else if originalHeight >= originalWidth && originalHeight >= 1000.0 {
-				let scaleFactor = 1000.0/originalHeight
-				desiredWidth =  originalWidth * scaleFactor
-				desiredHeight = originalHeight * scaleFactor
-			} else {
-				desiredWidth = originalWidth
-				desiredHeight = originalHeight
-			}
-		}
-		let renderer = ImageRenderer(content: getImage().resizable().aspectRatio(contentMode: .fit).if(forSharing, transform: { view in
-			view.frame(width: desiredWidth, height: desiredHeight)
-		}).if(useHueRotation, transform: { view in
-			view.hueRotation(.degrees(hueRotation))
-		}).if(useContrast, transform: { view in
-			view.contrast(contrast)
-		}).if(invertColors, transform: { view in
-			view.colorInvert()
-		}).if(useColorMultiply, transform: { view in
-			view.colorMultiply(colorMultiplyColor)
-		}).if(useSaturation, transform: { view in
-			view.saturation(saturation)
-		}).if(useBrightness, transform: { view in
-			view.brightness(brightness)
-		}).if(useGrayscale, transform: { view in
-			view.grayscale(grayscale)
-		}).if(useOpacity, transform: { view in
-			view.opacity(opacity)
-		}).if(useBlur) { view in
-			view.blur(radius: blur)
-		})
-		if let nsImage = renderer.nsImage {
-			return  nsImage
-		}
-		return NSImage(named: "FallColors") ?? NSImage()
-	}
-#endif
-	
-	func getImage() -> Image {
-		if useOriginalImage {
-			return Image(uiImage: resizeUIImage(image: UIImage(named: "FallColors") ?? UIImage()))
-		} else {
-#if os(macOS)
-			return Image(nsImage: (NSImage(data: imageDataStore.imageData) ?? NSImage()))
-#else
-			return image
-#endif
-		}
-	}
-	
-	func asignSavedFilterComponentsToAppStorage() {
-		if let filter = selectedSavedFilter {
-			invertColors = filter.invertColors
-			useHueRotation = filter.useHueRotation
-			hueRotation = filter.hueRotation
-			useContrast = filter.useContrast
-			contrast = filter.contrast
-			useColorMultiply = filter.useColorMultiply
-			colorMultiplyColor = Color(.sRGB, red: filter.colorMultiplyR, green: filter.colorMultiplyG, blue: filter.colorMultiplyB, opacity: filter.colorMultiplyO)
-			useSaturation = filter.useSaturation
-			saturation = filter.saturation
-			useBrightness = filter.useBrightness
-			brightness = filter.brightness
-			useGrayscale = filter.useGrayscale
-			grayscale = filter.grayscale
-			useOpacity = filter.useOpacity
-			opacity = filter.opacity
-			useBlur = filter.useBlur
-			blur = filter.blur
-		}
-	}
-	
 	func delete(filter: Filter) {
 		do {
 			managedObjectContext.delete(filter)
@@ -348,11 +217,6 @@ struct SavedFiltersView: View {
 				
 			}
 		}
-	}
-	
-	func storeSnapshot() {
-		filterStateHistory.forUndo.append(FilterModel(blur: blur, brightness: brightness, colorMultiplyO: colorMultiplyColor.components.opacity, colorMultiplyB: colorMultiplyColor.components.blue, colorMultiplyG: colorMultiplyColor.components.green, colorMultiplyR: colorMultiplyColor.components.red, contrast: contrast, grayscale: grayscale, hueRotation: hueRotation, id: UUID().uuidString, invertColors: invertColors, opacity: opacity, name: "App State Filter", saturation: saturation, timestamp: Date(), useBlur: useBlur, useBrightness: useBrightness, useColorMultiply: useColorMultiply, useContrast: useContrast, useGrayscale: useGrayscale, useHueRotation: useHueRotation, useOpacity: useOpacity, useSaturation: useSaturation))
-		filterStateHistory.forRedo = [FilterModel]()
 	}
 
 }

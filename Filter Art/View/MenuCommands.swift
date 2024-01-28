@@ -10,7 +10,7 @@ import SwiftUI
 struct MenuCommands: Commands {
 	@AppStorage(AppStorageKeys.imageUseOriginalImage.rawValue) private var useOriginalImage: Bool = true
 	@ObservedObject var modalStateViewModel: ModalStateViewModel
-	@ObservedObject  var filterStateHistory: FilterStateHistory
+	@ObservedObject  var imageViewModel: ImageViewModel
 	private let baseUrl = "https://matthewrobertsdev.github.io/celeritasapps/#/"
     var body: some Commands {
 		CommandGroup(replacing: .undoRedo) {
@@ -18,12 +18,12 @@ struct MenuCommands: Commands {
 				NotificationCenter.default.post(name: .undo, object: nil)
 			} label: {
 				Text("Undo")
-			}.keyboardShortcut(KeyboardShortcut("Z", modifiers: .command)).disabled(!filterStateHistory.canUndo ||  modalStateViewModel.isModal())
+			}.keyboardShortcut(KeyboardShortcut("Z", modifiers: .command)).disabled(!imageViewModel.canUndo ||  modalStateViewModel.isModal())
 			Button {
 				NotificationCenter.default.post(name: .redo, object: nil)
 			} label: {
 				Text("Redo")
-			}.keyboardShortcut(KeyboardShortcut("Z", modifiers: [.command, .shift])).disabled(!filterStateHistory.canRedo ||  modalStateViewModel.isModal())
+			}.keyboardShortcut(KeyboardShortcut("Z", modifiers: [.command, .shift])).disabled(!imageViewModel.canRedo ||  modalStateViewModel.isModal())
 		}
 		CommandGroup(replacing: CommandGroupPlacement.newItem) {
 #if os(macOS)

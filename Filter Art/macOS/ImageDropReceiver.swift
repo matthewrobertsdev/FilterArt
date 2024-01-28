@@ -16,7 +16,7 @@ protocol DestinationViewDelegate {
 
 struct ImageDropReceiver: NSViewRepresentable {
 	@AppStorage("imageUseOriginalImage") private var useOriginalImage: Bool = true
-	@EnvironmentObject var imageDataStore: ImageDataStore
+	@EnvironmentObject var imageDataStore: ImageViewModel
 	
 	var acceptableTypes: Set<NSPasteboard.PasteboardType> { return [.png, .tiff, .URL, .fileURL] }
 	

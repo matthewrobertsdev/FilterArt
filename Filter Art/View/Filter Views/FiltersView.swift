@@ -11,15 +11,22 @@ import UIKit
 #else
 import AppKit
 #endif
+
 struct FiltersView: View {
+	
 	@Environment(\.managedObjectContext) var managedObjectContext
+	
 	@FocusState private var searchFieldInFocus: Bool
-	@EnvironmentObject var imageDataStore: ImageDataStore
-	@EnvironmentObject var filterStateHistory: FilterStateHistory
+	
+	@EnvironmentObject var imageDataStore: ImageViewModel
+	
 	@Binding var showing: Bool
+	
 	@AppStorage("filterType") var filterType = FilterType.presets.rawValue
+	
 	@State var selectedPreset: FilterModel? = nil
 	@State var searchString = ""
+	
     var body: some View {
 		#if os(macOS)
 		VStack(alignment: .center, content: {

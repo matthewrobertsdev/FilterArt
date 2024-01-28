@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct UnmodifiedImageSheet: View {
+	
 	@AppStorage(AppStorageKeys.imageUseOriginalImage.rawValue) private var useOriginalImage: Bool = true
+	
 	@EnvironmentObject var modalStateViewModel: ModalStateViewModel
-	@EnvironmentObject private var imageDataStore: ImageDataStore
+	@EnvironmentObject private var imageViewModel: ImageViewModel
+	
     var body: some View {
 		#if os(macOS)
 		VStack(alignment: .leading, spacing: 0) {
@@ -20,7 +23,7 @@ struct UnmodifiedImageSheet: View {
 			}.padding(.bottom, 10)
 			HStack {
 				Spacer()
-				getImage().resizable().aspectRatio(contentMode: .fit).frame(height: 525)
+				imageViewModel.getImage().resizable().aspectRatio(contentMode: .fit).frame(height: 525)
 				Spacer()
 			}.frame(minHeight: 525, maxHeight: 525).overlay(Rectangle().stroke(Color("Border", bundle: nil), lineWidth: 2))
 			HStack {
@@ -36,7 +39,7 @@ struct UnmodifiedImageSheet: View {
 		NavigationStack {
 			HStack {
 				Spacer()
-				getImage().resizable().aspectRatio(contentMode: .fit)
+				imageViewModel.getImage().resizable().aspectRatio(contentMode: .fit)
 				Spacer()
 			}.toolbar {
 				ToolbarItem {
@@ -52,18 +55,7 @@ struct UnmodifiedImageSheet: View {
 		}
 		#endif
     }
-	
-	func getImage() -> Image {
-		if useOriginalImage {
-			return Image("FallColors")
-		} else {
-#if os(macOS)
-			return Image(nsImage: (NSImage(data: imageDataStore.imageData) ?? NSImage()))
-#else
-			return Image(uiImage: (UIImage(data: imageDataStore.imageData)  ?? UIImage()))
-#endif
-		}
-	}
+
 }
 
 /*

@@ -8,9 +8,13 @@
 import SwiftUI
 
 struct RenameAlert: View {
+	
 	@Environment(\.managedObjectContext) var managedObjectContext
+	
 	@State var renameString: String = ""
+	
 	@Binding var selectedSavedFilter: Filter?
+	
     var body: some View {
 		Group {
 			TextField("Rename Text Field", text: $renameString, prompt: Text("Filter Name"))

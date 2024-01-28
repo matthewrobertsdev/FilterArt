@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct ModifiedImageSheet: View {
+	
 	@Binding var renderedImage: Image
+	
 	@EnvironmentObject var modalStateViewModel: ModalStateViewModel
+	
     var body: some View {
 		#if os(macOS)
 		VStack(alignment: .leading, spacing: 0) {

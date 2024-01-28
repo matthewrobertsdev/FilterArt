@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct NameAlert: View {
+	
 	@AppStorage("imageInvertColors") private var invertColors: Bool = false
 	@AppStorage("imageHueRotation") private var hueRotation: Double = 0
 	@AppStorage("imageUseHueRotation") private var useHueRotation: Bool = true
@@ -25,8 +26,11 @@ struct NameAlert: View {
 	@AppStorage("imageOpacity") private var opacity: Double = 1
 	@AppStorage("imageUseBlur") private var useBlur: Bool = true
 	@AppStorage("imageBlur") private var blur: Double = 0
+	
 	@Environment(\.managedObjectContext) var managedObjectContext
+	
 	@State var nameString: String = ""
+	
     var body: some View {
 		Group {
 			TextField("Name Text Field", text: $nameString, prompt: Text("Filter Name"))

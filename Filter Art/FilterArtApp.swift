@@ -9,16 +9,21 @@ import SwiftUI
 
 @main
 struct FilterArtApp: App {
+	
 #if os(macOS)
 @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 #endif
+	
 	@StateObject private var modalStateViewModel = ModalStateViewModel()
-	@StateObject var filterStateHistory = FilterStateHistory()
+	
+	@StateObject var imageViewModel = ImageViewModel()
+	
 	let persistenceController = PersistenceController.shared
+	
     var body: some Scene {
         WindowGroup {
             ContentView()
-				.environment(\.managedObjectContext, persistenceController.container.viewContext).environmentObject(modalStateViewModel).environmentObject(filterStateHistory)
+				.environment(\.managedObjectContext, persistenceController.container.viewContext).environmentObject(modalStateViewModel).environmentObject(imageViewModel)
 #if os(macOS)
 				.frame(minWidth: 800, minHeight: 600)
 				.onAppear {
@@ -26,7 +31,7 @@ struct FilterArtApp: App {
 				}
 #endif
         }.commands {
-			MenuCommands(modalStateViewModel: modalStateViewModel, filterStateHistory: filterStateHistory)
+			MenuCommands(modalStateViewModel: modalStateViewModel, imageViewModel: imageViewModel)
 		}
     }
 }
@@ -34,6 +39,7 @@ struct FilterArtApp: App {
 #if os(macOS)
 import Foundation
 import AppKit
+
 class AppDelegate: NSObject, NSApplicationDelegate {
 	func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
 		return true
