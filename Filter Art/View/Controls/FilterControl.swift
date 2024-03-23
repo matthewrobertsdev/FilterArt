@@ -15,25 +15,6 @@ struct FilterControl: View {
 	
 	@EnvironmentObject var imageViewModel: ImageViewModel
 	
-	@AppStorage(AppStorageKeys.imageUseOriginalImage.rawValue) private var useOriginalImage: Bool = true
-	@AppStorage(AppStorageKeys.imageInvertColors.rawValue) private var invertColors: Bool = false
-	@AppStorage(AppStorageKeys.imageHueRotation.rawValue) private var hueRotation: Double = 0
-	@AppStorage(AppStorageKeys.imageUseHueRotation.rawValue) private var useHueRotation: Bool = true
-	@AppStorage(AppStorageKeys.imageContrast.rawValue) private var contrast: Double = 1
-	@AppStorage(AppStorageKeys.imageUseContrast.rawValue) private var useContrast: Bool = true
-	@AppStorage(AppStorageKeys.imageUseColorMultiply.rawValue) private var useColorMultiply: Bool = true
-	@AppStorage(AppStorageKeys.imageColorMultiplyColor.rawValue) private var colorMultiplyColor: Color = Color.white
-	@AppStorage(AppStorageKeys.imageUseSaturation.rawValue) private var useSaturation: Bool = true
-	@AppStorage(AppStorageKeys.imageSaturation.rawValue) private var saturation: Double = 1
-	@AppStorage(AppStorageKeys.imageUseBrightness.rawValue) private var useBrightness: Bool = true
-	@AppStorage(AppStorageKeys.imageBrightness.rawValue) private var brightness: Double = 0
-	@AppStorage(AppStorageKeys.imageUseGrayscale.rawValue) private var useGrayscale: Bool = true
-	@AppStorage(AppStorageKeys.imageGrayscale.rawValue) private var grayscale: Double = 0
-	@AppStorage(AppStorageKeys.imageUseOpacity.rawValue) private var useOpacity: Bool = true
-	@AppStorage(AppStorageKeys.imageOpacity.rawValue) private var opacity: Double = 1
-	@AppStorage(AppStorageKeys.imageUseBlur.rawValue) private var useBlur: Bool = true
-	@AppStorage(AppStorageKeys.imageBlur.rawValue) private var blur: Double = 0
-	
 	init(editMode: Binding<ImageEditMode?>) {
 		_editMode = editMode
 	}
@@ -46,102 +27,102 @@ struct FilterControl: View {
 				switch editMode {
 				case .hue:
 					HStack {
-						Toggle("", isOn: $useHueRotation).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useHueRotation) { newValue in
+						Toggle("", isOn: $imageViewModel.useHueRotation).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: imageViewModel.useHueRotation) { newValue in
 							if !imageViewModel.isModifying {
 								imageViewModel.storeSnapshot()
 							}
 						}
-						HueRotationControl(hueRotation: $hueRotation, saveForUndo: {
+						HueRotationControl(hueRotation: $imageViewModel.hueRotation, saveForUndo: {
 							imageViewModel.storeSnapshot()
-						}).disabled(!useHueRotation)
+						}).disabled(!imageViewModel.useHueRotation)
 					}
 				case .contrast:
 					HStack {
-						Toggle("", isOn: $useContrast).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useContrast) { newValue in
+						Toggle("", isOn: $imageViewModel.useContrast).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: imageViewModel.useContrast) { newValue in
 							if !imageViewModel.isModifying {
 								imageViewModel.storeSnapshot()
 							}
 						}
-						ContrastControl(contrast: $contrast, saveForUndo: {
+						ContrastControl(contrast: $imageViewModel.contrast, saveForUndo: {
 							imageViewModel.storeSnapshot()
-						}).disabled(!useContrast)
+						}).disabled(!imageViewModel.useContrast)
 					}
 				case .invert:
 					EmptyView()
 				case .colorMultiply:
 					HStack {
-						Toggle("", isOn: $useColorMultiply).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useColorMultiply) { newValue in
+						Toggle("", isOn: $imageViewModel.useColorMultiply).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: imageViewModel.useColorMultiply) { newValue in
 							if !imageViewModel.isModifying {
 								imageViewModel.storeSnapshot()
 							}
 						}
-						ColorMultiplyControl(colorMultiplyColor: $colorMultiplyColor).disabled(!useColorMultiply).onChange(of: colorMultiplyColor) { newValue in
+						ColorMultiplyControl(colorMultiplyColor: $imageViewModel.colorMultiplyColor).disabled(!imageViewModel.useColorMultiply).onChange(of: imageViewModel.colorMultiplyColor) { newValue in
 							if !imageViewModel.isModifying && lastColorEditDate < Date.now - 1 {
 								lastColorEditDate = Date.now
 								imageViewModel.storeSnapshot()
 							} else {
 								let lastIndex = imageViewModel.forUndo.count - 1
-								imageViewModel.forUndo[lastIndex].colorMultiplyR = colorMultiplyColor.components.red
-								imageViewModel.forUndo[lastIndex].colorMultiplyG = colorMultiplyColor.components.green
-								imageViewModel.forUndo[lastIndex].colorMultiplyB = colorMultiplyColor.components.blue
-								imageViewModel.forUndo[lastIndex].colorMultiplyO = colorMultiplyColor.components.opacity
+								imageViewModel.forUndo[lastIndex].colorMultiplyR = imageViewModel.colorMultiplyColor.components.red
+								imageViewModel.forUndo[lastIndex].colorMultiplyG = imageViewModel.colorMultiplyColor.components.green
+								imageViewModel.forUndo[lastIndex].colorMultiplyB = imageViewModel.colorMultiplyColor.components.blue
+								imageViewModel.forUndo[lastIndex].colorMultiplyO = imageViewModel.colorMultiplyColor.components.opacity
 							}
 						}.frame(width: 100)
 					}
 				case .saturation:
 					HStack {
-						Toggle("", isOn: $useSaturation).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useSaturation) { newValue in
+						Toggle("", isOn: $imageViewModel.useSaturation).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: imageViewModel.useSaturation) { newValue in
 							if !imageViewModel.isModifying {
 								imageViewModel.storeSnapshot()
 							}
 						}
-						SaturationControl(saturation: $saturation, saveForUndo: {
+						SaturationControl(saturation: $imageViewModel.saturation, saveForUndo: {
 							imageViewModel.storeSnapshot()
-						}).disabled(!useSaturation)
+						}).disabled(!imageViewModel.useSaturation)
 					}
 				case .brightness:
 					HStack {
-						Toggle("", isOn: $useBrightness).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useBrightness) { newValue in
+						Toggle("", isOn: $imageViewModel.useBrightness).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: imageViewModel.useBrightness) { newValue in
 							if !imageViewModel.isModifying {
 								imageViewModel.storeSnapshot()
 							}
 						}
-						BrightnessControl(brightness: $brightness, saveForUndo: {
+						BrightnessControl(brightness: $imageViewModel.brightness, saveForUndo: {
 							imageViewModel.storeSnapshot()
-						}).disabled(!useBrightness)
+						}).disabled(!imageViewModel.useBrightness)
 					}
 				case .grayscale:
 					HStack {
-						Toggle("", isOn: $useGrayscale).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useGrayscale) { newValue in
+						Toggle("", isOn: $imageViewModel.useGrayscale).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: imageViewModel.useGrayscale) { newValue in
 							if !imageViewModel.isModifying {
 								imageViewModel.storeSnapshot()
 							}
 						}
-						GrayscaleControl(grayscale: $grayscale, saveForUndo: {
+						GrayscaleControl(grayscale: $imageViewModel.grayscale, saveForUndo: {
 							imageViewModel.storeSnapshot()
-						}).disabled(!useGrayscale)
+						}).disabled(!imageViewModel.useGrayscale)
 					}
 				case .opacity:
 					HStack {
-						Toggle("", isOn: $useOpacity).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useOpacity) { newValue in
+						Toggle("", isOn: $imageViewModel.useOpacity).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: imageViewModel.useOpacity) { newValue in
 							if !imageViewModel.isModifying {
 								imageViewModel.storeSnapshot()
 							}
 						}
-						OpacityControl(opacity: $opacity, saveForUndo: {
+						OpacityControl(opacity: $imageViewModel.opacity, saveForUndo: {
 							imageViewModel.storeSnapshot()
-						}).disabled(!useOpacity)
+						}).disabled(!imageViewModel.useOpacity)
 					}
 				case .blur:
 					HStack {
-						Toggle("", isOn: $useBlur).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: useBlur) { newValue in
+						Toggle("", isOn: $imageViewModel.useBlur).toggleStyle(.switch).tint(Color.accentColor).frame(width: 50).controlSize(.small).onChange(of: imageViewModel.useBlur) { newValue in
 							if !imageViewModel.isModifying {
 								imageViewModel.storeSnapshot()
 							}
 						}
-						BlurControl(blur: $blur, saveForUndo: {
+						BlurControl(blur: $imageViewModel.blur, saveForUndo: {
 							imageViewModel.storeSnapshot()
-						}).disabled(!useBlur)
+						}).disabled(!imageViewModel.useBlur)
 					}
 				case .none:
 					EmptyView()

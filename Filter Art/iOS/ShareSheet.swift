@@ -10,7 +10,7 @@ import UIKit
 import LinkPresentation
 
 struct ShareSheet: UIViewControllerRepresentable {
-	var imageData : UIImage
+	var image : UIImage
 	var applicationActivities: [UIActivity]? = nil
 	
 	func makeUIViewController(context: UIViewControllerRepresentableContext<ShareSheet>) -> UIActivityViewController {
@@ -22,14 +22,14 @@ struct ShareSheet: UIViewControllerRepresentable {
 	func updateUIViewController(_ uiViewController: UIActivityViewController, context: UIViewControllerRepresentableContext<ShareSheet>) {}
 	
 	func makeCoordinator() -> ShareSheet.Coordinator {
-		Coordinator(self.imageData)
+		Coordinator(self.image)
 	}
 	
 	class Coordinator : NSObject, UIActivityItemSource {
 		private let imageData: UIImage
 		
 		init(_ imageData: UIImage) {
-			self.imageData = imageData
+			self.image = imageData
 			super.init()
 		}
 		
@@ -52,7 +52,7 @@ struct ShareSheet: UIViewControllerRepresentable {
 			// share sheet preview title
 			metadata.title = "Share your image"
 			// share sheet preview icon
-			let imageProvider = NSItemProvider(object: imageData)
+			let imageProvider = NSItemProvider(object: image)
 			metadata.imageProvider = imageProvider
 			metadata.iconProvider = imageProvider
 			return metadata

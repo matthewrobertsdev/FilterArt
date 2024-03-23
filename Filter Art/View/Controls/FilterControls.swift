@@ -17,8 +17,6 @@ struct FilterControls: View {
 	
 	var proxy: GeometryProxy
 	
-	@AppStorage(AppStorageKeys.imageInvertColors.rawValue) private var invertColors: Bool = false
-	
     var body: some View {
 		Group {
 			VStack {
@@ -30,9 +28,9 @@ struct FilterControls: View {
 									view.foregroundColor(Color.accentColor)
 								}
 								if modeData.mode == .invert {
-									Toggle(isOn: $invertColors) {
+									Toggle(isOn: $imageDataStore.invertColors) {
 										Text("")
-									}.toggleStyle(.switch).tint(Color.accentColor).onChange(of: invertColors) { newValue in
+									}.toggleStyle(.switch).tint(Color.accentColor).onChange(of: imageDataStore.invertColors) { newValue in
 										if !imageDataStore.isModifying {
 											imageDataStore.storeSnapshot()
 										}

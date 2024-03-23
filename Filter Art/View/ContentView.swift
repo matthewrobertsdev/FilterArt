@@ -17,25 +17,7 @@ struct ContentView: View {
 	@Environment(\.managedObjectContext) var managedObjectContext
 	@EnvironmentObject var imageViewModel: ImageViewModel
 	@EnvironmentObject var modalStateViewModel: ModalStateViewModel
-	@AppStorage(AppStorageKeys.imageInvertColors.rawValue) private var invertColors: Bool = false
-	@AppStorage(AppStorageKeys.imageHueRotation.rawValue) private var hueRotation: Double = 0
-	@AppStorage(AppStorageKeys.imageUseHueRotation.rawValue) private var useHueRotation: Bool = true
-	@AppStorage(AppStorageKeys.imageContrast.rawValue) private var contrast: Double = 1
-	@AppStorage(AppStorageKeys.imageUseContrast.rawValue) private var useContrast: Bool = true
-	@AppStorage(AppStorageKeys.imageUseColorMultiply.rawValue) private var useColorMultiply: Bool = true
-	@AppStorage(AppStorageKeys.imageColorMultiplyColor.rawValue) private var colorMultiplyColor: Color = Color.white
-	@AppStorage(AppStorageKeys.imageUseSaturation.rawValue) private var useSaturation: Bool = true
-	@AppStorage(AppStorageKeys.imageSaturation.rawValue) private var saturation: Double = 1
-	@AppStorage(AppStorageKeys.imageUseBrightness.rawValue) private var useBrightness: Bool = true
-	@AppStorage(AppStorageKeys.imageBrightness.rawValue) private var brightness: Double = 0
-	@AppStorage(AppStorageKeys.imageUseGrayscale.rawValue) private var useGrayscale: Bool = true
-	@AppStorage(AppStorageKeys.imageGrayscale.rawValue) private var grayscale: Double = 0
-	@AppStorage(AppStorageKeys.imageUseOpacity.rawValue) private var useOpacity: Bool = true
-	@AppStorage(AppStorageKeys.imageOpacity.rawValue) private var opacity: Double = 1
-	@AppStorage(AppStorageKeys.imageUseBlur.rawValue) private var useBlur: Bool = true
-	@AppStorage(AppStorageKeys.imageBlur.rawValue) private var blur: Double = 0
 	@State private var image: Data = Data()
-	@AppStorage(AppStorageKeys.imageUseOriginalImage.rawValue) private var useOriginalImage: Bool = true
 	@State var showingImageSaveFailureAlert = false
 	@State var loading = false
 	@State private var showingPhotoPicker: Bool = false
@@ -85,7 +67,7 @@ struct ContentView: View {
 					
 				}
 			}.alert("Name Your Filter", isPresented: $modalStateViewModel.showingNameAlert, actions: {
-				NameAlert().environment(\.managedObjectContext, managedObjectContext)
+				NameAlert().environment(\.managedObjectContext, managedObjectContext).environmentObject(imageViewModel)
 			}, message: {
 				Text("Enter a name for your new filter:")
 			})
@@ -104,7 +86,7 @@ struct ContentView: View {
 				}.frame(height: 235)
 			}
 			.sheet(isPresented: $modalStateViewModel.showingShareSheet) {
-				ShareSheet(imageData: imageViewModel.getFilteredImage())
+				ShareSheet(image: imageViewModel.getFilteredImage())
 			}.sheet(isPresented: $modalStateViewModel.showingPreviewModal) {
 				ModifiedImageSheet(renderedImage: $renderedImage).environmentObject(modalStateViewModel)
 			}.sheet(isPresented: $modalStateViewModel.showingUnmodifiedImage) {
@@ -112,7 +94,7 @@ struct ContentView: View {
 			}.sheet(isPresented: $modalStateViewModel.showingFilters) {
 				FiltersView(showing: $modalStateViewModel.showingFilters).environmentObject(imageViewModel)
 			}.sheet(isPresented: $modalStateViewModel.showingImagePicker) {
-				ImagePicker(imageData: $imageViewModel.imageData, useOriginalImage: $useOriginalImage, loading: $loading)
+				ImagePicker(imageData: $imageViewModel.imageData, useOriginalImage: $imageViewModel.useOriginalImage, loading: $loading)
 			}.alert("Success!", isPresented: $modalStateViewModel.showingImageSaveSuccesAlert, actions: {
 			}, message: {
 				Text("Image saved to photo library.")
@@ -120,7 +102,7 @@ struct ContentView: View {
 			}, message: {
 				Text("Could not save image.  Have you granted permisson in the Settings app under Privacy > Photos > Filter Art?")
 			}).onAppear() {
-				if !useOriginalImage {
+				if !imageViewModel.useOriginalImage {
 					ImageViewModel.load { result in
 						switch result {
 						case .failure:
@@ -148,7 +130,7 @@ struct ContentView: View {
 					}
 				}
 			}.alert("Name Your Filter", isPresented: $modalStateViewModel.showingNameAlert, actions: {
-				NameAlert().environment(\.managedObjectContext, managedObjectContext)
+				NameAlert().environment(\.managedObjectContext, managedObjectContext).environmentObject(imageViewModel)
 			}, message: {
 				Text("Enter a name for your new filter:")
 			})
@@ -185,39 +167,39 @@ struct ContentView: View {
 				Text("Have you allowed Filter Art to save to Photos in the Settings app?")
 			})
 #endif
-		}.onChange(of: useHueRotation) { _ in
+		}.onChange(of: imageViewModel.useHueRotation) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: hueRotation) { _ in
+		}.onChange(of: imageViewModel.hueRotation) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: useContrast) { _ in
+		}.onChange(of: imageViewModel.useContrast) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: contrast) { _ in
+		}.onChange(of: imageViewModel.contrast) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: invertColors) { _ in
+		}.onChange(of: imageViewModel.invertColors) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: useColorMultiply) { _ in
+		}.onChange(of: imageViewModel.useColorMultiply) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: colorMultiplyColor) { _ in
+		}.onChange(of: imageViewModel.colorMultiplyColor) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: useSaturation) { _ in
+		}.onChange(of: imageViewModel.useSaturation) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: saturation) { _ in
+		}.onChange(of: imageViewModel.saturation) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: useBrightness) { _ in
+		}.onChange(of: imageViewModel.useBrightness) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: brightness) { _ in
+		}.onChange(of: imageViewModel.brightness) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: useGrayscale) { _ in
+		}.onChange(of: imageViewModel.useGrayscale) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: grayscale) { _ in
+		}.onChange(of: imageViewModel.grayscale) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: useOpacity) { _ in
+		}.onChange(of: imageViewModel.useOpacity) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: opacity) { _ in
+		}.onChange(of: imageViewModel.opacity) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: useBlur) { _ in
+		}.onChange(of: imageViewModel.useBlur) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
-		}.onChange(of: blur) { _ in
+		}.onChange(of: imageViewModel.blur) { _ in
 			renderedImage = Image(uiImage: imageViewModel.getFilteredImage())
 		}
 		.onReceive(NotificationCenter.default.publisher(for: .endEditing))

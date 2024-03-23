@@ -115,7 +115,7 @@ struct PresetFiltersView: View {
 			.onChange(of: selectedPreset) { newValue in
 				NotificationCenter.default.post(name: .endEditing,
 																object: nil, userInfo: nil)
-				imageDataStore.asignPresetFilterComponentsToAppStorage(filter: selectedPreset)
+				imageDataStore.assignFilterModelToAppStorage(filter: selectedPreset)
 				imageDataStore.storeSnapshot()
 				showing = false
 			}

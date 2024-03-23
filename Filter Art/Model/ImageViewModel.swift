@@ -12,6 +12,7 @@ import AppKit
 import UniformTypeIdentifiers
 #endif
 
+@MainActor 
 class ImageViewModel: ObservableObject {
 	
 	private var defaults = UserDefaults.standard
@@ -117,28 +118,6 @@ class ImageViewModel: ObservableObject {
 			defaults.setValue(blur, forKey: AppStorageKeys.imageBlur.rawValue)
 		}
 	}
-	
-	/*
-	@AppStorage(AppStorageKeys.imageUseOriginalImage.rawValue) private var useOriginalImage: Bool = true
-	
-	@AppStorage(AppStorageKeys.imageInvertColors.rawValue) private var invertColors: Bool = false
-	@AppStorage(AppStorageKeys.imageHueRotation.rawValue) private var hueRotation: Double = 0
-	@AppStorage(AppStorageKeys.imageUseHueRotation.rawValue) private var useHueRotation: Bool = true
-	@AppStorage(AppStorageKeys.imageContrast.rawValue) private var contrast: Double = 1
-	@AppStorage(AppStorageKeys.imageUseContrast.rawValue) private var useContrast: Bool = true
-	@AppStorage(AppStorageKeys.imageUseColorMultiply.rawValue) private var useColorMultiply: Bool = true
-	@AppStorage(AppStorageKeys.imageColorMultiplyColor.rawValue) private var colorMultiplyColor: Color = Color.white
-	@AppStorage(AppStorageKeys.imageUseSaturation.rawValue) private var useSaturation: Bool = true
-	@AppStorage(AppStorageKeys.imageSaturation.rawValue) private var saturation: Double = 1
-	@AppStorage(AppStorageKeys.imageUseBrightness.rawValue) private var useBrightness: Bool = true
-	@AppStorage(AppStorageKeys.imageBrightness.rawValue) private var brightness: Double = 0
-	@AppStorage(AppStorageKeys.imageUseGrayscale.rawValue) private var useGrayscale: Bool = true
-	@AppStorage(AppStorageKeys.imageGrayscale.rawValue) private var grayscale: Double = 0
-	@AppStorage(AppStorageKeys.imageUseOpacity.rawValue) private var useOpacity: Bool = true
-	@AppStorage(AppStorageKeys.imageOpacity.rawValue) private var opacity: Double = 1
-	@AppStorage(AppStorageKeys.imageUseBlur.rawValue) private var useBlur: Bool = true
-	@AppStorage(AppStorageKeys.imageBlur.rawValue) private var blur: Double = 0
-	 */
 	
 	init() {
 		UserDefaults.standard.register(defaults: [
@@ -435,60 +414,22 @@ class ImageViewModel: ObservableObject {
 	}
 	
 	func handleUndo() {
-		restoreSnapshot(stateToRestore: undo())
+		assignFilterModelToAppStorage(filter: undo())
 		Task {
 			try? await Task.sleep(nanoseconds: 1000_000_000)
 			isModifying = false
 		}
 	}
 	func handleRedo() {
-		restoreSnapshot(stateToRestore: redo())
+		assignFilterModelToAppStorage(filter: redo())
 		Task {
 			try? await Task.sleep(nanoseconds: 1000_000_000)
 			isModifying = false
 		}
 	}
 	
-	func restoreSnapshot(stateToRestore: FilterModel?) {
-		if let stateToRestore = stateToRestore {
-			invertColors = stateToRestore.invertColors
-			hueRotation = stateToRestore.hueRotation
-			useHueRotation = stateToRestore.useHueRotation
-			contrast = stateToRestore.contrast
-			brightness = stateToRestore.brightness
-			useBrightness = stateToRestore.useBrightness
-			useContrast = stateToRestore.useContrast
-			useColorMultiply = stateToRestore.useColorMultiply
-			colorMultiplyColor = Color(red: stateToRestore.colorMultiplyR, green: stateToRestore.colorMultiplyG, blue: stateToRestore.colorMultiplyB, opacity: stateToRestore.colorMultiplyO)
-			useSaturation = stateToRestore.useSaturation
-			saturation = stateToRestore.saturation
-			useGrayscale = stateToRestore.useGrayscale
-			grayscale = stateToRestore.grayscale
-			useOpacity = stateToRestore.useOpacity
-			opacity = stateToRestore.opacity
-			useBlur = stateToRestore.useOpacity
-			blur = stateToRestore.blur
-		}
-	}
-	
 	func resetAll() {
-		invertColors = originalFilter.invertColors
-		hueRotation = originalFilter.hueRotation
-		useHueRotation = originalFilter.useHueRotation
-		contrast = originalFilter.contrast
-		brightness = originalFilter.brightness
-		useBrightness = originalFilter.useBrightness
-		useContrast = originalFilter.useContrast
-		useColorMultiply = originalFilter.useColorMultiply
-		colorMultiplyColor = Color(red: originalFilter.colorMultiplyR, green: originalFilter.colorMultiplyG, blue: originalFilter.colorMultiplyB, opacity: originalFilter.colorMultiplyO)
-		useSaturation = originalFilter.useSaturation
-		saturation = originalFilter.saturation
-		useGrayscale = originalFilter.useGrayscale
-		grayscale = originalFilter.grayscale
-		useOpacity = originalFilter.useOpacity
-		opacity = originalFilter.opacity
-		useBlur = originalFilter.useOpacity
-		blur = originalFilter.blur
+		assignFilterModelToAppStorage(filter: originalFilter)
 	}
 	
 	func shouldDisableResetAll() -> Bool {
@@ -531,7 +472,7 @@ class ImageViewModel: ObservableObject {
 		}
 	}
 	
-	func asignPresetFilterComponentsToAppStorage(filter: FilterModel?) {
+	func assignFilterModelToAppStorage(filter: FilterModel?) {
 		if let filter = filter {
 			invertColors = filter.invertColors
 			useHueRotation = filter.useHueRotation
@@ -579,7 +520,6 @@ class ImageViewModel: ObservableObject {
 			})
 		
 		if let uiImage = renderer.uiImage {
-			print("01/22/2024 success")
 			return Image(uiImage: uiImage)
 		}
 		return Image(uiImage: UIImage(named: "FallColors") ?? UIImage())

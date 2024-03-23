@@ -23,9 +23,7 @@ struct MainControls: View {
 	
 	@EnvironmentObject var imageDataStore: ImageViewModel
 	@EnvironmentObject var modalStateViewModel: ModalStateViewModel
-	
-	@AppStorage(AppStorageKeys.imageUseOriginalImage.rawValue) private var useOriginalImage: Bool = true
-	
+		
 	var body: some View {
 		VStack(spacing: 10) {
 #if os(iOS)
@@ -40,7 +38,7 @@ struct MainControls: View {
 							if let data = data {
 								DispatchQueue.main.async {
 									imageDataStore.imageData = data
-									useOriginalImage = false
+									imageDataStore.useOriginalImage = false
 									let filteredImage = resizeUIImage(image: UIImage(data: data) ?? UIImage())
 									imageDataStore.imageData = filteredImage.pngData() ?? Data()
 									thumbnailImage = Image(uiImage: resizeUIImageToThumbnail(image: UIImage(data: data) ?? UIImage()))
@@ -132,7 +130,7 @@ struct MainControls: View {
 						Text("View Modified Image").labelStyle(.titleOnly)
 					}
 					Button {
-						useOriginalImage = true
+						imageDataStore.useOriginalImage = true
 					} label: {
 						Text("Use Default Image").labelStyle(.titleOnly)
 					}
